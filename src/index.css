@@ -1,0 +1,144 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* ---------- Fontes (arquivos em public/fonts) ---------- */
+@font-face {
+  font-family: 'Fixture';
+  src: url('/fonts/Fixture-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fixture';
+  src: url('/fonts/Fixture-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fixture';
+  src: url('/fonts/Fixture-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fixture';
+  src: url('/fonts/Fixture-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fixture Condensed';
+  src: url('/fonts/Fixture-CondensedBlack.ttf') format('truetype');
+  font-weight: 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fixture Ultra';
+  src: url('/fonts/FixtureUltra-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-display: swap;
+}
+
+/* ---------- Paleta da marca ---------- */
+:root {
+  --ink: #09090b; /* fundo */
+  --paper: #ffffff; /* texto principal / botões */
+  --cream: #e8e0d5; /* texto secundário */
+  --smoke: #1a1a1d; /* cards e painéis */
+  --ember: #ff4d1c; /* destaque / erro */
+
+  /* nomes usados pelos componentes shadcn */
+  --background: var(--ink);
+  --foreground: var(--paper);
+  --card: var(--smoke);
+  --card-foreground: var(--paper);
+  --popover: var(--smoke);
+  --popover-foreground: var(--paper);
+  --primary: var(--paper);
+  --primary-foreground: var(--ink);
+  --secondary: var(--smoke);
+  --secondary-foreground: var(--paper);
+  --muted: var(--smoke);
+  --muted-foreground: var(--cream);
+  --accent: var(--ember);
+  --accent-foreground: var(--paper);
+  --destructive: var(--ember);
+  --destructive-foreground: var(--paper);
+  --border: rgb(232 224 213 / 0.12);
+  --input: rgb(232 224 213 / 0.16);
+  --ring: var(--paper);
+  --radius: 0px;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-cream: var(--cream);
+  --color-smoke: var(--smoke);
+  --color-ember: var(--ember);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-md: 0px;
+
+  --font-sans: 'Fixture', Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-condensed: 'Fixture Condensed', Impact, sans-serif;
+  --font-ultra: 'Fixture Ultra', Impact, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html,
+  body {
+    background: var(--ink);
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    cursor: none; /* o cursor é desenhado pelo componente <Cursor /> */
+    font-family: var(--font-sans);
+  }
+  /* sem barras de rolagem visíveis */
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+  * {
+    scrollbar-width: none;
+  }
+  ::selection {
+    background: var(--cream);
+    color: var(--ink);
+  }
+  a {
+    color: var(--cream);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--paper);
+  }
+}

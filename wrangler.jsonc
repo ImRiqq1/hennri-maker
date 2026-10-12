@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hennri-maker",
+  "main": "api/index.ts",
+  "compatibility_date": "2026-08-24",
+  // O domínio maker.hennri.com já está ligado ao Worker pelo painel da Cloudflare
+  // (Settings → Domains & Routes). Sem "routes" aqui, o deploy não mexe nele.
+  "workers_dev": false,
+
+  // Arquivos do frontend (gerados pelo `vite build` em dist/).
+  // run_worker_first: o Worker decide o que é público (login, js, css) e o que exige senha.
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true,
+  },
+
+  // Banco com prompts, skills, referências e cursos
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hennri-maker-db",
+      "database_id": "8ce60354-eb61-41a3-9e85-8ddf0098f59f",
+      "migrations_dir": "migrations",
+    },
+  ],
+
+  // Imagens e vídeos enviados pelo site
+  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "hennri-maker-files" }],
+
+  // SITE_PASSWORD é um "secret" (não fica no código):
+  //   npx wrangler secret put SITE_PASSWORD
+  // Pra rodar local, coloque em .dev.vars: SITE_PASSWORD=sua-senha
+}
