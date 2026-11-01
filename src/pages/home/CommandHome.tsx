@@ -6,6 +6,7 @@ import { fileUrl } from '../../lib/api'
 import { formatDate, formatRelative } from '../../lib/format'
 import { KIND_INFO, useAcervo, type AcervoKind } from '../../lib/useAcervo'
 import { cn } from '../../lib/utils'
+import { CountUp } from '../../components/CountUp'
 
 const GLASS = 'rounded-[28px] border border-white/[0.08] bg-white/[0.035] shadow-[inset_0_1px_0_rgb(255_255_255/0.05)]'
 const STRIPES = 'repeating-linear-gradient(-45deg, var(--ice-400) 0 4px, var(--ice-300) 4px 8px)'
@@ -70,7 +71,11 @@ export function CommandHome() {
             <i className="ri-archive-drawer-line text-[18px]" />
           </span>
           <div className="flex flex-col gap-1">
-            <h1 className="text-[clamp(44px,4.6vw,68px)] leading-[0.95] font-light tracking-[-0.045em]">Acervo</h1>
+            <h1 className="text-[clamp(44px,4.6vw,68px)] leading-[0.95] font-light tracking-[-0.045em]">
+              <span className="reveal-title">
+                <span>Acervo</span>
+              </span>
+            </h1>
             <span className="text-[13px] text-white/45">
               IA Maker · acervo privado · {formatDate(Date.now())} · {a.totalItems} itens
             </span>
@@ -102,7 +107,7 @@ export function CommandHome() {
               <div key={k.label} className="flex flex-col gap-2">
                 <span className="text-[12.5px] text-white/50">{k.label}</span>
                 <span className="flex items-baseline gap-1.5">
-                  <span className="tnum text-[40px] leading-none font-light tracking-[-0.04em]">{k.value}</span>
+                  <CountUp value={k.value} className="tnum text-[40px] leading-none font-light tracking-[-0.04em]" />
                   <span className="text-[14px] text-white/35">{k.unit}</span>
                 </span>
               </div>
@@ -290,7 +295,7 @@ export function CommandHome() {
               <span className="text-[12px] text-sub">{filtered.length} itens</span>
             </div>
             {filtered.length === 0 && <span className="px-3 py-10 text-center text-[13px] text-sub">Nada com esses filtros.</span>}
-            <div className="flex max-h-[440px] flex-col gap-1 overflow-y-auto pr-1">
+            <div key={`${tab}-${period}`} className="stagger flex max-h-[440px] flex-col gap-1 overflow-y-auto pr-1">
               {filtered.map((it) => {
                 const key = `${it.kind}-${it.id}`
                 const sel = selected && `${selected.kind}-${selected.id}` === key

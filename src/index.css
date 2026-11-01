@@ -294,3 +294,162 @@
 :root[data-ds='workspace'] {
   --canvas: #f6f8f9;
 }
+
+/* ===================== Motion ===================== */
+/* Entradas assentam (sem quique); saídas são mais curtas. Só transform/opacity. */
+:root {
+  --dur-xs: 120ms;
+  --dur-sm: 200ms;
+  --dur-md: 340ms;
+  --dur-lg: 640ms;
+  --stagger: 70ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+@keyframes hm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes hm-mask-up {
+  from {
+    transform: translateY(108%);
+  }
+}
+@keyframes hm-grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes hm-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes hm-pop {
+  from {
+    opacity: 0;
+    transform: translateX(-14px) scale(0.97);
+  }
+}
+
+/* troca de página: os 3 primeiros blocos entram em cascata… */
+.page-enter > * > :nth-child(-n + 3) {
+  animation: hm-rise var(--dur-lg) var(--ease-out) backwards;
+}
+.page-enter > * > :nth-child(2) {
+  animation-delay: var(--stagger);
+}
+.page-enter > * > :nth-child(3) {
+  animation-delay: calc(var(--stagger) * 2);
+}
+/* …e o resto aparece quando entra na tela (classe .in vem do useScrollReveal) */
+.page-enter > * > :nth-child(n + 4) {
+  transition:
+    opacity var(--dur-md) var(--ease-out),
+    transform var(--dur-lg) var(--ease-out);
+}
+.page-enter > * > :nth-child(n + 4):not(.in) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+/* cards de uma grade entram um depois do outro */
+.stagger > * {
+  animation: hm-rise var(--dur-md) var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 12) * 40ms + 140ms);
+}
+.stagger > :nth-child(1) { --i: 0; }
+.stagger > :nth-child(2) { --i: 1; }
+.stagger > :nth-child(3) { --i: 2; }
+.stagger > :nth-child(4) { --i: 3; }
+.stagger > :nth-child(5) { --i: 4; }
+.stagger > :nth-child(6) { --i: 5; }
+.stagger > :nth-child(7) { --i: 6; }
+.stagger > :nth-child(8) { --i: 7; }
+.stagger > :nth-child(9) { --i: 8; }
+.stagger > :nth-child(10) { --i: 9; }
+.stagger > :nth-child(11) { --i: 10; }
+.stagger > :nth-child(12) { --i: 11; }
+
+/* título que sobe de dentro de uma "máscara" */
+.reveal-title {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+.reveal-title > span {
+  display: block;
+  animation: hm-mask-up var(--dur-lg) var(--ease-out) backwards;
+  animation-delay: 80ms;
+}
+
+/* barras de gráfico crescem; use style={{ '--i': n }} pra escalonar */
+.grow-y {
+  transform-origin: bottom;
+  animation: hm-grow-y 900ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 70ms + 220ms);
+}
+.grow-x {
+  transform-origin: left;
+  animation: hm-grow-x 900ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 70ms + 260ms);
+}
+.pop-in {
+  animation: hm-pop var(--dur-lg) var(--ease-out) backwards;
+  animation-delay: 420ms;
+}
+
+/* clique: o botão afunda de leve */
+.press {
+  transition: transform var(--dur-xs) var(--ease-out);
+}
+.press:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* troca de design system / cores (View Transitions API) */
+::view-transition-old(root) {
+  animation: hm-vt-out 240ms var(--ease-in) both;
+}
+::view-transition-new(root) {
+  animation: hm-vt-in 520ms var(--ease-out) both;
+}
+@keyframes hm-vt-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+@keyframes hm-vt-in {
+  from {
+    opacity: 0;
+    transform: scale(1.012);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-xs: 0ms;
+    --dur-sm: 0ms;
+    --dur-md: 0ms;
+    --dur-lg: 0ms;
+    --stagger: 0ms;
+  }
+  *,
+  *::before,
+  *::after,
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .page-enter > * > :nth-child(n + 4):not(.in) {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -4,6 +4,7 @@ import { api, fileUrl } from '../../lib/api'
 import { REFERENCE_TABS } from '../../lib/constants'
 import { formatDate } from '../../lib/format'
 import type { CourseSummary, Prompt, Reference, Skill } from '../../lib/types'
+import { CountUp } from '../../components/CountUp'
 
 const KIND = {
   PROMPT: { label: 'Prompt', icon: 'ri-sparkling-2-line' },
@@ -90,7 +91,9 @@ export function AbyssHome() {
             <span>{formatDate(Date.now())}</span>
           </div>
           <h1 className="font-display text-[clamp(56px,6.6vw,104px)] leading-[0.9] font-light tracking-[-0.055em] text-fg">
-            IA Maker
+            <span className="reveal-title">
+              <span>IA Maker</span>
+            </span>
           </h1>
         </div>
 
@@ -99,7 +102,7 @@ export function AbyssHome() {
             <div key={s.label} className="flex flex-col gap-1.5">
               <span className="text-[12px] text-sub">{s.label}</span>
               <div className="flex items-baseline gap-1.5">
-                <span className="tnum text-[40px] leading-none font-light tracking-[-0.045em] text-fg">{s.value}</span>
+                <CountUp value={s.value} className="tnum text-[40px] leading-none font-light tracking-[-0.045em] text-fg" />
                 <span className="text-[12px] text-sub">{s.unit}</span>
               </div>
             </div>
@@ -133,9 +136,7 @@ export function AbyssHome() {
           </div>
 
           <div className="relative mt-8 flex items-baseline gap-3">
-            <span className="tnum text-[clamp(88px,8vw,128px)] leading-[0.8] font-light tracking-[-0.06em]">
-              {prompts.length}
-            </span>
+            <CountUp value={prompts.length} className="tnum text-[clamp(88px,8vw,128px)] leading-[0.8] font-light tracking-[-0.06em]" />
             <span className="text-[15px] text-white/55">prompts salvos</span>
           </div>
 
@@ -146,8 +147,9 @@ export function AbyssHome() {
               <div key={cat} className="flex min-w-0 flex-1 flex-col items-center gap-2.5">
                 <div className="relative flex h-[104px] w-full items-end">
                   <div
-                    className="w-full rounded-[14px]"
+                    className="grow-y w-full rounded-[14px]"
                     style={{
+                      ['--i' as string]: i,
                       height: `${Math.max(14, (n / maxCat) * 100)}%`,
                       ...(i === 0 ? { background: 'var(--ice-400)' } : { backgroundImage: HATCH_DARK }),
                     }}
@@ -207,7 +209,7 @@ export function AbyssHome() {
                     className="group flex flex-col gap-3 rounded-[22px] bg-mist-100 p-4 text-left outline-none transition-colors hover:bg-ice-100 focus-visible:ring-4 focus-visible:ring-ice-200"
                   >
                     <span className="text-[12.5px] text-sub group-hover:text-abyss-600">{t.label}</span>
-                    <span className="tnum text-[34px] leading-none font-light tracking-[-0.045em] text-fg">{n}</span>
+                    <CountUp value={n} className="tnum text-[34px] leading-none font-light tracking-[-0.045em] text-fg" />
                   </button>
                 )
               })}
@@ -226,7 +228,7 @@ export function AbyssHome() {
               <div className="flex min-w-0 flex-col gap-1">
                 <span className="truncate text-[14px] text-sub">{currentCourse?.name ?? 'Nenhum curso ainda'}</span>
                 <span className="tnum text-[34px] leading-none font-light tracking-[-0.045em] text-fg">
-                  {lessonsDone}
+                  <CountUp value={lessonsDone} />
                   <span className="text-[16px] text-sub"> / {lessonsTotal} aulas</span>
                 </span>
               </div>
@@ -258,7 +260,7 @@ export function AbyssHome() {
             {latest.length} itens
           </span>
         </div>
-        <div className="-mx-3 flex snap-x gap-4 overflow-x-auto px-3 pt-1 pb-6">
+        <div className="stagger -mx-3 flex snap-x gap-4 overflow-x-auto px-3 pt-1 pb-6">
           {latest.map((item, i) => {
             const kind = KIND[item.kind]
             const src = fileUrl(item.image)

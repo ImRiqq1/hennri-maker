@@ -125,7 +125,7 @@ export function References() {
             </span>
             <div className="h-px flex-1 bg-mist-200" />
           </div>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="stagger grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {group.items.map((r) => (
               <ReferenceCard
                 key={r.id}

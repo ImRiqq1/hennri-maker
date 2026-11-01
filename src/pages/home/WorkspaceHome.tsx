@@ -101,17 +101,21 @@ export function WorkspaceHome() {
   return (
     <div className="flex flex-col gap-6">
       {/* Saudação + atalhos */}
-      <div className="grid grid-cols-1 items-stretch gap-5 xl:grid-cols-[minmax(0,1.25fr)_150px_repeat(3,minmax(0,1fr))]">
+      <div className="stagger grid grid-cols-1 items-stretch gap-5 xl:grid-cols-[minmax(0,1.25fr)_150px_repeat(3,minmax(0,1fr))]">
         <div className="flex flex-col justify-center gap-4 py-2 pr-4">
           <span className="flex w-fit items-center gap-2 rounded-full bg-surface px-3 py-1 text-[12px] text-sub shadow-soft">
             <span className="h-1.5 w-1.5 rounded-full bg-success" />
             Acervo privado · {formatDate(Date.now())}
           </span>
           <h1 className="text-[clamp(34px,3.2vw,46px)] leading-[1.06] font-semibold tracking-[-0.035em] text-fg">
-            Olá!
-            <br />O que vamos
-            <br />
-            criar hoje?
+            <span className="reveal-title">
+              <span>
+                Olá!
+                <br />O que vamos
+                <br />
+                criar hoje?
+              </span>
+            </span>
           </h1>
           <p className="max-w-[40ch] text-[14px] leading-[1.55] text-sub">
             IA Maker: {a.totalItems} itens no acervo, entre prompts, skills, referências e cursos.
@@ -146,7 +150,7 @@ export function WorkspaceHome() {
       </div>
 
       {/* Widgets */}
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div className="stagger grid grid-cols-1 gap-5 lg:grid-cols-3">
         {/* Últimos adicionados */}
         <section className={cn(CARD, 'relative overflow-visible')}>
           <div className="mb-5 flex items-center justify-between">
@@ -154,7 +158,7 @@ export function WorkspaceHome() {
             <span className="rounded-full bg-mist-100 px-2.5 py-1 text-[11.5px] font-medium text-sub">{latest.length} itens</span>
           </div>
           {first && <FloatingItem item={first} onOpen={() => navigate(first.href)} />}
-          <div className="mt-3 flex flex-col">
+          <div className="stagger mt-3 flex flex-col">
             {rest.map((it) => (
               <button
                 key={`${it.kind}-${it.id}`}
@@ -336,7 +340,7 @@ export function WorkspaceHome() {
                   <span className="flex items-center gap-2">
                     <span className="tnum w-9 text-[11.5px] text-sub">{pct}%</span>
                     <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-mist-100">
-                      <span className="block h-full rounded-full bg-abyss-600" style={{ width: `${pct}%` }} />
+                      <span className="grow-x block h-full rounded-full bg-abyss-600" style={{ width: `${pct}%`, ['--i' as string]: i }} />
                     </span>
                   </span>
                 </button>
@@ -432,7 +436,7 @@ function FloatingItem({ item, onOpen }: { item: AcervoItem; onOpen: () => void }
     <button
       type="button"
       onClick={onOpen}
-      className="relative z-[2] -ml-10 flex w-[calc(100%+40px)] items-center gap-3 rounded-[20px] border border-mist-200/70 bg-surface p-3.5 text-left shadow-lift outline-none transition-transform duration-500 ease-apple hover:-translate-y-0.5 focus-visible:ring-4 focus-visible:ring-ice-200"
+      className="pop-in relative z-[2] -ml-10 flex w-[calc(100%+40px)] items-center gap-3 rounded-[20px] border border-mist-200/70 bg-surface p-3.5 text-left shadow-lift outline-none transition-transform duration-500 ease-apple hover:-translate-y-0.5 focus-visible:ring-4 focus-visible:ring-ice-200"
     >
       <span className="relative flex h-12 w-12 flex-none items-center justify-center overflow-hidden rounded-[14px] bg-gradient-to-br from-mist-100 to-ice-100 text-abyss-500">
         {src && (

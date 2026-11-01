@@ -222,7 +222,7 @@ export function Prompts() {
           action={newButton}
         />
       ) : (
-        <div className={cn('grid gap-5', view === 'grid' ? COLS_CLASS[cols] : 'grid-cols-2')}>
+        <div className={cn('stagger grid gap-5', view === 'grid' ? COLS_CLASS[cols] : 'grid-cols-2')}>
           {visible.map((p, i) => (
             <PromptCard
               key={p.id}

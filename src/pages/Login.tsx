@@ -35,7 +35,7 @@ export function Login() {
       style={{ background: 'var(--hero-gradient)' }}
     >
 
-      <div className="relative flex w-full max-w-[400px] flex-col items-center gap-9 animate-in fade-in-0 zoom-in-95 duration-500">
+      <div className="relative flex w-full max-w-[400px] flex-col items-center gap-9 animate-in fade-in-0 zoom-in-[0.97] slide-in-from-bottom-4 duration-700 ease-[var(--ease-out)]">
         <div className="flex flex-col items-center gap-3">
           <img src="/brand/wordmark-white.png" alt="HENNRI." className="h-7 w-auto" />
           <span className="text-[12px] font-medium tracking-[0.14em] text-ice-300/80 uppercase">IA Maker</span>

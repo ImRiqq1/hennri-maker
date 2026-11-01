@@ -2,6 +2,8 @@
 // As escolhas ficam salvas só neste navegador (localStorage); o index.html aplica antes do React carregar.
 
 import { createContext, useCallback, useContext, useState, type ReactNode } from 'react'
+import { flushSync } from 'react-dom'
+import { prefersReducedMotion } from './motion'
 import { applyTheme, getTheme, type ThemeId } from './theme'
 
 export type DesignId = 'abyss' | 'workspace' | 'command'
@@ -29,6 +31,13 @@ function applyDesignAttrs(design: DesignId, theme: ThemeId) {
   applyTheme(design === 'abyss' ? theme : 'abyss', design === 'abyss')
 }
 
+/** Troca com uma transição suave da tela inteira, quando o navegador suporta (View Transitions API). */
+function withTransition(update: () => void) {
+  const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown }
+  if (!doc.startViewTransition || prefersReducedMotion()) return update()
+  doc.startViewTransition(() => flushSync(update))
+}
+
 const DesignContext = createContext<{
   design: DesignId
   theme: ThemeId
@@ -45,16 +54,20 @@ export function DesignProvider({ children }: { children: ReactNode }) {
       try {
         localStorage.setItem(KEY, d)
       } catch {}
-      applyDesignAttrs(d, theme)
-      setDesignState(d)
+      withTransition(() => {
+        applyDesignAttrs(d, theme)
+        setDesignState(d)
+      })
     },
     [theme],
   )
 
   const setTheme = useCallback(
     (t: ThemeId) => {
-      applyTheme(t)
-      setThemeState(t)
+      withTransition(() => {
+        applyTheme(t)
+        setThemeState(t)
+      })
     },
     [],
   )

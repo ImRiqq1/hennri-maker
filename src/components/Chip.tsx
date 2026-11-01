@@ -19,7 +19,7 @@ export function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'inline-flex items-center rounded-full text-[13px] font-medium outline-none transition-[background-color,color,box-shadow] duration-300 ease-apple',
+        'press inline-flex items-center rounded-full text-[13px] font-medium outline-none transition-[background-color,color,box-shadow] duration-300 ease-apple',
         'focus-visible:ring-4 focus-visible:ring-ice-200',
         className,
         active

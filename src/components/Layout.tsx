@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useDesign } from '../lib/design'
+import { useScrollReveal } from '../lib/motion'
 import { AbyssShell } from './shells/AbyssShell'
 import { CommandShell } from './shells/CommandShell'
 import { WorkspaceShell } from './shells/WorkspaceShell'
@@ -34,12 +35,17 @@ export function Layout() {
     document.getElementById('page-scroll')?.scrollTo({ top: 0 })
   }, [location.pathname])
 
+  useScrollReveal(`${design}:${location.pathname}`)
+
   const Shell = design === 'workspace' ? WorkspaceShell : design === 'command' ? CommandShell : AbyssShell
 
   return (
     <ToastProvider>
       <Shell>
-        <Outlet />
+        {/* a key reinicia a animação de entrada a cada página */}
+        <div key={location.pathname} className="page-enter">
+          <Outlet />
+        </div>
       </Shell>
     </ToastProvider>
   )

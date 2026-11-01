@@ -69,7 +69,7 @@ export function Courses() {
                   {list.length}
                 </span>
               </div>
-              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div className="stagger grid grid-cols-1 gap-5 lg:grid-cols-2">
                 {list.map((c) => (
                   <CourseCard key={c.id} course={c} />
                 ))}

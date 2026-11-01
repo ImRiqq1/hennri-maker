@@ -1,4 +1,6 @@
+import { useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useSlidingIndicator } from '../lib/motion'
 import { NAV, isNavActive, logout } from '../lib/nav'
 import { cn } from '../lib/utils'
 import { SearchBox } from './SearchBox'
@@ -9,6 +11,9 @@ const TAB_RADIUS = 32
 /** Topo do design system Abyss: aba com o logo, menu em pílulas, busca global (Ctrl K) e sair. */
 export function TopBar() {
   const location = useLocation()
+  const navRef = useRef<HTMLElement>(null)
+  const activeKey = NAV.find((n) => isNavActive(location.pathname, n.match))?.match ?? ''
+  const pill = useSlidingIndicator(navRef, activeKey)
 
   return (
     <header className="relative z-[5] flex h-[84px] flex-none items-stretch pt-3">
@@ -33,18 +38,24 @@ export function TopBar() {
       </Link>
 
       <div className="flex min-w-0 flex-1 items-center justify-between gap-3 pr-1 pb-3 pl-8 xl:gap-6 xl:pl-10">
-        <nav className="flex items-center gap-1 rounded-full border border-[var(--nav-group-border)] bg-[var(--nav-group-bg)] p-1 shadow-[0_10px_28px_-18px_rgb(0_0_0/0.45)] backdrop-blur-md">
+        <nav ref={navRef} className="relative flex items-center gap-1 rounded-full border border-[var(--nav-group-border)] bg-[var(--nav-group-bg)] p-1 shadow-[0_10px_28px_-18px_rgb(0_0_0/0.45)] backdrop-blur-md">
+          <span
+            aria-hidden
+            className="absolute top-0 left-0 rounded-full bg-[var(--nav-active-bg)] shadow-[0_6px_16px_-8px_rgb(0_0_0/0.5)] transition-[transform,width,opacity] duration-500 ease-[var(--ease-out)]"
+            style={pill}
+          />
           {NAV.map((item) => {
             const active = isNavActive(location.pathname, item.match)
             return (
               <Link
                 key={item.to}
                 to={item.to}
+                data-nav-key={item.match}
                 className={cn(
-                  'flex h-10 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple',
+                  'press relative flex h-10 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple',
                   'focus-visible:ring-2 focus-visible:ring-ice-400',
                   active
-                    ? 'bg-[var(--nav-active-bg)] text-[var(--nav-active-text)] shadow-[0_6px_16px_-8px_rgb(0_0_0/0.5)]'
+                    ? 'text-[var(--nav-active-text)]'
                     : 'text-[var(--nav-text)] hover:bg-[var(--nav-hover-bg)] hover:text-[var(--nav-text-hover)]',
                 )}
               >

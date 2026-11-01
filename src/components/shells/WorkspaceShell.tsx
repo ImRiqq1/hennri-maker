@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useSlidingIndicator } from '../../lib/motion'
 import { NAV, isNavActive, logout } from '../../lib/nav'
 import { cn } from '../../lib/utils'
 import { SearchBox } from '../SearchBox'
@@ -29,6 +30,8 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
   const current = NAV.find((n) => isNavActive(location.pathname, n.match)) ?? NAV[0]
   const action = newAction(location.pathname)
+  const railRef = useRef<HTMLElement>(null)
+  const pill = useSlidingIndicator(railRef, current.match)
 
   return (
     <div className="flex h-screen bg-[#dfe6ea] p-4 text-fg">
@@ -52,9 +55,15 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
                 <path d="M0 0 C0 34 76 22 76 56 L0 56 Z" fill={WAVE_TOP} />
               </svg>
               <nav
-                className="flex flex-col items-center gap-2.5 py-3"
+                ref={railRef}
+                className="relative flex flex-col items-center gap-2.5 py-3"
                 style={{ background: `linear-gradient(180deg, ${WAVE_TOP} 0%, ${WAVE_BOTTOM} 100%)` }}
               >
+                <span
+                  aria-hidden
+                  className="absolute top-0 left-0 rounded-[14px] bg-white shadow-[0_8px_18px_-8px_rgb(0_0_0/0.45)] transition-[transform,opacity] duration-500 ease-[var(--ease-out)]"
+                  style={pill}
+                />
                 {NAV.map((item) => {
                   const active = isNavActive(location.pathname, item.match)
                   return (
@@ -62,12 +71,11 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
                       key={item.to}
                       to={item.to}
                       aria-label={item.label}
+                      data-nav-key={item.match}
                       className={cn(
-                        'group/rail relative',
+                        'group/rail press relative',
                         RAIL_BUTTON,
-                        active
-                          ? 'bg-white text-abyss-700 shadow-[0_8px_18px_-8px_rgb(0_0_0/0.45)]'
-                          : 'text-white/65 hover:bg-white/12 hover:text-white',
+                        active ? 'text-abyss-700' : 'text-white/65 hover:bg-white/12 hover:text-white',
                       )}
                     >
                       <i className={cn(active ? item.activeIcon : item.icon, 'text-[19px]')} />

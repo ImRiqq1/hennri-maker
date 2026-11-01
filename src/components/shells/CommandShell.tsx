@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useSlidingIndicator } from '../../lib/motion'
 import { NAV, isNavActive, logout } from '../../lib/nav'
 import { cn } from '../../lib/utils'
 import { SearchBox } from '../SearchBox'
@@ -27,6 +28,8 @@ export function CommandShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
   const isHome = location.pathname === '/'
   const current = NAV.find((n) => isNavActive(location.pathname, n.match)) ?? NAV[0]
+  const navRef = useRef<HTMLElement>(null)
+  const pill = useSlidingIndicator(navRef, current.match)
 
   return (
     <div className="flex h-screen bg-[#0d0f10] p-3 text-white">
@@ -40,9 +43,14 @@ export function CommandShell({ children }: { children: ReactNode }) {
             <img src="/brand/wordmark-white.png" alt="HENNRI" className="hidden h-[15px] w-auto xl:block" />
           </Link>
 
-          <nav className="flex h-12 items-center gap-1 rounded-full bg-white p-1 shadow-[0_10px_30px_-12px_rgb(0_0_0/0.6)]">
-            <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-graphite-900 text-white">
-              <i className={cn(current.icon, 'text-[16px]')} />
+          <nav ref={navRef} className="relative flex h-12 items-center gap-1 rounded-full bg-white p-1 shadow-[0_10px_30px_-12px_rgb(0_0_0/0.6)]">
+            <span
+              aria-hidden
+              className="absolute top-0 left-0 rounded-full bg-ice-400 transition-[transform,width,opacity] duration-500 ease-[var(--ease-out)]"
+              style={pill}
+            />
+            <span className="relative flex h-10 w-10 flex-none items-center justify-center rounded-full bg-graphite-900 text-white">
+              <i key={current.match} className={cn(current.icon, 'text-[16px] animate-in zoom-in-50 fade-in-0 duration-300')} />
             </span>
             {NAV.map((item) => {
               const active = isNavActive(location.pathname, item.match)
@@ -50,10 +58,11 @@ export function CommandShell({ children }: { children: ReactNode }) {
                 <Link
                   key={item.to}
                   to={item.to}
+                  data-nav-key={item.match}
                   className={cn(
-                    'flex h-10 items-center rounded-full px-4 text-[13px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple',
+                    'press relative flex h-10 items-center rounded-full px-4 text-[13px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple',
                     'focus-visible:ring-2 focus-visible:ring-ice-400',
-                    active ? 'bg-ice-400 text-abyss-950' : 'text-graphite-600 hover:bg-mist-100 hover:text-graphite-950',
+                    active ? 'text-abyss-950' : 'text-graphite-600 hover:bg-mist-100 hover:text-graphite-950',
                   )}
                 >
                   {item.label}
