@@ -51,6 +51,7 @@ export function TopBar() {
                 key={item.to}
                 to={item.to}
                 data-nav-key={item.match}
+                title={item.label}
                 className={cn(
                   'press relative flex h-10 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple',
                   'focus-visible:ring-2 focus-visible:ring-ice-400',
@@ -60,7 +61,7 @@ export function TopBar() {
                 )}
               >
                 <i className={cn(item.icon, 'text-[16px] leading-none', active ? 'text-[var(--nav-active-icon)]' : '')} />
-                <span className="hidden lg:inline">{item.label}</span>
+                <span className={active ? 'hidden md:inline' : 'hidden 2xl:inline'}>{item.label}</span>
               </Link>
             )
           })}

@@ -5,11 +5,12 @@ import { useScrollReveal } from '../lib/motion'
 import { AbyssShell } from './shells/AbyssShell'
 import { CommandShell } from './shells/CommandShell'
 import { WorkspaceShell } from './shells/WorkspaceShell'
+import { PlayerProvider } from './player/Player'
 import { ToastProvider } from './Toast'
 
 /** Páginas onde Ctrl N abre o modal de "novo item" (via ?new=1). */
 function supportsNew(pathname: string) {
-  return pathname === '/prompts' || pathname === '/skills' || pathname.startsWith('/referencias') || pathname === '/cursos'
+  return pathname === '/prompts' || pathname === '/skills' || pathname.startsWith('/referencias') || pathname === '/cursos' || pathname === '/baixador'
 }
 
 /** Estrutura das páginas: escolhe a "casca" (navegação + moldura) do design system ativo. */
@@ -41,12 +42,14 @@ export function Layout() {
 
   return (
     <ToastProvider>
-      <Shell>
-        {/* a key reinicia a animação de entrada a cada página */}
-        <div key={location.pathname} className="page-enter">
-          <Outlet />
-        </div>
-      </Shell>
+      <PlayerProvider>
+        <Shell>
+          {/* a key reinicia a animação de entrada a cada página; o padding abre espaço pro player */}
+          <div key={location.pathname} className="page-enter" style={{ paddingBottom: 'var(--player-space, 0px)' }}>
+            <Outlet />
+          </div>
+        </Shell>
+      </PlayerProvider>
     </ToastProvider>
   )
 }

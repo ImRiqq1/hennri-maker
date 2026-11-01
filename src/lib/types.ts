@@ -94,3 +94,94 @@ export interface LessonNote {
   content: string
   updated_at: number | null
 }
+
+// ---------------------------------------------------------------- Trilhas / Baixador / ajudante
+
+export interface Track {
+  id: string
+  title: string
+  artist: string | null
+  source: 'spotify' | 'youtube' | 'upload'
+  source_url: string | null
+  duration_seconds: number | null
+  cover_key: string | null
+  audio_key: string | null
+  instrumental_key: string | null
+  vocals_key: string | null
+  local_path: string | null
+  intents: string | null
+  match_note: string | null
+  created_at: number
+  updated_at: number
+  playlist_ids: string[]
+  project_ids: string[]
+}
+
+export interface NamedItem {
+  id: string
+  name: string
+  created_at: number
+}
+
+export type JobType = 'download' | 'music' | 'separate' | 'enhance' | 'open' | 'update_tools'
+export type JobStatus = 'fila' | 'rodando' | 'ok' | 'erro' | 'cancelado'
+
+export interface Job {
+  id: string
+  type: JobType
+  batch_id: string | null
+  payload: string
+  status: JobStatus
+  progress: number | null
+  message: string | null
+  result: string | null
+  created_at: number
+  updated_at: number
+}
+
+export interface HelperInfo {
+  version?: string
+  hostname?: string
+  gpu?: string
+  device?: string
+  root?: string
+  tools?: Record<string, string | null>
+  separator_ready?: boolean
+  busy?: boolean
+}
+
+export interface HelperStatus {
+  online: boolean
+  paired: boolean
+  last_seen: number | null
+  info: HelperInfo | null
+}
+
+export interface HelperPC {
+  id: string
+  name: string
+  created_at: number
+  last_seen: number | null
+  info: string | null
+}
+
+export interface RefFolder {
+  id: string
+  name: string
+  created_at: number
+  downloads: number
+}
+
+export interface Download {
+  id: string
+  folder_id: string | null
+  job_id: string | null
+  url: string
+  platform: string
+  mode: string
+  title: string | null
+  files: string | null
+  bytes: number | null
+  thumb_key: string | null
+  created_at: number
+}

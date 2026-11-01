@@ -497,3 +497,34 @@
     transform: none;
   }
 }
+
+/* barra de progresso do player (input range) */
+.hm-range {
+  appearance: none;
+  background: linear-gradient(to right, var(--ice-400) var(--pct, 0%), rgb(255 255 255 / 0.16) var(--pct, 0%));
+  border-radius: 999px;
+  cursor: pointer;
+  outline: none;
+}
+.hm-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+  transition: transform var(--dur-xs) var(--ease-out);
+}
+.hm-range:hover::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+.hm-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+}
+.hm-range:focus-visible {
+  box-shadow: 0 0 0 3px rgb(134 203 221 / 0.4);
+}

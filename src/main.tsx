@@ -11,6 +11,11 @@ import { Login } from './pages/Login'
 import { Prompts } from './pages/Prompts'
 import { References } from './pages/References'
 import { Skills } from './pages/Skills'
+import { Baixador } from './pages/Baixador'
+import { BaixarMusica } from './pages/trilhas/BaixarMusica'
+import { Biblioteca } from './pages/trilhas/Biblioteca'
+import { MelhorarVoz } from './pages/trilhas/MelhorarVoz'
+import { RemoverVoz } from './pages/trilhas/RemoverVoz'
 import './index.css'
 
 function App() {
@@ -27,6 +32,11 @@ function App() {
           <Route path="/cursos" element={<Courses />} />
           <Route path="/cursos/:courseId" element={<CourseDetail />} />
           <Route path="/cursos/:courseId/aula/:itemId" element={<Lesson />} />
+          <Route path="/trilhas" element={<Biblioteca />} />
+          <Route path="/trilhas/baixar" element={<BaixarMusica />} />
+          <Route path="/trilhas/separar" element={<RemoverVoz />} />
+          <Route path="/trilhas/melhorar" element={<MelhorarVoz />} />
+          <Route path="/baixador" element={<Baixador />} />
         </Route>
       </Routes>
     </BrowserRouter>

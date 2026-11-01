@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { DESIGNS, useDesign, type DesignId } from '../lib/design'
 import { THEMES, type ThemeId } from '../lib/theme'
 import { cn } from '../lib/utils'
+import { HelperConnect } from './HelperConnect'
 
 /** Botão redondo da barra do topo do Abyss (segue as cores da moldura de cada tema). */
 export const FRAME_ICON_BUTTON =
@@ -135,7 +136,7 @@ export function SettingsMenu({ buttonClassName, align = 'right' }: { buttonClass
           role="dialog"
           aria-label="Configurações"
           className={cn(
-            'absolute z-[300] w-[440px] rounded-[26px] border border-white/8 p-4 text-white shadow-float animate-in fade-in-0 duration-200',
+            'absolute z-[300] max-h-[calc(100vh-110px)] w-[440px] overflow-y-auto rounded-[26px] border border-white/8 p-4 text-white shadow-float animate-in fade-in-0 duration-200',
             align === 'right' ? 'top-full right-0 mt-2 slide-in-from-top-1' : 'bottom-0 left-full ml-3 slide-in-from-left-1',
           )}
           style={{ background: 'var(--floating-gradient)' }}
@@ -185,8 +186,16 @@ export function SettingsMenu({ buttonClassName, align = 'right' }: { buttonClass
             </>
           )}
 
+          <span className="mt-5 block px-1 text-[11.5px] font-medium tracking-[0.06em] text-white/40 uppercase">
+            Ajudante do PC
+          </span>
+          <p className="mt-1 mb-2 px-1 text-[11.5px] leading-[1.45] text-white/45">
+            Ele baixa, separa e melhora a voz no seu PC. Você pede por aqui.
+          </p>
+          <HelperConnect />
+
           <div className="mt-4 flex items-center gap-2 rounded-[14px] bg-white/[0.05] px-3 py-2.5 text-[11.5px] text-white/50">
-            <i className="ri-information-line text-[14px] text-ice-300" />A escolha fica salva neste navegador.
+            <i className="ri-information-line text-[14px] text-ice-300" />O design e as cores ficam salvos neste navegador.
           </div>
         </div>
       )}

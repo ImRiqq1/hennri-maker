@@ -13,6 +13,14 @@ export const NAV = [
     match: '/referencias',
   },
   { to: '/cursos', label: 'Cursos', icon: 'ri-graduation-cap-line', activeIcon: 'ri-graduation-cap-fill', match: '/cursos' },
+  { to: '/trilhas', label: 'Trilhas', icon: 'ri-music-2-line', activeIcon: 'ri-music-2-fill', match: '/trilhas' },
+  {
+    to: '/baixador',
+    label: 'Baixador',
+    icon: 'ri-download-cloud-2-line',
+    activeIcon: 'ri-download-cloud-2-fill',
+    match: '/baixador',
+  },
 ]
 
 export function isNavActive(pathname: string, match: string) {

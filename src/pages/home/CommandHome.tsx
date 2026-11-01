@@ -7,6 +7,7 @@ import { formatDate, formatRelative } from '../../lib/format'
 import { KIND_INFO, useAcervo, type AcervoKind } from '../../lib/useAcervo'
 import { cn } from '../../lib/utils'
 import { CountUp } from '../../components/CountUp'
+import { Dropdown } from '../../components/Dropdown'
 
 const GLASS = 'rounded-[28px] border border-white/[0.08] bg-white/[0.035] shadow-[inset_0_1px_0_rgb(255_255_255/0.05)]'
 const STRIPES = 'repeating-linear-gradient(-45deg, var(--ice-400) 0 4px, var(--ice-300) 4px 8px)'
@@ -199,27 +200,33 @@ export function CommandHome() {
             {activeFilters}
           </span>
         </span>
-        <FilterSelect
+        <Dropdown
+          tone="dark"
+          label="Tipo"
+          icon="ri-filter-3-line"
           value={tab}
           onChange={(v) => setTab(v as Tab)}
-          icon="ri-filter-3-line"
           options={[
-            ['todos', 'Todos os tipos'],
-            ['prompt', 'Prompts'],
-            ['skill', 'Skills'],
-            ['referencia', 'Referências'],
+            { value: 'todos', label: 'Todos os tipos' },
+            { value: 'prompt', label: 'Prompts' },
+            { value: 'skill', label: 'Skills' },
+            { value: 'referencia', label: 'Referências' },
           ]}
+          className="w-[180px]"
         />
-        <FilterSelect
+        <Dropdown
+          tone="dark"
+          label="Período"
+          icon="ri-calendar-line"
           value={period}
           onChange={(v) => setPeriod(v as Period)}
-          icon="ri-calendar-line"
           options={[
-            ['tudo', 'Qualquer data'],
-            ['7', 'Últimos 7 dias'],
-            ['30', 'Últimos 30 dias'],
-            ['90', 'Últimos 90 dias'],
+            { value: 'tudo', label: 'Qualquer data' },
+            { value: '7', label: 'Últimos 7 dias' },
+            { value: '30', label: 'Últimos 30 dias' },
+            { value: '90', label: 'Últimos 90 dias' },
           ]}
+          className="w-[180px]"
         />
         <label className="flex h-11 min-w-[220px] flex-1 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 focus-within:border-ice-400/70">
           <input
@@ -451,38 +458,5 @@ export function CommandHome() {
         ))}
       </section>
     </div>
-  )
-}
-
-/** Filtro em pílula escura (select nativo por baixo, pra funcionar com teclado e leitor de tela). */
-function FilterSelect({
-  value,
-  onChange,
-  options,
-  icon,
-}: {
-  value: string
-  onChange: (v: string) => void
-  options: [string, string][]
-  icon: string
-}) {
-  return (
-    <label className="relative flex h-11 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] pr-10 pl-4 text-[13px] text-white/80 focus-within:border-ice-400/70">
-      <i className={cn(icon, 'text-[15px] text-white/45')} />
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="appearance-none bg-transparent pr-2 text-white outline-none [&>option]:bg-graphite-900"
-      >
-        {options.map(([v, l]) => (
-          <option key={v} value={v}>
-            {l}
-          </option>
-        ))}
-      </select>
-      <span className="pointer-events-none absolute right-1.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/60">
-        <i className="ri-arrow-down-s-line" />
-      </span>
-    </label>
   )
 }

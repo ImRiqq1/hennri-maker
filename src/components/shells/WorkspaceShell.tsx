@@ -11,6 +11,8 @@ function newAction(pathname: string) {
   if (pathname.startsWith('/skills')) return { label: 'Nova skill', to: '/skills?new=1' }
   if (pathname.startsWith('/referencias')) return { label: 'Nova referência', to: `${pathname}?new=1` }
   if (pathname === '/cursos') return { label: 'Novo curso', to: '/cursos?new=1' }
+  if (pathname.startsWith('/trilhas')) return { label: 'Baixar música', to: '/trilhas/baixar' }
+  if (pathname.startsWith('/baixador')) return { label: 'Nova pasta', to: '/baixador?new=1' }
   return { label: 'Novo prompt', to: '/prompts?new=1' }
 }
 
