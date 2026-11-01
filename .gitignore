@@ -4,3 +4,8 @@ dist
 .dev.vars
 .DS_Store
 .recovered
+
+# ajudante do PC
+helper/.venv
+helper/**/__pycache__
+helper/models

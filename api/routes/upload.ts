@@ -12,6 +12,18 @@ const EXT_BY_TYPE: Record<string, string> = {
   'video/mp4': 'mp4',
   'video/webm': 'webm',
   'video/quicktime': 'mov',
+  // áudio (Trilhas: remover/melhorar voz de um arquivo seu)
+  'audio/mpeg': 'mp3',
+  'audio/mp3': 'mp3',
+  'audio/wav': 'wav',
+  'audio/x-wav': 'wav',
+  'audio/wave': 'wav',
+  'audio/mp4': 'm4a',
+  'audio/x-m4a': 'm4a',
+  'audio/aac': 'aac',
+  'audio/flac': 'flac',
+  'audio/ogg': 'ogg',
+  'audio/webm': 'weba',
 }
 
 app.post('/', async (c) => {
