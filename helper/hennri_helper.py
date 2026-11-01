@@ -20,7 +20,10 @@ def configurar(cfg: dict, args) -> dict:
     print("\n  HENNRI · AJUDANTE — configuração\n")
     print("  1. Abra o site → engrenagem → Ajudante do PC → Conectar um PC")
     print("  2. Copie a chave (começa com hm_) e cole aqui.\n")
-    site = args.site or input(f"  Site [{cfg.get('site_url') or SITE_PADRAO}]: ").strip() or cfg.get("site_url") or SITE_PADRAO
+    # o site só muda com --site; perguntar aqui confundia (a chave acabava colada no lugar do site)
+    site = args.site or SITE_PADRAO
+    if not site.startswith(("http://", "https://")):
+        site = SITE_PADRAO
     token = args.token or input("  Chave: ").strip()
     while not token.startswith("hm_"):
         token = input("  A chave começa com hm_ — cole de novo: ").strip()
@@ -64,6 +67,10 @@ def main():
 
     configurar_log(console=args.console)
     from hennri.worker import Worker
+
+    if not str(cfg.get("site_url", "")).startswith(("http://", "https://")):
+        cfg["site_url"] = SITE_PADRAO  # config antiga com a chave no lugar do site
+        salvar_config(cfg)
 
     pastas = Pastas(cfg.get("root") or raiz_padrao())
     worker = Worker(Api(cfg["site_url"], cfg["token"]), pastas, cfg["site_url"])
