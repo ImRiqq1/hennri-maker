@@ -141,6 +141,8 @@ export interface Job {
 
 export interface HelperInfo {
   version?: string
+  platform?: 'windows' | 'mac' | 'linux'
+  os?: string
   hostname?: string
   gpu?: string
   device?: string
@@ -160,6 +162,7 @@ export interface HelperStatus {
 export interface HelperPC {
   id: string
   name: string
+  platform: 'windows' | 'mac' | 'linux' | null
   created_at: number
   last_seen: number | null
   info: string | null

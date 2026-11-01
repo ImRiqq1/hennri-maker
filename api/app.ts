@@ -12,7 +12,7 @@ import search from './routes/search'
 import jobs from './routes/jobs'
 import trilhas from './routes/trilhas'
 import baixador from './routes/baixador'
-import { helperAgent, helperSite } from './routes/helper'
+import { helperAgent, helperSite, pairPublic } from './routes/helper'
 
 const app = new Hono<AppEnv>().basePath('/api')
 
@@ -21,6 +21,7 @@ app.post('/auth/login', login)
 
 // o ajudante do PC entra com a própria chave (Bearer), não com o login do site
 app.route('/agent', helperAgent)
+app.route('/pair', pairPublic)
 
 app.use('*', requireAuth)
 app.post('/auth/logout', logout)

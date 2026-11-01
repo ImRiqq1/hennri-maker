@@ -62,3 +62,21 @@ Assim dá pra pedir até pelo celular (com o PC ligado) sem abrir porta no rotea
   "busy": false
 }
 ```
+
+## Conexão por código (sem copiar a chave)
+
+1. Ajudante sem chave: `POST /api/pair/start { name, platform: 'windows'|'mac' }` (sem login)
+   → `{ request_id, poll_secret, code: 'HN-4821', expires_at }` (vale 10 minutos).
+2. O ajudante mostra o código (console/Terminal e no ícone) e abre o navegador em
+   `<site>/conectar?codigo=HN-4821`. Lá, já logado, você vê "Conectar <nome> (<Mac/Windows>)?" e confirma
+   (`POST /api/helper/pair/HN-4821/approve`).
+3. O ajudante pergunta a cada 3s: `POST /api/pair/poll { request_id, poll_secret }`
+   → `202 { status: 'pending' }` · `200 { status: 'approved', token }` (entregue uma vez só) · `410` expirou.
+4. A chave manual (Configurações → Conectar com chave) continua funcionando como plano B.
+
+## Onde rodar (PC ou Mac)
+
+- `POST /api/jobs { type, payload(s), target?: <id do ajudante> }`. Sem `target`, qualquer ajudante online pega.
+  Com `target`, só aquele ajudante pega (`/api/agent/jobs/claim` filtra sozinho pela chave).
+- `GET /api/helper` lista os ajudantes (`id, name, platform, last_seen, info`); online = `last_seen` < 40s.
+- O heartbeat manda `info.platform` (`'windows'|'mac'`) e `info.os` (ex.: "macOS 15.4 · Apple M2").

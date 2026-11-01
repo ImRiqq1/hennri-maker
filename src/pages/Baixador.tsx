@@ -7,10 +7,11 @@ import { useToast } from '../components/Toast'
 import { HelperPill } from '../components/trilhas/TrilhasShell'
 import { api, fileUrl } from '../lib/api'
 import { formatRelative } from '../lib/format'
-import { cancelJob, createJob, isActive, parseJSON, removeJob, useHelperStatus, useJobs } from '../lib/trilhas'
+import { cancelJob, createJob, getTarget, isActive, parseJSON, removeJob, useHelperStatus, useJobs } from '../lib/trilhas'
 import type { Download, Job, RefFolder } from '../lib/types'
 import { cn } from '../lib/utils'
 import { Dropdown } from '../components/Dropdown'
+import { TargetPicker } from '../components/trilhas/TargetPicker'
 
 type Mode = 'premiere' | 'max' | 'audio'
 
@@ -145,7 +146,7 @@ export function Baixador() {
     setSending(true)
     try {
       for (let i = 0; i < payloads.length; i += 100) {
-        await api.post('/jobs', { type: 'download', payloads: payloads.slice(i, i + 100) })
+        await api.post('/jobs', { type: 'download', payloads: payloads.slice(i, i + 100), target: getTarget() || undefined })
       }
       setTexts({})
       reload()
@@ -199,6 +200,7 @@ export function Baixador() {
           className="w-[190px]"
         />
         <HelperPill status={status} />
+        <TargetPicker />
         <button
           type="button"
           onClick={downloadAll}

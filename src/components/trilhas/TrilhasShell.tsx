@@ -6,6 +6,7 @@ import { cn } from '../../lib/utils'
 import { HelperConnect } from '../HelperConnect'
 import { PageHeader } from '../PageHeader'
 import { Dialog, DialogContent, DialogTitle } from '../ui/dialog'
+import { TargetPicker } from './TargetPicker'
 
 const TABS = [
   { to: '/trilhas', label: 'Biblioteca', icon: 'ri-album-line' },
@@ -107,7 +108,10 @@ export function TrilhasShell({
             </ChipLink>
           ))}
         </div>
-        <HelperPill status={status} />
+        <div className="flex flex-wrap items-center gap-2">
+          <TargetPicker />
+          <HelperPill status={status} />
+        </div>
       </div>
       {children}
     </div>

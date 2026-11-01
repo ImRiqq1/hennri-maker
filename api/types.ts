@@ -92,6 +92,7 @@ export interface Job {
   result: string | null
   created_at: number
   updated_at: number
+  target_helper_id: string | null
 }
 
 export interface HelperToken {
@@ -101,6 +102,20 @@ export interface HelperToken {
   created_at: number
   last_seen: number | null
   info: string | null
+  platform: string | null
+}
+
+export interface PairRequest {
+  id: string
+  code: string
+  poll_secret_hash: string
+  name: string
+  platform: string | null
+  status: 'pending' | 'approved' | 'delivered'
+  token: string | null
+  helper_id: string | null
+  created_at: number
+  expires_at: number
 }
 
 export interface Track {

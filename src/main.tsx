@@ -7,6 +7,7 @@ import { CourseDetail } from './pages/CourseDetail'
 import { Courses } from './pages/Courses'
 import { Home } from './pages/Home'
 import { Lesson } from './pages/Lesson'
+import { Conectar } from './pages/Conectar'
 import { Login } from './pages/Login'
 import { Prompts } from './pages/Prompts'
 import { References } from './pages/References'
@@ -24,6 +25,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/conectar" element={<Conectar />} />
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/prompts" element={<Prompts />} />

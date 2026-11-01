@@ -40,7 +40,9 @@ app.post('/', async (c) => {
     if (err) return c.json({ error: err }, 400)
   }
   const batchId = payloads.length > 1 ? crypto.randomUUID() : null
-  const jobs = await createJobs(c.env.DB, type, payloads, batchId)
+  // target = id do ajudante (PC ou Mac) que deve fazer; sem target, qualquer um online pega
+  const target = typeof body.target === 'string' && body.target ? body.target : null
+  const jobs = await createJobs(c.env.DB, type, payloads, batchId, target)
   return c.json({ batch_id: batchId, jobs }, 201)
 })
 

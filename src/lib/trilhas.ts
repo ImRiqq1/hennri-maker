@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from './api'
-import type { HelperStatus, Job, JobType, Track } from './types'
+import type { HelperPC, HelperStatus, Job, JobType, Track } from './types'
 
 /** Intenções da trilha (a mesma lista do Future Sound). */
 export const INTENTS = [
@@ -52,8 +52,75 @@ export function parseJSON<T>(text: string | null | undefined, fallback: T): T {
   }
 }
 
+// ---------------------------------------------------------------- onde rodar (PC ou Mac)
+
+const TARGET_KEY = 'hm-target'
+const ONLINE_MS = 40_000
+
+/** Computador escolhido pra fazer os pedidos ('' = qualquer um que estiver online). */
+export function getTarget(): string {
+  try {
+    return localStorage.getItem(TARGET_KEY) || ''
+  } catch {
+    return ''
+  }
+}
+
+export function setTarget(id: string) {
+  try {
+    if (id) localStorage.setItem(TARGET_KEY, id)
+    else localStorage.removeItem(TARGET_KEY)
+  } catch {}
+  window.dispatchEvent(new Event('hm-target'))
+}
+
+/** "hn 4821", "4821" → "HN-4821" */
+export function normalizeCode(raw: string) {
+  const digits = raw.replace(/\D/g, '').slice(0, 4)
+  return digits ? `HN-${digits}` : ''
+}
+
+export function isOnline(pc: HelperPC) {
+  return !!pc.last_seen && Date.now() - pc.last_seen < ONLINE_MS
+}
+
+export const PLATFORM_LABEL: Record<string, string> = { windows: 'Windows', mac: 'Mac', linux: 'Linux' }
+export const PLATFORM_ICON: Record<string, string> = { windows: 'ri-windows-fill', mac: 'ri-apple-fill', linux: 'ri-ubuntu-fill' }
+
+/** Computadores conectados (atualiza a cada 10s). */
+export function useHelpers() {
+  const [pcs, setPcs] = useState<HelperPC[]>([])
+  useEffect(() => {
+    let alive = true
+    const load = () =>
+      api
+        .get<HelperPC[]>('/helper')
+        .then((r) => alive && setPcs(r))
+        .catch(() => {})
+    load()
+    const t = window.setInterval(load, 10_000)
+    return () => {
+      alive = false
+      window.clearInterval(t)
+    }
+  }, [])
+  return pcs
+}
+
+/** Destino escolhido; se o computador escolhido foi desconectado, volta pra "qualquer um". */
+export function useTarget(pcs: HelperPC[]): [string, (id: string) => void] {
+  const [target, set] = useState(getTarget)
+  useEffect(() => {
+    const sync = () => set(getTarget())
+    window.addEventListener('hm-target', sync)
+    return () => window.removeEventListener('hm-target', sync)
+  }, [])
+  const valid = !target || pcs.length === 0 || pcs.some((p) => p.id === target)
+  return [valid ? target : '', setTarget]
+}
+
 export function createJob<T = unknown>(type: JobType, payload: T) {
-  return api.post<{ batch_id: string | null; jobs: Job[] }>('/jobs', { type, payload })
+  return api.post<{ batch_id: string | null; jobs: Job[] }>('/jobs', { type, payload, target: getTarget() || undefined })
 }
 
 export function isActive(j: Job) {
