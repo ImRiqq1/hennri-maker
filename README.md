@@ -65,6 +65,13 @@ As imagens não aparecem localmente porque ficam no R2 de produção.
 
 ## Publicar no maker.hennri.com
 
+**É automático.** O Worker está ligado a este repositório pelo Workers Builds da Cloudflare:
+todo push na branch `main` roda `npm run build` e `npx wrangler deploy`, e o site atualiza em 1–2 minutos.
+O resultado aparece no commit no GitHub e em *Workers & Pages → hennri-maker → Deployments*.
+A configuração fica em *Settings → Build* no painel da Cloudflare.
+
+### Publicar na mão (se precisar)
+
 Uma vez só, faça login na Cloudflare (abre o navegador):
 
 ```bash
