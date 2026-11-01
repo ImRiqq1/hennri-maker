@@ -1,0 +1,4 @@
+# os .command rodam no Mac (bash): precisam de LF; os .bat são do Windows
+*.command text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf

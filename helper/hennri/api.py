@@ -19,8 +19,13 @@ class Api:
     def __init__(self, site: str, token: str):
         self.base = site.rstrip("/") + "/api/agent"
         self.s = requests.Session()
-        self.s.headers["Authorization"] = f"Bearer {token}"
         self.s.headers["User-Agent"] = "HennriHelper/1.0"
+        self.trocar_chave(token)
+
+    def trocar_chave(self, token: str):
+        """Depois de conectar pelo código, passa a usar a chave nova."""
+        self.token = token or ""
+        self.s.headers["Authorization"] = f"Bearer {self.token}"
 
     def _req(self, metodo: str, rota: str, tentativas: int = 3, timeout: float = 30, **kw):
         ultimo = None

@@ -1,0 +1,14 @@
+# Ajudante do HENNRI IA MAKER — Mac (o INICIAR.command usa este arquivo)
+# PyTorch normal do PyPI: no Mac com chip Apple ele já usa a GPU (MPS). Sem os pacotes CUDA da NVIDIA.
+yt-dlp[default,curl-cffi]
+gallery-dl
+deno
+requests
+mutagen
+pystray
+pillow
+imageio-ffmpeg
+torch
+torchaudio
+audio-separator[cpu]
+audioread  # o audio-separator usa, mas não declara

@@ -7,8 +7,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 from . import VERSION
 from .api import Api, ChaveInvalida, SemConexao
-from .config import Pastas, log
-from .util import Cancelado, DENO, info_gpu, versao_ffmpeg
+from .config import PLATAFORMA, Pastas, log
+from .util import Cancelado, DENO, descricao_sistema, info_gpu, versao_ffmpeg
 
 INTERVALO_FILA = 4  # segundos entre olhadas na fila quando não tem nada
 INTERVALO_SINAL = 20  # segundos entre sinais de vida (heartbeat)
@@ -50,7 +50,7 @@ class Contexto:
 
 
 class Worker:
-    def __init__(self, api: Api, pastas: Pastas, site: str):
+    def __init__(self, api: Api, pastas: Pastas, site: str, ao_nova_chave=None):
         self.api = api
         self.pastas = pastas
         self.site = site
@@ -65,6 +65,10 @@ class Worker:
         self.pool_gpu = ThreadPoolExecutor(max_workers=1, thread_name_prefix="gpu")
         self.reiniciar = False
         self.ao_mudar = None  # callback pra bandeja atualizar o texto
+        self.ao_nova_chave = ao_nova_chave  # salva a chave recebida pelo código
+        self.codigo: str | None = None  # código de conexão sendo mostrado (HN-4821)
+        self.url_conectar: str | None = None
+        self.quer_conectar = threading.Event()  # "Conectar este computador" no ícone
         gpu, device = info_gpu()
         self.gpu = gpu
         self.device = device
@@ -88,6 +92,8 @@ class Worker:
         return {
             "version": VERSION,
             "hostname": platform.node(),
+            "platform": PLATAFORMA,
+            "os": descricao_sistema(self.gpu),
             "gpu": self.gpu,
             "device": self.device,
             "root": str(self.pastas.raiz),
@@ -115,11 +121,48 @@ class Worker:
             except Exception:
                 pass
 
+    # ------------------------------------------------------------ conexão pelo código
+    def conectar(self) -> bool:
+        """Mostra um código, abre o site em /conectar e espera você confirmar. True = conectado."""
+        from .pareamento import PareamentoIndisponivel, parear
+
+        self.online = False
+        self.quer_conectar.clear()
+        self._avisar("Conectando este computador…")
+
+        def ao_codigo(codigo: str, url: str):
+            self.codigo, self.url_conectar = codigo, url
+            self._avisar(f"Código {codigo} · confirme no site")
+
+        try:
+            chave = parear(self.site, ao_codigo=ao_codigo, cancelado=self.parar.is_set)
+        except PareamentoIndisponivel:
+            chave = None
+            self._avisar("Gere uma chave no site e rode o INICIAR de novo")
+        finally:
+            self.codigo = self.url_conectar = None
+        if not chave:
+            if not self.parar.is_set() and not self.status.startswith("Gere"):
+                self._avisar("Não conectado · clique em Conectar este computador")
+            return False
+        self.api.trocar_chave(chave)
+        if self.ao_nova_chave:
+            self.ao_nova_chave(chave)
+        self._avisar("Conectado!")
+        return True
+
     # ------------------------------------------------------------ loop
     def rodar(self):
         ultimo_sinal = 0.0
         log.info("ajudante %s rodando · site %s · pasta %s · %s", VERSION, self.site, self.pastas.raiz, self.gpu or "sem GPU")
         while not self.parar.is_set():
+            if not self.api.token:
+                if not self.conectar():
+                    # espera você pedir de novo pelo ícone (ou sair)
+                    while not self.parar.is_set() and not self.quer_conectar.wait(1):
+                        pass
+                    continue
+                ultimo_sinal = 0.0
             try:
                 if time.time() - ultimo_sinal > INTERVALO_SINAL:
                     self.api.heartbeat(self.info())
@@ -133,10 +176,9 @@ class Worker:
                         self._despachar(job)
                         continue  # pode ter mais na fila
             except ChaveInvalida as e:
-                self.online = False
-                self._avisar(str(e))
+                # a chave foi removida no site: conecta de novo pelo código
                 log.error(str(e))
-                self.parar.wait(60)
+                self.api.trocar_chave("")
                 continue
             except SemConexao as e:
                 if self.online:

@@ -34,11 +34,10 @@ if errorlevel 1 (
 ".venv\Scripts\python.exe" -m pip install -q --disable-pip-version-check --upgrade -r requirements.txt -c constraints.txt --extra-index-url https://download.pytorch.org/whl/cu128
 if errorlevel 1 goto erro
 
-rem primeira vez: pede a chave que o site gera (Configuracoes ^> Ajudante do PC)
-if not exist "%APPDATA%\HennriMaker\config.json" (
-  ".venv\Scripts\python.exe" hennri_helper.py --setup
-  if errorlevel 1 goto erro
-)
+rem primeira vez: mostra um codigo (HN-4821), abre o site e voce so confirma.
+rem se ja estiver conectado, isso nao faz nada.
+".venv\Scripts\python.exe" hennri_helper.py --conectar
+if errorlevel 1 goto naoconectou
 
 rem roda escondido, com o icone perto do relogio
 start "" ".venv\Scripts\pythonw.exe" hennri_helper.py
@@ -54,6 +53,12 @@ echo  Instale o Python 3.12 ou mais novo em https://www.python.org/downloads/
 echo  IMPORTANTE: na instalacao marque "Add python.exe to PATH".
 echo  Depois rode este arquivo de novo.
 start "" https://www.python.org/downloads/
+pause
+exit /b
+
+:naoconectou
+echo.
+echo  Nao deu pra conectar agora. Rode o INICIAR.bat de novo com o site aberto.
 pause
 exit /b
 

@@ -2,14 +2,31 @@
 import json
 import logging
 import os
+import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 SITE_PADRAO = "https://maker.hennri.com"
 
-# %APPDATA%\HennriMaker → config.json, helper.log, índices locais
-# (HENNRI_HELPER_DATA troca o lugar — útil pra testar sem mexer na configuração de verdade)
-DADOS = Path(os.environ.get("HENNRI_HELPER_DATA") or Path(os.environ.get("APPDATA", Path.home())) / "HennriMaker")
+if sys.platform.startswith("win"):
+    PLATAFORMA = "windows"
+elif sys.platform == "darwin":
+    PLATAFORMA = "mac"
+else:
+    PLATAFORMA = "linux"
+
+
+def _dados_padrao() -> Path:
+    """Onde ficam config.json, helper.log e os índices locais em cada sistema."""
+    if PLATAFORMA == "windows":
+        return Path(os.environ.get("APPDATA", Path.home())) / "HennriMaker"
+    if PLATAFORMA == "mac":
+        return Path.home() / "Library" / "Application Support" / "HennriMaker"
+    return Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config") / "HennriMaker"
+
+
+# HENNRI_HELPER_DATA troca o lugar — útil pra testar sem mexer na configuração de verdade
+DADOS = Path(os.environ.get("HENNRI_HELPER_DATA") or _dados_padrao())
 DADOS.mkdir(parents=True, exist_ok=True)
 CONFIG_JSON = DADOS / "config.json"
 LOG = DADOS / "helper.log"
@@ -46,7 +63,7 @@ def salvar_config(cfg: dict):
 
 
 class Pastas:
-    """Onde cada coisa fica no PC (dentro da pasta raiz, padrão Downloads\\HENNRI)."""
+    """Onde cada coisa fica no computador (dentro da pasta raiz, padrão Downloads/HENNRI)."""
 
     def __init__(self, raiz: str | Path):
         self.raiz = Path(raiz)

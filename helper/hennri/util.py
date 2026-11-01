@@ -144,13 +144,36 @@ def abrir_no_explorer(caminho: Path):
             caminho.mkdir(parents=True, exist_ok=True)
             os.startfile(str(caminho))  # type: ignore[attr-defined]
     elif sys.platform == "darwin":
-        subprocess.Popen(["open", "-R" if caminho.is_file() else "", str(caminho)])
+        if caminho.is_file():
+            subprocess.Popen(["open", "-R", str(caminho)])  # Finder com o arquivo selecionado
+        else:
+            caminho.mkdir(parents=True, exist_ok=True)
+            subprocess.Popen(["open", str(caminho)])
     else:
         subprocess.Popen(["xdg-open", str(caminho if caminho.is_dir() else caminho.parent)])
 
 
+def _chip_mac() -> str | None:
+    """'Apple M2', 'Apple M3 Pro'… (ou o nome do processador Intel)."""
+    try:
+        r = subprocess.run(["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True, timeout=5)
+        return r.stdout.strip() or None
+    except Exception:
+        return None
+
+
 def info_gpu() -> tuple[str | None, str]:
-    """(nome da placa, 'cuda' | 'cpu')."""
+    """(nome da placa/chip, 'cuda' | 'mps' | 'cpu')."""
+    if sys.platform == "darwin":
+        chip = _chip_mac()
+        try:
+            import torch
+
+            if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+                return chip, "mps"  # GPU do chip Apple (M1, M2…)
+        except Exception:
+            pass
+        return chip, "cpu"
     try:
         import torch
 
@@ -165,3 +188,39 @@ def info_gpu() -> tuple[str | None, str]:
         return nome, "cpu"
     except Exception:
         return None, "cpu"
+
+
+def descricao_sistema(gpu: str | None) -> str:
+    """'Windows 11 · RTX 5060', 'macOS 15.4 · Apple M2'…"""
+    import platform
+
+    if sys.platform.startswith("win"):
+        try:
+            build = sys.getwindowsversion().build  # type: ignore[attr-defined]
+            nome = "Windows 11" if build >= 22000 else f"Windows {platform.release()}"
+        except Exception:
+            nome = "Windows"
+    elif sys.platform == "darwin":
+        versao = platform.mac_ver()[0]
+        nome = f"macOS {versao}" if versao else "macOS"
+    else:
+        nome = platform.system() or "Linux"
+    if gpu:
+        curto = re.sub(r"^(NVIDIA\s+)?(GeForce\s+)?", "", gpu).strip()
+        return f"{nome} · {curto}"
+    return nome
+
+
+def nome_do_computador() -> str:
+    """Nome amigável pra aparecer no site ('MacBook do Hennri', 'PC-HENNRI')."""
+    import platform
+
+    if sys.platform == "darwin":
+        try:
+            r = subprocess.run(["scutil", "--get", "ComputerName"], capture_output=True, text=True, timeout=5)
+            if r.stdout.strip():
+                return r.stdout.strip()[:60]
+        except Exception:
+            pass
+    nome = platform.node() or ("Mac" if sys.platform == "darwin" else "PC")
+    return re.sub(r"\.local$", "", nome)[:60]

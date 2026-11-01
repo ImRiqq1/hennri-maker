@@ -1,32 +1,45 @@
-HENNRI / AJUDANTE — o motor do maker.hennri.com no seu PC
+HENNRI / AJUDANTE — o motor do maker.hennri.com no seu computador (Windows e Mac)
 Baixador (Insta · YouTube · Pinterest · TikTok · X) · Músicas (Spotify/YouTube) · Separar voz · Melhorar voz
 =========================================================================================
 
 COMO FUNCIONA
-Você faz tudo pelo site. O ajudante fica escondido perto do relógio, pega os pedidos
-que você faz no site, faz o trabalho pesado aqui no PC (placa de vídeo) e manda o
-resultado de volta. Dá pra pedir até pelo celular, desde que o PC esteja ligado.
+Você faz tudo pelo site. O ajudante fica escondido (perto do relógio no Windows, na barra de
+cima no Mac), pega os pedidos que você faz no site, faz o trabalho pesado aqui (GPU) e manda o
+resultado de volta. Dá pra pedir até pelo celular, desde que o computador esteja ligado.
+Pode ter os dois ligados (PC e Mac): no site você escolhe onde cada pedido roda.
 
-PRIMEIRA VEZ
-1. No site: engrenagem → Ajudante do PC → Conectar um PC → copie a chave (hm_...).
-2. Duplo clique em INICIAR.bat. Na primeira vez ele instala tudo (uns 3 GB, por causa
-   do motor da placa de vídeo) e pede a chave. Cole e dê Enter.
-3. Pronto: aparece o ícone do HENNRI perto do relógio. Pode fechar a janela preta.
-4. (Opcional) INSTALAR-INICIO-AUTOMATICO.bat → o ajudante liga sozinho com o Windows.
+CONECTAR (só na primeira vez) — sem copiar chave
+1. Abra o INICIAR (veja abaixo). Ele instala tudo e mostra um código, tipo HN-4821.
+2. O site abre sozinho em "Conectar este computador?". Confira o código e clique em Confirmar.
+3. Pronto: o ajudante já está ligado. Pode fechar a janela.
+Plano B: no site, engrenagem → Ajudante do PC → Conectar com chave, e cole a chave (hm_...)
+na janela do INICIAR.
 
-O ÍCONE PERTO DO RELÓGIO
-  verde    = online, esperando pedidos
-  amarelo  = trabalhando
-  cinza    = sem conexão com o site
-Clique com o botão direito: Abrir o site · Abrir a pasta dos arquivos · Sair.
+WINDOWS
+- Duplo clique em INICIAR.bat. Na primeira vez instala uns 3 GB (motor da placa NVIDIA).
+- Liga sozinho com o Windows: duplo clique em INSTALAR-INICIO-AUTOMATICO.bat.
+- Ícone perto do relógio: verde = online · amarelo = trabalhando · cinza = sem conexão.
+- Configuração e log: %APPDATA%\HennriMaker\  (config.json, helper.log)
 
-ONDE FICAM OS ARQUIVOS
-  Downloads\HENNRI\Baixador\<pasta de ref>\   vídeos, fotos e pins baixados
-  Downloads\HENNRI\Trilhas\Músicas\           músicas baixadas (MP3 320 com capa)
-  Downloads\HENNRI\Trilhas\Separadas\         voz e instrumental de cada música (WAV)
-  Downloads\HENNRI\Trilhas\Voz melhorada\     áudios/vídeos com a voz tratada
+MAC
+- Duplo clique em INICIAR.command. Na primeira vez o macOS bloqueia: botão direito no arquivo
+  → Abrir → Abrir. Precisa do Python 3.11+ (se faltar, ele abre o python.org pra instalar).
+  Na primeira vez instala ~1 GB (motor da GPU do chip Apple).
+- Liga sozinho com o Mac: INSTALAR-INICIO-AUTOMATICO.command (desfaz com REMOVER-INICIO-AUTOMATICO.command).
+- Ícone na barra de cima: cheio = online · com bolinha = trabalhando · apagado = sem conexão.
+- Separar voz usa a GPU do chip Apple (M1, M2…): funciona, mas é mais lento que numa placa NVIDIA.
+- Configuração e log: ~/Library/Application Support/HennriMaker/  (config.json, helper.log)
+
+MENU DO ÍCONE (botão direito no Windows, clique no Mac)
+Abrir o site · Abrir a pasta dos arquivos · Sair (e "Conectar este computador" se precisar).
+
+ONDE FICAM OS ARQUIVOS (Downloads/HENNRI no Windows e no Mac)
+  Baixador/<pasta de ref>/   vídeos, fotos e pins baixados
+  Trilhas/Músicas/           músicas baixadas (MP3 320 com capa)
+  Trilhas/Separadas/         voz e instrumental de cada música (WAV)
+  Trilhas/Voz melhorada/     áudios/vídeos com a voz tratada
 As músicas, a voz separada e a voz melhorada também vão pro site (player e biblioteca).
-Os vídeos do Baixador ficam só no PC; o site mostra a lista e a miniatura.
+Os vídeos do Baixador ficam só no computador; o site mostra a lista e a miniatura.
 
 FORMATO DO BAIXADOR
   Premiere -> H.264, abre liso no Premiere/After (YouTube até 1080p)
@@ -34,14 +47,16 @@ FORMATO DO BAIXADOR
   Áudio    -> MP3 320
 
 INSTAGRAM / PINTEREST DERAM ERRO?
-No site, em "Login do navegador", escolha o navegador onde você está logado (Firefox é o
-mais confiável no Windows). Ou exporte um cookies.txt (extensão "Get cookies.txt LOCALLY")
-e coloque em %APPDATA%\HennriMaker\. Use conta secundária e evite baixar centenas seguidas.
+No site, em "Login do navegador", escolha o navegador onde você está logado (Firefox é o mais
+confiável no Windows; no Mac, Firefox ou Chrome). Ou exporte um cookies.txt (extensão
+"Get cookies.txt LOCALLY") e coloque na pasta de configuração (veja acima).
+Use conta secundária e evite baixar centenas seguidas.
 
 ATUALIZAR
-No site, em Trilhas → Baixar música, clique em "Atualizar o baixador" (o YouTube muda
-toda hora). Ou rode o INICIAR.bat de novo.
+No site, em Trilhas → Baixar música, clique em "Atualizar o baixador" (o YouTube muda toda
+hora). Ou rode o INICIAR de novo.
 
-TROCAR A CHAVE / O PC
-Gere outra chave no site e rode:  .venv\Scripts\python.exe hennri_helper.py --setup
-Configuração e log: %APPDATA%\HennriMaker\  (config.json, helper.log)
+TROCAR DE CONTA / CONECTAR DE NOVO
+Rode:  .venv\Scripts\python.exe hennri_helper.py --setup   (Windows)
+       .venv/bin/python hennri_helper.py --setup           (Mac)
+Se a chave for removida no site, o ajudante mostra um código novo sozinho.

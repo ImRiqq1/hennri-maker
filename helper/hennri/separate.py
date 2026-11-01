@@ -1,4 +1,4 @@
-"""Remover voz: separa cada música em voz e instrumental, na placa de vídeo (audio-separator)."""
+"""Remover voz: separa cada música em voz e instrumental na GPU (placa NVIDIA ou chip Apple), com audio-separator."""
 import logging
 import shutil
 import threading
@@ -16,6 +16,7 @@ MODELOS_DIR = DADOS / "models"
 _lock = threading.Lock()
 _separador = None
 _modelo_carregado = None
+_so_cpu = False  # ligado se a GPU do chip Apple (MPS) falhar: dali em diante separa no processador
 
 
 class ErroAmigavel(Exception):
@@ -42,6 +43,17 @@ def versao() -> str | None:
         return None
 
 
+def _usa_mps() -> bool:
+    return bool(_separador is not None and getattr(_separador, "torch_device_mps", None) is not None
+                and _separador.torch_device == _separador.torch_device_mps)
+
+
+def _descarregar():
+    global _separador, _modelo_carregado
+    _separador = None
+    _modelo_carregado = None
+
+
 def _carregar(trabalho: Path):
     """Carrega o modelo uma vez e reaproveita nos próximos pedidos (a saída vai sempre pra `trabalho`)."""
     global _separador, _modelo_carregado
@@ -59,6 +71,10 @@ def _carregar(trabalho: Path):
             mdxc_params={"segment_size": 256, "override_model_segment_size": False, "batch_size": 1, "overlap": 4,
                          "pitch_shift": 0},
         )
+        if _so_cpu:  # o chip Apple não deu conta antes: força o processador
+            _separador.torch_device = _separador.torch_device_cpu
+            _separador.torch_device_mps = None
+            _separador.onnx_execution_provider = ["CPUExecutionProvider"]
     if _modelo_carregado is None:
         for nome in (MODELO, MODELO_RESERVA):
             try:
@@ -69,24 +85,38 @@ def _carregar(trabalho: Path):
             except Exception as e:  # noqa: BLE001
                 log.warning("modelo %s não carregou: %s", nome, e)
         if _modelo_carregado is None:
-            raise ErroAmigavel("Não consegui carregar o modelo de separação. Rode o INICIAR.bat de novo.")
+            raise ErroAmigavel("Não consegui carregar o modelo de separação. Rode o INICIAR de novo.")
     return _separador
 
 
 def separar_arquivo(ctx, entrada: Path, nome: str) -> tuple[Path, Path]:
     """Separa e devolve (voz.wav, instrumental.wav) numa pasta própria em Trilhas\\Separadas."""
     if not disponivel():
-        raise ErroAmigavel("O separador de voz não está instalado. Rode o INICIAR.bat de novo.")
+        raise ErroAmigavel("O separador de voz não está instalado. Rode o INICIAR de novo.")
     saida = ctx.pastas.separadas / nome_seguro(nome, 100)
     saida.mkdir(parents=True, exist_ok=True)
     trabalho = ctx.pastas.tmp / "separando"
+    global _so_cpu
     with _lock:
-        ctx.progresso(None, "Carregando o modelo na placa de vídeo…" if _modelo_carregado is None else "Separando a voz…",
+        ctx.progresso(None, "Carregando o modelo na GPU…" if _modelo_carregado is None else "Separando a voz…",
                       forcar=True)
         sep = _carregar(trabalho)
         ctx.checar()
         ctx.progresso(None, "Separando a voz…", forcar=True)
-        arquivos = [Path(a) if Path(a).is_absolute() else trabalho / a for a in sep.separate(str(entrada))]
+        try:
+            saidas = sep.separate(str(entrada))
+        except Exception as e:  # noqa: BLE001
+            if not _usa_mps():
+                raise
+            # alguns modelos ainda tropeçam no MPS: refaz no processador (mais lento, mas vai)
+            log.warning("separação no chip Apple falhou (%s); refazendo no processador", e)
+            _so_cpu = True
+            _descarregar()
+            ctx.progresso(None, "A GPU do Mac não deu conta; separando no processador (mais lento)…", forcar=True)
+            sep = _carregar(trabalho)
+            ctx.checar()
+            saidas = sep.separate(str(entrada))
+        arquivos = [Path(a) if Path(a).is_absolute() else trabalho / a for a in saidas]
     ctx.checar()
     voz = next((a for a in arquivos if "(vocals)" in a.name.lower()), None)
     inst = next((a for a in arquivos if "(instrumental)" in a.name.lower() or "(other)" in a.name.lower()), None)
@@ -143,7 +173,7 @@ def executar(ctx):
         raise
     except Exception as e:  # noqa: BLE001
         low = str(e).lower()
-        if "out of memory" in low or "cuda" in low and "memory" in low:
-            raise ErroAmigavel("A placa de vídeo ficou sem memória. Feche jogos/edição pesada e tente de novo.")
+        if "out of memory" in low or ("cuda" in low or "mps" in low) and "memory" in low:
+            raise ErroAmigavel("A GPU ficou sem memória. Feche jogos/edição pesada e tente de novo.")
         raise
     return resultado, "Voz e instrumental separados"
