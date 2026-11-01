@@ -56,26 +56,25 @@ export function Courses() {
       />
 
       {!loading && courses.length === 0 ? (
-        <EmptyState title="CURSOS" tracking="-0.06em" message="Nenhum curso em andamento." action={newButton} />
+        <EmptyState title="CURSOS" message="Nenhum curso em andamento." action={newButton} />
       ) : (
         SECTIONS.map((section) => {
           const list = courses.filter((c) => c.status === section.key)
           if (list.length === 0) return null
           return (
-            <div key={section.key} className="mb-13 flex flex-col gap-5">
-              <div className="flex items-center gap-3.5">
-                <span className="font-mono text-[11px] tracking-[0.18em] text-cream uppercase">{section.label}</span>
-                <div className="h-px flex-1 bg-cream/10" />
-                <span className="font-mono text-[10px] tracking-[0.14em] text-cream/35">
-                  /{String(list.length).padStart(3, '0')}
+            <section key={section.key} className="mb-14 flex flex-col gap-5">
+              <div className="flex items-center gap-3">
+                <h2 className="text-[22px] leading-none font-light tracking-[-0.03em] text-fg">{section.label}</h2>
+                <span className="tnum rounded-full border border-mist-200 bg-surface px-2.5 py-0.5 text-[12px] font-medium text-sub">
+                  {list.length}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-6">
-                {list.map((c, i) => (
-                  <CourseCard key={c.id} course={c} index={i + 1} />
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                {list.map((c) => (
+                  <CourseCard key={c.id} course={c} />
                 ))}
               </div>
-            </div>
+            </section>
           )
         })
       )}

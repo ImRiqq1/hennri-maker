@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { EmptyState } from '../components/PageHeader'
+import { ChipGroup, EmptyState } from '../components/PageHeader'
 import { NewButton } from '../components/PrimaryButton'
 import { ReferenceCard } from '../components/ReferenceCard'
 import { ReferenceEditor, type ReferenceForm } from '../components/ReferenceEditor'
@@ -9,6 +9,7 @@ import { useToast } from '../components/Toast'
 import { api } from '../lib/api'
 import { REFERENCE_TABS } from '../lib/constants'
 import type { Reference } from '../lib/types'
+import { cn } from '../lib/utils'
 
 export function References() {
   const { tab = 'camera' } = useParams()
@@ -75,53 +76,56 @@ export function References() {
 
   return (
     <div>
-      <div className="mb-6.5 flex flex-wrap gap-4.5 font-mono text-[10px] tracking-[0.16em] text-cream/40 uppercase">
-        {REFERENCE_TABS.map((t) => (
-          <span key={t.id}>[{t.label.toLowerCase()}]</span>
-        ))}
-      </div>
-
-      <div className="mb-8.5 flex items-center gap-7 border-b border-cream/10">
-        {REFERENCE_TABS.map((t) => (
-          <Link
-            key={t.id}
-            to={`/referencias/${t.id}`}
-            data-hot="1"
-            className="relative px-0.5 pb-3.5 text-sm font-semibold tracking-[-0.01em]"
-            style={{ color: t.id === tab ? '#FFFFFF' : 'rgba(232,224,213,0.55)' }}
-          >
-            <span>{t.label}</span>
-            {t.id === tab && <div className="absolute inset-x-0 -bottom-px h-px bg-paper" />}
-          </Link>
-        ))}
-      </div>
-
       <div className="mb-10 flex items-end justify-between gap-8">
-        <div className="flex min-w-0 flex-1 items-end gap-4.5">
-          <span className="font-condensed text-[clamp(120px,15.5vw,300px)] leading-[0.76] tracking-[-0.065em] text-paper uppercase">
-            {tabLabel}
-          </span>
-          <span className="pb-3.5 font-mono text-[11px] tracking-[0.14em] text-cream/45">
-            /{String(references.length).padStart(3, '0')}
-          </span>
+        <div className="flex min-w-0 flex-col gap-5">
+          <div className="flex items-start gap-3">
+            <h1 className="font-display text-[clamp(52px,5.6vw,84px)] leading-[0.92] font-light tracking-[-0.05em] text-fg">
+              {tabLabel}
+            </h1>
+            <span className="tnum mt-2 flex h-8 min-w-8 items-center justify-center rounded-full bg-abyss-950 px-2.5 text-[13px] font-medium text-white">
+              {references.length}
+            </span>
+          </div>
+          <ChipGroup className="self-start">
+            {REFERENCE_TABS.map((t) => {
+              const active = t.id === tab
+              return (
+                <Link
+                  key={t.id}
+                  to={`/referencias/${t.id}`}
+                  aria-current={active ? 'page' : undefined}
+                  className={cn(
+                    'inline-flex h-9 items-center rounded-full px-4 text-[13px] font-medium outline-none transition-[background-color,color,box-shadow] duration-300 ease-apple focus-visible:ring-4 focus-visible:ring-ice-200',
+                    active
+                      ? 'bg-abyss-950 text-white shadow-[0_6px_14px_-8px_rgb(4_26_33/0.7)] hover:text-white'
+                      : 'text-abyss-700 hover:bg-mist-100 hover:text-abyss-950',
+                  )}
+                >
+                  {t.label}
+                </Link>
+              )
+            })}
+          </ChipGroup>
         </div>
-        <div className="flex flex-none items-center gap-3.5 pb-3.5">{newButton}</div>
+        <div className="flex flex-none items-center gap-3">{newButton}</div>
       </div>
 
       {!loading && references.length === 0 && (
-        <EmptyState title={tabLabel} tracking="-0.06em" message="Nada guardado nessa aba ainda." action={newButton} />
+        <EmptyState title={tabLabel} message="Nada guardado nessa aba ainda." action={newButton} />
       )}
 
       {groups.map((group) => (
-        <div key={group.family} className="mb-13 flex flex-col gap-5">
-          <div className="flex items-center gap-3.5">
-            <span className="font-mono text-[11px] tracking-[0.18em] text-cream uppercase">{group.family}</span>
-            <div className="h-px flex-1 bg-cream/10" />
-            <span className="font-mono text-[10px] tracking-[0.14em] text-cream/35">
-              /{String(group.items.length).padStart(3, '0')}
+        <section key={group.family} className="mb-12 flex flex-col gap-5">
+          <div className="flex items-center gap-3">
+            <h2 className="text-[20px] leading-none font-light tracking-[-0.03em] text-fg lowercase first-letter:uppercase">
+              {group.family}
+            </h2>
+            <span className="tnum rounded-full border border-mist-200 bg-surface px-2.5 py-0.5 text-[12px] text-sub">
+              {group.items.length}
             </span>
+            <div className="h-px flex-1 bg-mist-200" />
           </div>
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {group.items.map((r) => (
               <ReferenceCard
                 key={r.id}
@@ -132,7 +136,7 @@ export function References() {
               />
             ))}
           </div>
-        </div>
+        </section>
       ))}
 
       <ReferenceViewer

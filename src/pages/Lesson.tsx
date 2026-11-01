@@ -9,6 +9,8 @@ import { cn } from '../lib/utils'
 const TABS = ['Anotações', 'Anexos', 'Sobre'] as const
 type Tab = (typeof TABS)[number]
 
+const HATCH_DARK = 'repeating-linear-gradient(-45deg, rgba(255,255,255,0.16) 0 2px, transparent 2px 7px)'
+
 export function Lesson() {
   const { courseId, itemId } = useParams()
   const navigate = useNavigate()
@@ -79,86 +81,94 @@ export function Lesson() {
     <div>
       <Link
         to={`/cursos/${course.id}`}
-        data-hot="1"
-        className="mb-5.5 flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-cream/50 uppercase hover:text-paper"
+        className="mb-6 inline-flex h-10 max-w-full items-center gap-2 rounded-full border border-mist-200 bg-surface pr-4 pl-3 text-[13px] font-medium text-abyss-700 shadow-soft outline-none transition-colors hover:bg-mist-50 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
       >
-        <i className="ri-arrow-left-line text-sm" />
-        <span>{course.name}</span>
+        <i className="ri-arrow-left-line text-[15px]" />
+        <span className="truncate">{course.name}</span>
       </Link>
 
-      <div className="grid items-start gap-10" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
         {/* Sidebar do curso */}
-        <div className="flex max-w-[340px] min-w-0 flex-none flex-col gap-6.5 border border-cream/10 bg-smoke p-5.5">
-          <div className="flex flex-col gap-3">
-            <span className="text-[17px] font-semibold tracking-[-0.02em] text-paper">{course.name}</span>
-            {course.author && (
-              <span className="font-mono text-[10px] tracking-[0.16em] text-cream/50 uppercase">{course.author}</span>
-            )}
-            <div className="flex items-end gap-1.5 pt-1.5">
-              <span className="font-ultra text-[64px] leading-[0.84] tracking-[-0.04em] text-paper">{course.pct}</span>
-              <span className="pb-3 font-mono text-[13px] text-cream">%</span>
+        <aside className="flex min-w-0 flex-col gap-5 rounded-[28px] border border-mist-200 bg-surface p-5 shadow-soft lg:sticky lg:top-0">
+          <div
+            className="relative flex flex-col gap-3 overflow-hidden rounded-[22px] p-5 text-white"
+            style={{ background: 'var(--hero-gradient)' }}
+          >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full opacity-50 blur-2xl"
+              style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
+            />
+            <div className="relative flex flex-col gap-1">
+              <span className="truncate text-[16px] font-medium tracking-[-0.02em]">{course.name}</span>
+              {course.author && <span className="truncate text-[12.5px] text-white/55">{course.author}</span>}
             </div>
-            <div className="h-0.5 bg-cream/14">
-              <div className="h-0.5 bg-paper" style={{ width: `${course.pct}%` }} />
+            <div className="relative flex items-baseline gap-1 pt-2">
+              <span className="tnum text-[56px] leading-[0.85] font-light tracking-[-0.055em]">{course.pct}</span>
+              <span className="text-[16px] text-white/55">%</span>
+            </div>
+            <div className="relative h-2 overflow-hidden rounded-full" style={{ backgroundImage: HATCH_DARK }}>
+              <div
+                className="h-full rounded-full bg-ice-400 transition-[width] duration-700 ease-apple"
+                style={{ width: `${course.pct > 0 ? Math.max(course.pct, 4) : 0}%` }}
+              />
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-1">
             {course.modules.map((m) => {
               const isOpen = openModule === m.id
               const aulas = m.items.filter((i) => i.type === 'aula')
               return (
-                <div key={m.id} className="border-t border-cream/10">
+                <div key={m.id}>
                   <button
                     type="button"
-                    data-hot="1"
                     onClick={() => setOpenModule(isOpen ? null : m.id)}
-                    className="flex w-full items-center gap-3 px-1 py-3.5 text-left outline-none hover:bg-cream/4"
+                    className="flex w-full items-center gap-3 rounded-[16px] px-2.5 py-2.5 text-left outline-none transition-colors hover:bg-mist-100 focus-visible:ring-4 focus-visible:ring-ice-200"
                   >
-                    <span className="flex-none font-mono text-[9.5px] tracking-[0.14em] text-cream/45">
-                      MÓDULO {String(m.order_index).padStart(2, '0')}
+                    <span className="tnum flex h-8 w-8 flex-none items-center justify-center rounded-full bg-mist-100 text-[11.5px] font-medium text-abyss-700">
+                      {String(m.order_index).padStart(2, '0')}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-paper">{m.name}</span>
-                    <span className="flex-none font-mono text-[9.5px] tracking-[0.1em] text-cream/45">
+                    <span className="min-w-0 flex-1 truncate text-[13.5px] font-medium tracking-[-0.01em] text-fg">{m.name}</span>
+                    <span className="tnum flex-none text-[11.5px] text-sub">
                       {aulas.filter((i) => i.completed_at).length}/{aulas.length}
                     </span>
                     <i
-                      className={cn('flex-none text-cream/50', isOpen ? 'ri-subtract-line' : 'ri-add-line')}
-                      style={{ fontSize: 15 }}
+                      className={cn(
+                        'ri-arrow-down-s-line flex-none text-sub transition-transform duration-300 ease-apple',
+                        isOpen && 'rotate-180',
+                      )}
+                      style={{ fontSize: 16 }}
                     />
                   </button>
                   {isOpen && (
-                    <div className="flex flex-col pb-2">
-                      {aulas.map((a, i) => {
+                    <div className="flex flex-col gap-0.5 py-1 pl-2">
+                      {aulas.map((a) => {
                         const current = a.id === item.id
                         return (
                           <button
                             key={a.id}
                             type="button"
-                            data-hot="1"
                             onClick={() => navigate(`/cursos/${course.id}/aula/${a.id}`)}
                             className={cn(
-                              'relative flex items-center gap-2.5 px-2.5 py-2 text-left outline-none hover:bg-cream/5',
-                              current && 'bg-ink',
+                              'flex items-center gap-2.5 rounded-[14px] px-3 py-2 text-left outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ice-200',
+                              current ? 'bg-abyss-950 text-white' : 'text-abyss-700 hover:bg-mist-100',
                             )}
                           >
-                            {current && <div className="absolute top-0 bottom-0 left-0 w-0.5 bg-paper" />}
-                            <div
-                              className="h-2.5 w-2.5 flex-none rounded-full border"
-                              style={{
-                                borderColor: current ? '#FFFFFF' : 'rgba(232,224,213,0.4)',
-                                background: a.completed_at ? '#FFFFFF' : 'transparent',
-                              }}
-                            />
-                            <span className="flex-none font-mono text-[9.5px] tracking-[0.1em] text-cream/40">
-                              {String(i + 1).padStart(3, '0')}
-                            </span>
                             <span
-                              className={cn('min-w-0 flex-1 truncate text-[12.5px]', current ? 'text-paper' : 'text-cream/70')}
+                              className={cn(
+                                'flex h-4.5 w-4.5 flex-none items-center justify-center rounded-full border',
+                                a.completed_at
+                                  ? 'border-success bg-success text-white'
+                                  : current
+                                    ? 'border-white/40'
+                                    : 'border-mist-300',
+                              )}
                             >
-                              {a.name}
+                              {a.completed_at && <i className="ri-check-line text-[11px]" />}
                             </span>
-                            <span className="flex-none font-mono text-[9.5px] tracking-[0.1em] text-cream/40">
+                            <span className="min-w-0 flex-1 truncate text-[13px]">{a.name}</span>
+                            <span className={cn('tnum flex-none text-[11.5px]', current ? 'text-white/55' : 'text-sub')}>
                               {formatDuration(a.duration_seconds)}
                             </span>
                           </button>
@@ -170,15 +180,15 @@ export function Lesson() {
               )
             })}
           </div>
-        </div>
+        </aside>
 
         {/* Player + abas */}
-        <div className="flex min-w-0 flex-col gap-6.5">
+        <div className="flex min-w-0 flex-col gap-6">
           {loadingPlayer ? (
-            <div className="aspect-video animate-pulse rounded-xl border border-cream/10 bg-smoke p-4.5">
+            <div className="aspect-video animate-pulse rounded-[28px] bg-gradient-to-br from-mist-200 to-mist-100 p-6">
               <div className="flex h-full w-3/5 flex-col justify-end gap-2.5">
-                <div className="h-3 bg-cream/10" />
-                <div className="h-3 w-[55%] bg-cream/7" />
+                <div className="h-3 rounded-full bg-mist-300/60" />
+                <div className="h-3 w-[55%] rounded-full bg-mist-300/40" />
               </div>
             </div>
           ) : videoId ? (
@@ -186,107 +196,122 @@ export function Lesson() {
               src={`https://drive.google.com/file/d/${videoId}/preview`}
               allow="autoplay"
               allowFullScreen
-              className="aspect-video w-full rounded-xl border border-cream/10"
+              className="aspect-video w-full rounded-[28px] bg-abyss-950 shadow-lift"
             />
           ) : (
-            <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-cream/10 bg-[#101013]">
-              <span className="absolute top-4 left-4.5 font-mono text-[10px] tracking-[0.14em] text-cream/30 uppercase">
-                [sem link do drive ainda]
+            <div
+              className="relative flex aspect-video items-center justify-center overflow-hidden rounded-[28px] text-white shadow-lift"
+              style={{ background: 'var(--hero-gradient)' }}
+            >
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full opacity-40 blur-3xl"
+                style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
+              />
+              <span className="absolute top-5 left-5 rounded-full border border-white/12 bg-white/[0.07] px-3 py-1 text-[12px] text-white/70 backdrop-blur">
+                Sem link do Drive ainda
               </span>
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-cream/40 text-paper">
-                <i className="ri-play-fill text-[26px]" />
+              <div className="relative flex h-18 w-18 items-center justify-center rounded-full bg-white text-abyss-950 shadow-float">
+                <i className="ri-play-fill text-[28px]" />
               </div>
             </div>
           )}
 
           <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="flex min-w-[220px] flex-1 flex-col gap-2.5">
-              <span className="text-2xl font-semibold tracking-[-0.025em] text-paper">{item.name}</span>
-              <span className="truncate font-mono text-[10.5px] tracking-[0.14em] text-cream/50 uppercase">
-                MÓDULO {mod.order_index} · {formatDuration(item.duration_seconds)}
+            <div className="flex min-w-[220px] flex-1 flex-col gap-2">
+              <span className="text-[13px] text-sub">
+                Módulo {mod.order_index} · {formatDuration(item.duration_seconds)}
               </span>
+              <h1 className="text-[clamp(30px,3vw,44px)] leading-[1.02] font-light tracking-[-0.045em] text-fg">{item.name}</h1>
             </div>
-            <button
-              type="button"
-              data-hot="1"
-              onClick={toggleComplete}
-              className={cn(
-                'flex flex-none items-center gap-2.5 border px-4.5 py-3 text-[13px] font-semibold whitespace-nowrap outline-none hover:border-paper',
-                completed ? 'border-cream/30 bg-transparent text-cream' : 'border-paper bg-paper text-ink',
-              )}
-            >
-              <i className={completed ? 'ri-check-line' : 'ri-check-double-line'} style={{ fontSize: 15 }} />
-              <span>{completed ? 'Concluída' : 'Marcar como concluída'}</span>
-            </button>
+            <div className="flex flex-none items-center gap-2">
+              <button
+                type="button"
+                onClick={() => navigate(`/cursos/${course.id}/aula/${prev.id}`)}
+                title="Aula anterior"
+                aria-label="Aula anterior"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-mist-200 bg-surface text-abyss-700 outline-none transition-colors hover:bg-mist-50 focus-visible:ring-4 focus-visible:ring-ice-200"
+              >
+                <i className="ri-arrow-left-line text-[17px]" />
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate(`/cursos/${course.id}/aula/${next.id}`)}
+                title="Próxima aula"
+                aria-label="Próxima aula"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-mist-200 bg-surface text-abyss-700 outline-none transition-colors hover:bg-mist-50 focus-visible:ring-4 focus-visible:ring-ice-200"
+              >
+                <i className="ri-arrow-right-line text-[17px]" />
+              </button>
+              <button
+                type="button"
+                onClick={toggleComplete}
+                className={cn(
+                  'flex h-11 items-center gap-2 rounded-full pr-5 pl-4 text-[14px] font-medium whitespace-nowrap outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ice-300',
+                  completed
+                    ? 'border border-success/30 bg-success/10 text-success hover:bg-success/15'
+                    : 'bg-abyss-950 text-white hover:bg-abyss-800',
+                )}
+              >
+                <i className={completed ? 'ri-check-line' : 'ri-check-double-line'} style={{ fontSize: 16 }} />
+                <span>{completed ? 'Concluída' : 'Marcar como concluída'}</span>
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center justify-between gap-5 border-t border-b border-cream/10 py-3.5">
-            <button
-              type="button"
-              data-hot="1"
-              onClick={() => navigate(`/cursos/${course.id}/aula/${prev.id}`)}
-              className="flex items-center gap-2 text-[13px] text-cream/70 outline-none hover:text-paper"
-            >
-              <i className="ri-arrow-left-line text-[15px]" />
-              <span>Aula anterior</span>
-            </button>
-            <button
-              type="button"
-              data-hot="1"
-              onClick={() => navigate(`/cursos/${course.id}/aula/${next.id}`)}
-              className="flex items-center gap-2 text-[13px] text-cream/70 outline-none hover:text-paper"
-            >
-              <span>Próxima aula</span>
-              <i className="ri-arrow-right-line text-[15px]" />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-6.5 border-b border-cream/10">
+          <div className="flex w-fit items-center gap-1 rounded-full border border-mist-200 bg-surface p-1 shadow-soft">
             {TABS.map((t) => (
               <button
                 key={t}
                 type="button"
-                data-hot="1"
                 onClick={() => setTab(t)}
-                className="relative px-0.5 pb-3 text-[13.5px] font-semibold outline-none"
-                style={{ color: tab === t ? '#FFFFFF' : 'rgba(232,224,213,0.55)' }}
+                aria-pressed={tab === t}
+                className={cn(
+                  'h-9 rounded-full px-4 text-[13px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple focus-visible:ring-4 focus-visible:ring-ice-200',
+                  tab === t ? 'bg-abyss-950 text-white' : 'text-abyss-700 hover:bg-mist-100',
+                )}
               >
-                <span>{t}</span>
-                {tab === t && <div className="absolute inset-x-0 -bottom-px h-px bg-paper" />}
+                {t}
               </button>
             ))}
           </div>
 
           {tab === 'Anotações' && (
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2 rounded-[28px] border border-mist-200 bg-surface p-2 shadow-soft">
               <textarea
                 value={notes}
                 onChange={(e) => changeNotes(e.target.value)}
-                className="min-h-[200px] border border-cream/12 bg-[#101013] p-4.5 text-sm leading-[1.7] text-paper outline-none"
+                placeholder="Escreva suas anotações da aula…"
+                className="min-h-[220px] resize-y rounded-[22px] bg-mist-50 p-5 text-[14.5px] leading-[1.7] text-fg outline-none transition-[box-shadow] placeholder:text-mist-400 focus:ring-4 focus:ring-ice-200/60"
               />
-              <span className="self-end font-mono text-[9.5px] tracking-[0.14em] text-cream/35 uppercase">
+              <span className="flex items-center gap-1.5 self-end px-3 pb-1.5 text-[12px] text-sub">
+                <i className="ri-cloud-line text-[13px]" />
                 Salvo automaticamente
               </span>
             </div>
           )}
 
           {tab === 'Anexos' && (
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-2">
               {materials.length === 0 ? (
-                <span className="py-6 text-[13.5px] text-cream/50">Nenhum material neste módulo.</span>
+                <span className="rounded-[28px] border border-dashed border-mist-300 bg-surface/60 px-6 py-10 text-center text-[13.5px] text-sub">
+                  Nenhum material neste módulo.
+                </span>
               ) : (
                 materials.map((m) => (
                   <div
                     key={m.id}
-                    className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 border-b border-cream/8 py-3.5 hover:bg-cream/4"
+                    className="flex items-center gap-4 rounded-[20px] border border-mist-200 bg-surface p-3 shadow-soft transition-colors hover:bg-mist-50"
                   >
-                    <i className="ri-file-zip-line text-[17px] text-cream/60" />
-                    <span className="min-w-0 truncate text-[13.5px] text-paper">{m.name}</span>
-                    <span className="font-mono text-[10px] tracking-[0.12em] whitespace-nowrap text-cream/50">
+                    <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-mist-100 text-abyss-600">
+                      <i className="ri-file-zip-line text-[17px]" />
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-[14px] font-medium tracking-[-0.01em] text-fg">{m.name}</span>
+                    <span className="text-[12px] whitespace-nowrap text-sub">
                       {m.file_format} · {m.file_size_mb} MB
                     </span>
-                    <div className="flex items-center gap-1.5 border border-cream/20 px-3 py-1.5 text-[12.5px] whitespace-nowrap text-cream">
-                      <i className="ri-arrow-down-line text-sm" />
+                    <div className="flex h-9 items-center gap-1.5 rounded-full border border-mist-200 px-3.5 text-[13px] font-medium whitespace-nowrap text-abyss-700">
+                      <i className="ri-arrow-down-line text-[14px]" />
                       <span>Baixar</span>
                     </div>
                   </div>
@@ -296,10 +321,10 @@ export function Lesson() {
           )}
 
           {tab === 'Sobre' && (
-            <span className="max-w-[70ch] text-[14.5px] leading-[1.7] text-white/85">
+            <p className="max-w-[70ch] rounded-[28px] border border-mist-200 bg-surface p-6 text-[14.5px] leading-[1.7] text-abyss-700 shadow-soft">
               Aula do módulo {mod.order_index} — {mod.name}. O arquivo vem do Drive; o player aqui é só o container do
               embed.
-            </span>
+            </p>
           )}
         </div>
       </div>

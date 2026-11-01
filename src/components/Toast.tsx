@@ -8,7 +8,8 @@ export function useToast() {
   return ctx
 }
 
-export function ToastProvider({ children, sidebarCollapsed }: { children: ReactNode; sidebarCollapsed: boolean }) {
+/** Aviso rápido: pílula Graphite flutuando no pé da tela. */
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [message, setMessage] = useState('')
   const timer = useRef<number | undefined>(undefined)
 
@@ -23,9 +24,14 @@ export function ToastProvider({ children, sidebarCollapsed }: { children: ReactN
       {children}
       {message && (
         <div
-          className="fixed bottom-6 z-[600] border border-cream/16 bg-smoke px-4 py-2.5 font-mono text-[10.5px] tracking-[0.14em] text-cream uppercase"
-          style={{ left: sidebarCollapsed ? 88 : 264 }}
+          key={message}
+          role="status"
+          className="fixed bottom-7 left-1/2 z-[600] flex -translate-x-1/2 items-center gap-2.5 rounded-full py-2.5 pr-5 pl-3 text-[13px] font-medium text-white shadow-float animate-in fade-in-0 slide-in-from-bottom-3 duration-300"
+          style={{ background: 'var(--floating-gradient)' }}
         >
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-success">
+            <i className="ri-check-line text-[13px]" />
+          </span>
           {message}
         </div>
       )}

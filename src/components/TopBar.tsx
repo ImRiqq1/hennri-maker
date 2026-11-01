@@ -1,18 +1,36 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import type { SearchResult } from '../lib/types'
-import { Bars } from './Bars'
+import { cn } from '../lib/utils'
+
+const NAV = [
+  { to: '/', label: 'Início', icon: 'ri-home-5-line', match: '/' },
+  { to: '/prompts', label: 'Prompts', icon: 'ri-sparkling-2-line', match: '/prompts' },
+  { to: '/skills', label: 'Skills', icon: 'ri-stack-line', match: '/skills' },
+  { to: '/referencias/camera', label: 'Referências', icon: 'ri-camera-lens-line', match: '/referencias' },
+  { to: '/cursos', label: 'Cursos', icon: 'ri-graduation-cap-line', match: '/cursos' },
+]
 
 const TYPE_LABEL: Record<SearchResult['type'], string> = {
-  prompt: 'prompt',
-  skill: 'skill',
-  referencia: 'referência',
-  aula: 'aula',
+  prompt: 'Prompt',
+  skill: 'Skill',
+  referencia: 'Referência',
+  aula: 'Aula',
 }
 
-/** Topo de todas as páginas: tag "#HENNRI_/MAKER" + busca global (Ctrl K). */
+const TYPE_ICON: Record<SearchResult['type'], string> = {
+  prompt: 'ri-sparkling-2-line',
+  skill: 'ri-stack-line',
+  referencia: 'ri-camera-lens-line',
+  aula: 'ri-play-circle-line',
+}
+
+const TAB_RADIUS = 32
+
+/** Topo de todas as páginas: aba com o logo, menu em pílulas, busca global (Ctrl K) e sair. */
 export function TopBar() {
+  const location = useLocation()
   const navigate = useNavigate()
   const inputRef = useRef<HTMLInputElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -64,55 +82,118 @@ export function TopBar() {
     navigate(href)
   }
 
+  async function logout() {
+    await api.post('/auth/logout').catch(() => {})
+    window.location.href = '/login'
+  }
+
   return (
-    <div className="mb-14 flex items-center justify-between gap-6">
-      <div className="flex items-center gap-4 font-mono text-[11px] tracking-[0.14em] text-cream/45 uppercase">
-        <span className="text-cream">#HENNRI_/MAKER</span>
-        <Bars barWidth={5} barHeight={12} gap={4} />
-      </div>
+    <header className="relative z-[5] flex h-[84px] flex-none items-stretch pt-3">
+      {/* aba do painel com o logo */}
+      <Link
+        to="/"
+        className="relative flex w-[92px] flex-none items-center gap-3 rounded-t-[32px] md:w-[232px] bg-canvas px-7 outline-none"
+      >
+        <img src="/brand/wordmark-white.png" alt="HENNRI" className="block h-[17px] w-auto invert" />
+        <span className="hidden h-4 w-px bg-mist-300 md:block" />
+        <span className="hidden text-[13px] font-medium tracking-[-0.01em] text-abyss-600 md:inline">IA Maker</span>
+        {/* curva côncava que liga a aba ao painel */}
+        <span
+          aria-hidden
+          className="absolute bottom-0 left-full"
+          style={{
+            width: TAB_RADIUS,
+            height: TAB_RADIUS,
+            background: `radial-gradient(circle at 100% 0, transparent ${TAB_RADIUS - 0.5}px, var(--canvas) ${TAB_RADIUS}px)`,
+          }}
+        />
+      </Link>
 
-      <div ref={wrapRef} className="relative w-[380px] flex-none">
-        <div
-          data-hot="1"
-          onClick={() => inputRef.current?.focus()}
-          className="flex items-center gap-3 border-b border-cream/22 px-0.5 py-2 hover:border-paper"
-        >
-          <span className="flex-none font-mono text-[11px] tracking-[0.14em] text-cream/40">#</span>
-          <input
-            ref={inputRef}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => results.length > 0 && setOpen(true)}
-            onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
-            placeholder="BUSCAR_EM_TUDO"
-            className="w-full flex-1 bg-transparent text-[13.5px] text-paper outline-none placeholder:font-mono placeholder:text-[11px] placeholder:tracking-[0.14em] placeholder:text-cream/38 placeholder:uppercase"
-          />
-          <span className="flex-none font-mono text-[10px] tracking-[0.16em] text-cream/45">CTRL K</span>
-        </div>
+      <div className="flex min-w-0 flex-1 items-center justify-between gap-3 pr-1 pb-3 pl-8 xl:gap-6 xl:pl-10">
+        <nav className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.06] p-1 backdrop-blur-md">
+          {NAV.map((item) => {
+            const active = item.match === '/' ? location.pathname === '/' : location.pathname.startsWith(item.match)
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={cn(
+                  'flex h-10 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple',
+                  'focus-visible:ring-2 focus-visible:ring-ice-400',
+                  active
+                    ? 'bg-white text-abyss-950 shadow-[0_6px_16px_-8px_rgb(0_0_0/0.5)]'
+                    : 'text-white/60 hover:bg-white/[0.07] hover:text-white',
+                )}
+              >
+                <i className={cn(item.icon, 'text-[16px] leading-none', active ? 'text-abyss-500' : '')} />
+                <span className="hidden lg:inline">{item.label}</span>
+              </Link>
+            )
+          })}
+        </nav>
 
-        {open && query.trim() && (
-          <div className="absolute top-full right-0 left-0 z-[300] mt-2 max-h-96 overflow-y-auto border border-cream/14 bg-smoke">
-            {results.length === 0 ? (
-              <div className="px-4 py-4 text-[13px] text-cream/50">nada encontrado.</div>
-            ) : (
-              results.map((r) => (
-                <button
-                  key={`${r.type}-${r.id}`}
-                  type="button"
-                  data-hot="1"
-                  onClick={() => go(r.href)}
-                  className="flex w-full items-center justify-between gap-4 border-b border-cream/8 px-4 py-3 text-left last:border-b-0 hover:bg-cream/5"
-                >
-                  <span className="min-w-0 truncate text-[13px] text-paper">{r.title}</span>
-                  <span className="flex-none font-mono text-[10px] tracking-[0.12em] text-cream/45 uppercase">
-                    [{TYPE_LABEL[r.type]}] {r.meta}
-                  </span>
-                </button>
-              ))
+        <div className="flex flex-none items-center gap-2">
+          <div ref={wrapRef} className="relative w-[200px] xl:w-[320px]">
+            <div
+              onClick={() => inputRef.current?.focus()}
+              className="flex h-12 cursor-text items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.06] px-4 backdrop-blur-md transition-[border-color,background-color] focus-within:border-ice-400/70 focus-within:bg-white/[0.1]"
+            >
+              <i className="ri-search-line flex-none text-[16px] text-white/50" />
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => results.length > 0 && setOpen(true)}
+                onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
+                placeholder="Buscar em tudo"
+                className="w-full flex-1 bg-transparent text-[14px] text-white outline-none placeholder:text-white/40"
+              />
+              <kbd className="flex-none rounded-md border border-white/12 px-1.5 py-0.5 font-sans text-[10.5px] font-medium text-white/50">
+                Ctrl K
+              </kbd>
+            </div>
+
+            {open && query.trim() && (
+              <div
+                className="absolute top-full right-0 left-0 z-[300] mt-2 max-h-96 overflow-y-auto rounded-[22px] border border-white/8 p-1.5 text-white shadow-float animate-in fade-in-0 slide-in-from-top-1"
+                style={{ background: 'var(--floating-gradient)' }}
+              >
+                {results.length === 0 ? (
+                  <div className="px-4 py-4 text-[13px] text-white/55">Nada encontrado.</div>
+                ) : (
+                  results.map((r) => (
+                    <button
+                      key={`${r.type}-${r.id}`}
+                      type="button"
+                      onClick={() => go(r.href)}
+                      className="flex w-full items-center gap-3 rounded-[16px] px-3 py-2.5 text-left outline-none transition-colors hover:bg-white/[0.08] focus-visible:bg-white/[0.08]"
+                    >
+                      <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/[0.08]">
+                        <i className={`${TYPE_ICON[r.type]} text-[15px] text-ice-300`} />
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-[13.5px] text-white">{r.title}</span>
+                      <span className="flex-none text-[11.5px] text-white/45">
+                        {TYPE_LABEL[r.type]}
+                        {r.meta ? ` · ${r.meta}` : ''}
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
             )}
           </div>
-        )}
+
+          <button
+            type="button"
+            onClick={logout}
+            title="Sair"
+            aria-label="Sair"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 outline-none transition-colors hover:bg-white/[0.12] hover:text-white focus-visible:ring-2 focus-visible:ring-ice-400"
+          >
+            <i className="ri-logout-circle-r-line text-[18px]" />
+          </button>
+        </div>
       </div>
-    </div>
+    </header>
   )
 }

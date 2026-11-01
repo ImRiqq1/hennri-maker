@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { ChipGroup } from './PageHeader'
 import { Chip } from './Chip'
-import { EditorPanel } from './EditorPanel'
+import { EditorPanel, FIELD_LABEL } from './EditorPanel'
 
 export type ItemForm = {
   type: 'aula' | 'material'
@@ -12,14 +13,14 @@ export type ItemForm = {
 }
 
 const INPUT =
-  'border-b border-cream/16 bg-transparent py-1.5 font-mono text-[11.5px] text-cream outline-none placeholder:text-cream/35 focus:border-paper'
+  'h-11 rounded-2xl border border-mist-200 bg-mist-50 px-4 text-[14px] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-mist-400 focus:border-ice-400 focus:ring-4 focus:ring-ice-200/60'
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-2">
-      <span className="font-mono text-[9.5px] tracking-[0.14em] text-cream/40 uppercase">{label}</span>
+    <label className="flex flex-col gap-2">
+      <span className={FIELD_LABEL}>{label}</span>
       {children}
-    </div>
+    </label>
   )
 }
 
@@ -79,15 +80,16 @@ export function ItemEditor({
       onSave={handleSave}
       saveDisabled={saving || !name.trim()}
     >
-      <div className="flex items-center gap-2.5">
+      <ChipGroup className="self-start shadow-none">
         {(['aula', 'material'] as const).map((t) => (
-          <Chip key={t} active={type === t} onClick={() => setType(t)} className="px-3 py-1.5 tracking-[0.14em] uppercase">
+          <Chip key={t} active={type === t} onClick={() => setType(t)} className="h-9 gap-1.5 px-4">
+            <i className={t === 'aula' ? 'ri-play-circle-line text-[15px]' : 'ri-file-zip-line text-[15px]'} />
             {t === 'aula' ? 'Aula' : 'Material'}
           </Chip>
         ))}
-      </div>
+      </ChipGroup>
 
-      <Field label="nome">
+      <Field label="Nome">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -96,23 +98,23 @@ export function ItemEditor({
         />
       </Field>
 
-      <Field label="link do drive">
+      <Field label="Link do Drive">
         <input value={driveUrl} onChange={(e) => setDriveUrl(e.target.value)} className={INPUT} placeholder="drive.google.com/…" />
       </Field>
 
       {type === 'aula' ? (
-        <Field label="duração (minutos)">
+        <Field label="Duração (minutos)">
           <input value={minutes} onChange={(e) => setMinutes(e.target.value)} className={INPUT} placeholder="38" inputMode="numeric" />
         </Field>
       ) : (
-        <>
-          <Field label="formato">
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Formato">
             <input value={format} onChange={(e) => setFormat(e.target.value)} className={INPUT} placeholder="ZIP" />
           </Field>
-          <Field label="tamanho (MB)">
+          <Field label="Tamanho (MB)">
             <input value={sizeMb} onChange={(e) => setSizeMb(e.target.value)} className={INPUT} placeholder="180" inputMode="numeric" />
           </Field>
-        </>
+        </div>
       )}
     </EditorPanel>
   )

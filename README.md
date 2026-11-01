@@ -23,7 +23,7 @@ Roda num **Cloudflare Worker** (`hennri-maker`):
 | --- | --- |
 | Cores e fontes | `src/index.css` (bloco `:root`) |
 | Textos da página inicial (título, "UM ACERVO, NÃO UM APP", rodapé) | `src/pages/Home.tsx` |
-| Itens do menu lateral | `src/components/Sidebar.tsx` |
+| Itens do menu (barra do topo) e busca | `src/components/TopBar.tsx` |
 | Categorias de prompt, modelos, proporções, tags `[Pedido]`… | `src/lib/constants.ts` |
 | Categorias de skill e abas de referência | `src/lib/constants.ts` |
 | Página de Prompts / card / modal / editor | `src/pages/Prompts.tsx`, `src/components/Prompt*.tsx` |

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Chip } from '../components/Chip'
-import { EmptyState, PageHeader } from '../components/PageHeader'
+import { ChipGroup, EmptyState, IconButton, Kbd, PageHeader } from '../components/PageHeader'
 import { NewButton } from '../components/PrimaryButton'
 import { PromptCard } from '../components/PromptCard'
 import { PromptEditor, type PromptForm } from '../components/PromptEditor'
@@ -164,69 +164,54 @@ export function Prompts() {
         count={prompts.length}
         actions={
           <>
-            <span className="font-mono text-[10px] tracking-[0.16em] text-cream/40">CTRL N</span>
+            <Kbd>Ctrl N</Kbd>
             {newButton}
           </>
         }
       />
 
-      <div className="mb-8 flex items-center justify-between gap-6 border-b border-cream/10 pb-4.5">
-        <div className="flex flex-wrap gap-1.5">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <ChipGroup>
           {FILTERS.map((f) => (
             <Chip key={f} active={filter === f} onClick={() => setFilter(f)}>
               {f}
             </Chip>
           ))}
-        </div>
-        <div className="flex flex-none items-center gap-1">
+        </ChipGroup>
+        <div className="flex flex-none items-center gap-2">
           <button
             type="button"
-            data-hot="1"
             onClick={() => setSort((s) => (s === 'recentes' ? 'a → z' : 'recentes'))}
-            className="flex items-center gap-2 px-2.5 py-2 font-mono text-[10px] tracking-[0.14em] text-cream/60 uppercase outline-none hover:text-paper"
+            className="flex h-10 items-center gap-2 rounded-full border border-mist-200 bg-surface px-4 text-[13px] font-medium text-abyss-700 outline-none transition-colors first-letter:uppercase hover:border-mist-300 hover:bg-mist-50 focus-visible:ring-4 focus-visible:ring-ice-200"
           >
-            <i className="ri-arrow-up-down-line text-[15px]" />
-            <span>{sort}</span>
+            <i className="ri-arrow-up-down-line text-[15px] text-abyss-500" />
+            <span className="first-letter:uppercase">{sort}</span>
           </button>
           {view === 'grid' && (
-            <div className="flex items-center gap-0.5 border-l border-cream/10 pl-1.5">
+            <div className="flex h-10 items-center gap-1 rounded-full border border-mist-200 bg-surface px-1">
               <button
                 type="button"
-                data-hot="1"
                 onClick={() => changeCols(-1)}
                 disabled={cols <= MIN_COLS}
-                className="flex h-7 w-7 items-center justify-center text-cream/60 outline-none hover:text-paper disabled:opacity-30"
+                aria-label="Menos colunas"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-abyss-700 outline-none transition-colors hover:bg-mist-100 focus-visible:ring-4 focus-visible:ring-ice-200 disabled:opacity-30"
               >
-                <i className="ri-subtract-line text-sm" />
+                <i className="ri-subtract-line text-[15px]" />
               </button>
-              <span className="w-4 text-center font-mono text-[10px] text-cream/60">{cols}</span>
+              <span className="tnum w-5 text-center text-[13px] font-medium text-fg">{cols}</span>
               <button
                 type="button"
-                data-hot="1"
                 onClick={() => changeCols(1)}
                 disabled={cols >= MAX_COLS}
-                className="flex h-7 w-7 items-center justify-center text-cream/60 outline-none hover:text-paper disabled:opacity-30"
+                aria-label="Mais colunas"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-abyss-700 outline-none transition-colors hover:bg-mist-100 focus-visible:ring-4 focus-visible:ring-ice-200 disabled:opacity-30"
               >
-                <i className="ri-add-line text-sm" />
+                <i className="ri-add-line text-[15px]" />
               </button>
             </div>
           )}
-          <button
-            type="button"
-            data-hot="1"
-            onClick={() => setView('grid')}
-            className={cn('px-2.5 py-2 outline-none hover:text-paper', view === 'grid' ? 'text-paper' : 'text-cream/40')}
-          >
-            <i className="ri-grid-line text-base" />
-          </button>
-          <button
-            type="button"
-            data-hot="1"
-            onClick={() => setView('list')}
-            className={cn('px-2.5 py-2 outline-none hover:text-paper', view === 'list' ? 'text-paper' : 'text-cream/40')}
-          >
-            <i className="ri-list-check-2 text-base" />
-          </button>
+          <IconButton icon="ri-grid-line" label="Grade" active={view === 'grid'} onClick={() => setView('grid')} />
+          <IconButton icon="ri-list-check-2" label="Lista" active={view === 'list'} onClick={() => setView('list')} />
         </div>
       </div>
 
@@ -237,7 +222,7 @@ export function Prompts() {
           action={newButton}
         />
       ) : (
-        <div className={cn('grid gap-6', view === 'grid' ? COLS_CLASS[cols] : 'grid-cols-2')}>
+        <div className={cn('grid gap-5', view === 'grid' ? COLS_CLASS[cols] : 'grid-cols-2')}>
           {visible.map((p, i) => (
             <PromptCard
               key={p.id}

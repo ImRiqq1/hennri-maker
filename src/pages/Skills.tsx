@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Chip } from '../components/Chip'
-import { EmptyState, PageHeader } from '../components/PageHeader'
+import { ChipGroup, EmptyState, PageHeader } from '../components/PageHeader'
 import { NewButton } from '../components/PrimaryButton'
 import { SkillEditor, type SkillForm } from '../components/SkillEditor'
 import { SkillRow } from '../components/SkillRow'
@@ -88,23 +88,27 @@ export function Skills() {
         actions={newButton}
       />
 
-      <div className="mb-2 flex flex-wrap gap-1.5 border-b border-cream/10 pb-4.5">
-        {FILTERS.map((f) => (
-          <Chip key={f} active={filter === f} onClick={() => setFilter(f)}>
-            {f}
-          </Chip>
-        ))}
+      <div className="mb-6 flex items-center justify-between gap-6">
+        <ChipGroup>
+          {FILTERS.map((f) => (
+            <Chip key={f} active={filter === f} onClick={() => setFilter(f)}>
+              {f}
+            </Chip>
+          ))}
+        </ChipGroup>
+        <span className="flex-none text-[13px] text-sub">
+          {visible.length} {visible.length === 1 ? 'skill' : 'skills'}
+        </span>
       </div>
 
       {!loading && visible.length === 0 ? (
         <EmptyState
           title="SKILLS"
-          tracking="-0.06em"
           message={skills.length === 0 ? 'Nenhuma skill catalogada ainda.' : 'Nenhuma skill nessa categoria ainda.'}
           action={newButton}
         />
       ) : (
-        <div className="flex flex-col">
+        <div className="overflow-hidden rounded-[32px] border border-mist-200 bg-surface p-2 shadow-soft">
           {visible.map((s, i) => (
             <SkillRow key={s.id} skill={s} index={i + 1} onOpen={() => setOpenId(s.id)} />
           ))}

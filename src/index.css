@@ -1,81 +1,115 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-/* ---------- Fontes (arquivos em public/fonts) ---------- */
-@font-face {
-  font-family: 'Fixture';
-  src: url('/fonts/Fixture-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Fixture';
-  src: url('/fonts/Fixture-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Fixture';
-  src: url('/fonts/Fixture-SemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Fixture';
-  src: url('/fonts/Fixture-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Fixture Condensed';
-  src: url('/fonts/Fixture-CondensedBlack.ttf') format('truetype');
-  font-weight: 900;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Fixture Ultra';
-  src: url('/fonts/FixtureUltra-Black.ttf') format('truetype');
-  font-weight: 900;
-  font-display: swap;
-}
+/* Fonte: Inter (carregada no index.html). Os logos ficam em public/brand. */
 
-/* ---------- Paleta da marca ---------- */
+/* ---------- Paleta da marca: Abyss · Ice · Graphite · Mist ---------- */
 :root {
-  --ink: #09090b; /* fundo */
-  --paper: #ffffff; /* texto principal / botões */
-  --cream: #e8e0d5; /* texto secundário */
-  --smoke: #1a1a1d; /* cards e painéis */
-  --ember: #ff4d1c; /* destaque / erro */
+  /* Abyss: primária, blocos escuros */
+  --abyss-950: #041a21;
+  --abyss-900: #072630;
+  --abyss-800: #0b3341;
+  --abyss-700: #13445a;
+  --abyss-600: #1d5770;
+  --abyss-500: #2b6e8a;
+
+  /* Ice: acento (CTA, foco, destaques) */
+  --ice-50: #f3fbfd;
+  --ice-100: #eaf7fb;
+  --ice-200: #d4eff6;
+  --ice-300: #b4e2ee;
+  --ice-400: #86cbdd;
+  --ice-500: #4faac2;
+
+  /* Graphite: superfícies flutuantes (pill, menus, toasts) */
+  --graphite-950: #16191b;
+  --graphite-900: #1f2326;
+  --graphite-800: #2c3135;
+  --graphite-700: #3d4347;
+  --graphite-600: #575e63;
+  --graphite-500: #7a8388;
+
+  /* Mist: neutros claros (página, bordas, textos de apoio) */
+  --mist-50: #fafbfb;
+  --mist-100: #f2f4f5;
+  --mist-200: #e4e9ec;
+  --mist-300: #c9d1d6;
+  --mist-400: #9fb2bd;
+  --mist-500: #6e8590;
+
+  /* Status */
+  --success: #3fa98a;
+  --warning: #d9a441;
+  --danger: #d2615a;
+
+  /* Gradientes */
+  --hero-gradient: radial-gradient(120% 140% at 0% 0%, #1f4a5e 0%, #0b3341 38%, #072630 68%, #041a21 100%);
+  --floating-gradient: linear-gradient(180deg, #3d4347 0%, #2c3135 100%);
+
+  /* ---------- Papéis usados pelos componentes ---------- */
+  --canvas: var(--mist-100); /* fundo da página */
+  --surface: #ffffff; /* cards e painéis */
+  --well: var(--mist-100); /* área de imagem vazia dentro de um card */
+  --fg: var(--abyss-950); /* texto principal / botões escuros */
+  --sub: var(--mist-500); /* texto de apoio */
 
   /* nomes usados pelos componentes shadcn */
-  --background: var(--ink);
-  --foreground: var(--paper);
-  --card: var(--smoke);
-  --card-foreground: var(--paper);
-  --popover: var(--smoke);
-  --popover-foreground: var(--paper);
-  --primary: var(--paper);
-  --primary-foreground: var(--ink);
-  --secondary: var(--smoke);
-  --secondary-foreground: var(--paper);
-  --muted: var(--smoke);
-  --muted-foreground: var(--cream);
-  --accent: var(--ember);
-  --accent-foreground: var(--paper);
-  --destructive: var(--ember);
-  --destructive-foreground: var(--paper);
-  --border: rgb(232 224 213 / 0.12);
-  --input: rgb(232 224 213 / 0.16);
-  --ring: var(--paper);
-  --radius: 0px;
+  --background: var(--canvas);
+  --foreground: var(--fg);
+  --card: var(--surface);
+  --card-foreground: var(--fg);
+  --popover: var(--surface);
+  --popover-foreground: var(--fg);
+  --primary: var(--abyss-950);
+  --primary-foreground: #ffffff;
+  --secondary: var(--mist-100);
+  --secondary-foreground: var(--fg);
+  --muted: var(--mist-100);
+  --muted-foreground: var(--sub);
+  --accent: var(--ice-500);
+  --accent-foreground: var(--abyss-950);
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--mist-200);
+  --input: var(--mist-200);
+  --ring: var(--ice-500);
+  --radius: 14px;
 }
 
 @theme inline {
-  --color-ink: var(--ink);
-  --color-paper: var(--paper);
-  --color-cream: var(--cream);
-  --color-smoke: var(--smoke);
-  --color-ember: var(--ember);
+  --color-abyss-950: var(--abyss-950);
+  --color-abyss-900: var(--abyss-900);
+  --color-abyss-800: var(--abyss-800);
+  --color-abyss-700: var(--abyss-700);
+  --color-abyss-600: var(--abyss-600);
+  --color-abyss-500: var(--abyss-500);
+  --color-ice-50: var(--ice-50);
+  --color-ice-100: var(--ice-100);
+  --color-ice-200: var(--ice-200);
+  --color-ice-300: var(--ice-300);
+  --color-ice-400: var(--ice-400);
+  --color-ice-500: var(--ice-500);
+  --color-graphite-950: var(--graphite-950);
+  --color-graphite-900: var(--graphite-900);
+  --color-graphite-800: var(--graphite-800);
+  --color-graphite-700: var(--graphite-700);
+  --color-graphite-600: var(--graphite-600);
+  --color-graphite-500: var(--graphite-500);
+  --color-mist-50: var(--mist-50);
+  --color-mist-100: var(--mist-100);
+  --color-mist-200: var(--mist-200);
+  --color-mist-300: var(--mist-300);
+  --color-mist-400: var(--mist-400);
+  --color-mist-500: var(--mist-500);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-well: var(--well);
+  --color-fg: var(--fg);
+  --color-sub: var(--sub);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -96,12 +130,18 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --radius-md: 0px;
+  --shadow-soft: 0 1px 2px rgb(4 26 33 / 0.04), 0 10px 30px -18px rgb(4 26 33 / 0.22);
+  --shadow-lift: 0 2px 4px rgb(4 26 33 / 0.05), 0 22px 44px -22px rgb(4 26 33 / 0.32);
+  --shadow-float: 0 12px 32px -10px rgb(22 25 27 / 0.45), inset 0 1px 0 rgb(255 255 255 / 0.06);
 
-  --font-sans: 'Fixture', Helvetica, Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-condensed: 'Fixture Condensed', Impact, sans-serif;
-  --font-ultra: 'Fixture Ultra', Impact, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  /* rótulos pequenos em caixa alta (antes eram monoespaçados) */
+  --font-mono: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  /* texto de prompt / código */
+  --font-code: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+  --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @layer base {
@@ -110,7 +150,7 @@
   }
   html,
   body {
-    background: var(--ink);
+    background: var(--canvas);
     margin: 0;
     padding: 0;
   }
@@ -118,27 +158,43 @@
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    cursor: none; /* o cursor é desenhado pelo componente <Cursor /> */
     font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    letter-spacing: -0.006em;
   }
-  /* sem barras de rolagem visíveis */
-  ::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-    display: none;
-  }
+  /* barras de rolagem finas e discretas */
   * {
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--mist-300) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--mist-300);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
   }
   ::selection {
-    background: var(--cream);
-    color: var(--ink);
+    background: var(--ice-300);
+    color: var(--abyss-950);
   }
   a {
-    color: var(--cream);
+    color: var(--abyss-600);
     text-decoration: none;
   }
   a:hover {
-    color: var(--paper);
+    color: var(--abyss-950);
   }
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* tabular nos números grandes */
+@utility tnum {
+  font-variant-numeric: tabular-nums;
 }

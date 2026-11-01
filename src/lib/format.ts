@@ -1,6 +1,6 @@
-/** 7 -> "/007" */
+/** 7 -> "07" */
 export function indexLabel(n: number, width = 3) {
-  return '/' + String(n).padStart(width, '0')
+  return String(n).padStart(width, '0')
 }
 
 /** segundos -> "1h 05min" ou "12 min" */

@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 import { cn } from '../lib/utils'
 
-/** Botão de filtro/opção (fica branco quando selecionado). */
+/** Pílula de filtro/opção (fica Abyss quando selecionada). Fica bem dentro de um <ChipGroup>. */
 export function Chip({
   active,
   onClick,
   children,
-  className = 'px-3.5 py-1.5 tracking-[0.14em] uppercase',
+  className = 'h-9 px-4',
 }: {
   active: boolean
   onClick: () => void
@@ -16,12 +16,15 @@ export function Chip({
   return (
     <button
       type="button"
-      data-hot="1"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
-        'border font-mono text-[10px] outline-none',
+        'inline-flex items-center rounded-full text-[13px] font-medium outline-none transition-[background-color,color,box-shadow] duration-300 ease-apple',
+        'focus-visible:ring-4 focus-visible:ring-ice-200',
         className,
-        active ? 'border-paper bg-paper text-ink' : 'border-cream/16 text-cream/70 hover:border-cream/40',
+        active
+          ? 'bg-abyss-950 text-white shadow-[0_6px_14px_-8px_rgb(4_26_33/0.7)]'
+          : 'text-abyss-700 hover:bg-mist-100 hover:text-abyss-950',
       )}
     >
       {children}

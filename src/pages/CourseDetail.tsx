@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Bars } from '../components/Bars'
 import { ItemEditor, type ItemForm } from '../components/ItemEditor'
 import { LessonPoster } from '../components/LessonPoster'
 import { useToast } from '../components/Toast'
 import { api, fileUrl } from '../lib/api'
 import type { CourseDetail as Course, Module } from '../lib/types'
 
-const SQUARE_BTN =
-  'flex h-7 w-7 items-center justify-center border border-cream/18 text-cream outline-none hover:border-paper hover:text-paper'
+const ROUND_BTN =
+  'flex h-9 w-9 items-center justify-center rounded-full border border-mist-200 bg-surface text-abyss-700 outline-none transition-colors hover:border-mist-300 hover:bg-mist-50 focus-visible:ring-4 focus-visible:ring-ice-200'
+
+const INPUT =
+  'h-11 rounded-2xl border border-mist-200 bg-mist-50 px-4 text-[14px] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-mist-400 focus:border-ice-400 focus:ring-4 focus:ring-ice-200/60'
+
+const HATCH_DARK = 'repeating-linear-gradient(-45deg, rgba(255,255,255,0.16) 0 2px, transparent 2px 7px)'
 
 function minutesLabel(seconds: number | null) {
   return seconds ? `${Math.round(seconds / 60)} min.` : ''
@@ -122,72 +126,99 @@ export function CourseDetail() {
     <div>
       <Link
         to="/cursos"
-        data-hot="1"
-        className="mb-5.5 flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-cream/50 uppercase hover:text-paper"
+        className="mb-6 inline-flex h-10 items-center gap-2 rounded-full border border-mist-200 bg-surface pr-4 pl-3 text-[13px] font-medium text-abyss-700 shadow-soft outline-none transition-colors hover:bg-mist-50 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
       >
-        <i className="ri-arrow-left-line text-sm" />
+        <i className="ri-arrow-left-line text-[15px]" />
         <span>Cursos</span>
       </Link>
 
-      {/* Capa */}
-      <div className="relative mb-14 h-[60vh] min-h-[420px] overflow-hidden border border-cream/10 bg-[#101013]">
+      {/* Herói Abyss */}
+      <section
+        className="relative mb-14 flex min-h-[440px] flex-col justify-end overflow-hidden rounded-[36px] text-white shadow-lift"
+        style={{ background: 'var(--hero-gradient)' }}
+      >
         {cover ? (
-          <img src={cover} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <>
+            <img src={cover} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-abyss-950 via-abyss-950/60 to-abyss-950/10" />
+          </>
         ) : (
-          <span className="absolute top-5 left-12 font-mono text-[10px] tracking-[0.14em] text-cream/28 uppercase">
-            [capa do curso — 1440×640]
-          </span>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-40 -right-32 h-[520px] w-[520px] rounded-full opacity-45 blur-3xl"
+            style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
+          />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/15" />
-        <div className="absolute right-0 bottom-0 left-0 flex flex-wrap items-end justify-between gap-6 px-12 pb-8.5">
-          <div className="flex min-w-0 flex-col gap-3.5">
+
+        <div className="relative flex flex-wrap items-end justify-between gap-8 p-10">
+          <div className="flex min-w-0 flex-col gap-4">
             {course.author && (
-              <span className="font-mono text-[11px] tracking-[0.18em] text-cream/60 uppercase">{course.author}</span>
+              <span className="w-fit rounded-full border border-white/12 bg-white/[0.07] px-3 py-1 text-[12.5px] font-medium text-ice-200 backdrop-blur">
+                {course.author}
+              </span>
             )}
-            <span className="font-condensed text-[112px] leading-[0.8] tracking-[-0.045em] text-paper uppercase">
+            <h1 className="max-w-[16ch] text-[clamp(52px,6vw,96px)] leading-[0.9] font-light tracking-[-0.055em]">
               {course.name}
-            </span>
-            <span className="truncate font-mono text-[11px] tracking-[0.16em] text-cream uppercase">
-              {course.modules.length} MÓDULOS · {course.total} AULAS · {pct}% CONCLUÍDO
-            </span>
+            </h1>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[13.5px] text-white/60">
+              <span>
+                <span className="tnum text-white">{course.modules.length}</span> módulos
+              </span>
+              <span className="h-1 w-1 rounded-full bg-white/30" />
+              <span>
+                <span className="tnum text-white">{course.total}</span> aulas
+              </span>
+              <span className="h-1 w-1 rounded-full bg-white/30" />
+              <span>
+                <span className="tnum text-white">{pct}%</span> concluído
+              </span>
+            </div>
           </div>
-          <div className="flex flex-none items-end gap-3">
-            <div className="flex flex-col items-start gap-2">
+
+          <div className="flex flex-none flex-col items-start gap-3">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                data-hot="1"
                 onClick={() => nextItem && navigate(`/cursos/${course.id}/aula/${nextItem.id}`)}
                 disabled={!nextItem}
-                className="flex items-center gap-2 bg-paper px-5 py-3 text-[13.5px] font-semibold whitespace-nowrap text-ink outline-none hover:bg-cream disabled:opacity-40"
+                className="flex h-12 items-center gap-2 rounded-full bg-white pr-6 pl-4 text-[14.5px] font-medium whitespace-nowrap text-abyss-950 outline-none transition-[background-color,transform] hover:bg-ice-100 focus-visible:ring-2 focus-visible:ring-ice-400 active:scale-[0.98] disabled:opacity-40"
               >
-                <i className="ri-play-fill text-[17px]" />
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-abyss-950 text-white">
+                  <i className="ri-play-fill text-[15px]" />
+                </span>
                 <span>Continuar</span>
               </button>
-              {nextItem && <span className="font-mono text-[10px] text-cream/55">{nextItem.name}</span>}
+              <button
+                type="button"
+                onClick={() => structureRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                className="flex h-12 items-center rounded-full border border-white/14 bg-white/[0.06] px-5 text-[14px] font-medium whitespace-nowrap text-white outline-none transition-colors hover:bg-white/[0.12] focus-visible:ring-2 focus-visible:ring-ice-400"
+              >
+                Ver estrutura
+              </button>
             </div>
-            <button
-              type="button"
-              data-hot="1"
-              onClick={() => structureRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              className="border border-cream/30 px-4.5 py-3 text-[13.5px] font-medium whitespace-nowrap text-cream outline-none hover:border-paper hover:text-paper"
-            >
-              Ver estrutura
-            </button>
+            {nextItem && (
+              <span className="max-w-[320px] truncate text-[12.5px] text-white/50">
+                Próxima: <span className="text-white/75">{nextItem.name}</span>
+              </span>
+            )}
           </div>
         </div>
-        <div className="absolute right-0 bottom-0 left-0 h-0.5 bg-cream/14">
-          <div className="h-0.5 bg-paper" style={{ width: `${pct}%` }} />
+
+        <div className="relative mx-10 mb-9 h-2.5 overflow-hidden rounded-full" style={{ backgroundImage: HATCH_DARK }}>
+          <div
+            className="h-full rounded-full bg-ice-400 transition-[width] duration-700 ease-apple"
+            style={{ width: `${pct > 0 ? Math.max(pct, 3) : 0}%` }}
+          />
         </div>
-      </div>
+      </section>
 
       {/* Estrutura */}
-      <div ref={structureRef} className="flex flex-col gap-16">
+      <div ref={structureRef} className="flex scroll-mt-6 flex-col gap-14">
         {tracks.map((group) => (
-          <div key={group.track} className="flex flex-col gap-9.5">
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-[11px] tracking-[0.2em] text-paper uppercase">{group.track}</span>
-              <div className="h-px flex-1 bg-cream/14" />
-              <span className="font-mono text-[10px] tracking-[0.14em] text-cream/40 uppercase">
+          <section key={group.track} className="flex flex-col gap-5">
+            <div className="flex items-center gap-3">
+              <h2 className="text-[22px] leading-none font-light tracking-[-0.03em] text-fg">{group.track}</h2>
+              <span className="tnum rounded-full border border-mist-200 bg-surface px-2.5 py-0.5 text-[12px] font-medium text-sub">
                 {group.modules.length} módulos
               </span>
             </div>
@@ -196,53 +227,59 @@ export function CourseDetail() {
               const single = mod.items.length === 1
               const isOpen = openModules.has(mod.id)
               const allMaterial = mod.items.every((i) => i.type === 'material')
+              const doneCount = mod.items.filter((i) => i.completed_at).length
               return (
-                <div key={mod.id} className="flex flex-col gap-4">
+                <div key={mod.id} className="flex flex-col gap-5 rounded-[28px] border border-mist-200 bg-surface p-5 shadow-soft">
                   <div className="flex items-center gap-3.5">
                     <button
                       type="button"
-                      data-hot="1"
                       onClick={() => toggleModule(mod.id)}
-                      className="flex flex-none items-center gap-3.5 outline-none"
+                      className="flex min-w-0 flex-1 items-center gap-3.5 rounded-[18px] text-left outline-none focus-visible:ring-4 focus-visible:ring-ice-200"
                     >
-                      <Bars barWidth={4} barHeight={12} gap={3} colorClassName="bg-cream/45" />
-                      <span className="font-mono text-[10.5px] tracking-[0.16em] text-cream/50">
-                        MÓDULO {String(mod.order_index).padStart(2, '0')}
+                      <span className="tnum flex h-11 w-11 flex-none items-center justify-center rounded-full bg-mist-100 text-[13px] font-medium text-abyss-700">
+                        {String(mod.order_index).padStart(2, '0')}
                       </span>
+                      <div className="flex min-w-0 flex-col gap-0.5">
+                        <span className="text-[12px] text-sub">Módulo {mod.order_index}</span>
+                        <span className="truncate text-[16px] font-medium tracking-[-0.02em] text-fg">{mod.name}</span>
+                      </div>
                     </button>
-                    <span className="truncate text-[15px] font-semibold tracking-[-0.01em] text-paper">{mod.name}</span>
-                    <div className="h-px flex-1 bg-cream/8" />
-                    <span className="flex-none font-mono text-[10.5px] tracking-[0.12em] text-cream/50">
-                      {allMaterial
-                        ? `${mod.items.length} arquivos`
-                        : `${mod.items.filter((i) => i.completed_at).length}/${mod.items.length}`}
+                    <span
+                      className={
+                        !allMaterial && mod.items.length > 0 && doneCount === mod.items.length
+                          ? 'tnum flex-none rounded-full bg-success/12 px-3 py-1 text-[12px] font-medium text-success'
+                          : 'tnum flex-none rounded-full bg-mist-100 px-3 py-1 text-[12px] font-medium text-abyss-700'
+                      }
+                    >
+                      {allMaterial ? `${mod.items.length} arquivos` : `${doneCount}/${mod.items.length}`}
                     </span>
-                    <div className="flex flex-none gap-1">
-                      <button
-                        type="button"
-                        data-hot="1"
-                        onClick={() => toggleModule(mod.id)}
-                        title={isOpen ? 'Fechar módulo' : 'Abrir módulo'}
-                        className={SQUARE_BTN}
-                      >
-                        <i className={isOpen ? 'ri-subtract-line text-sm' : 'ri-add-line text-sm'} />
-                      </button>
-                      <button type="button" data-hot="1" onClick={() => moveModule(mod.id, -1)} className={SQUARE_BTN}>
-                        <i className="ri-arrow-up-line text-sm" />
-                      </button>
-                      <button type="button" data-hot="1" onClick={() => moveModule(mod.id, 1)} className={SQUARE_BTN}>
-                        <i className="ri-arrow-down-line text-sm" />
-                      </button>
+                    <div className="flex flex-none gap-1.5">
                       {isOpen && (
                         <>
-                          <button type="button" data-hot="1" onClick={() => scrollRow(mod.id, -1)} className={SQUARE_BTN}>
-                            <i className="ri-arrow-left-s-line text-base" />
+                          <button type="button" onClick={() => scrollRow(mod.id, -1)} aria-label="Rolar pra esquerda" className={ROUND_BTN}>
+                            <i className="ri-arrow-left-s-line text-[17px]" />
                           </button>
-                          <button type="button" data-hot="1" onClick={() => scrollRow(mod.id, 1)} className={SQUARE_BTN}>
-                            <i className="ri-arrow-right-s-line text-base" />
+                          <button type="button" onClick={() => scrollRow(mod.id, 1)} aria-label="Rolar pra direita" className={ROUND_BTN}>
+                            <i className="ri-arrow-right-s-line text-[17px]" />
                           </button>
                         </>
                       )}
+                      <button type="button" onClick={() => moveModule(mod.id, -1)} aria-label="Subir módulo" className={ROUND_BTN}>
+                        <i className="ri-arrow-up-line text-[15px]" />
+                      </button>
+                      <button type="button" onClick={() => moveModule(mod.id, 1)} aria-label="Descer módulo" className={ROUND_BTN}>
+                        <i className="ri-arrow-down-line text-[15px]" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleModule(mod.id)}
+                        title={isOpen ? 'Fechar módulo' : 'Abrir módulo'}
+                        className="flex h-9 w-9 items-center justify-center rounded-full bg-abyss-950 text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300"
+                      >
+                        <i
+                          className={`ri-arrow-down-s-line text-[18px] transition-transform duration-300 ease-apple ${isOpen ? 'rotate-180' : ''}`}
+                        />
+                      </button>
                     </div>
                   </div>
 
@@ -251,17 +288,17 @@ export function CourseDetail() {
                       ref={(el) => {
                         rowRefs.current[mod.id] = el
                       }}
-                      className="flex gap-4 overflow-x-auto px-6 py-0.5"
+                      className="-mx-5 flex gap-4 overflow-x-auto px-5 pt-1 pb-3"
                       style={{
                         maskImage:
-                          'linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)',
+                          'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%)',
                       }}
                     >
                       {mod.items.map((item, i) => (
-                        <div key={item.id} className="group/item relative flex-none">
+                        <div key={item.id} className="group/item relative flex-none pt-1">
                           <LessonPoster
                             item={item}
-                            moduleLabel={`MÓDULO ${mod.order_index}`}
+                            moduleLabel={`Módulo ${mod.order_index}`}
                             number={i + 1}
                             wide={single}
                             onOpen={() =>
@@ -270,31 +307,31 @@ export function CourseDetail() {
                                 : flash('Arquivo baixado')
                             }
                           />
-                          <div className="absolute -top-1 left-1/2 flex -translate-x-1/2 -translate-y-full gap-1 opacity-0 group-hover/item:opacity-100">
+                          <div className="absolute bottom-[88px] left-1/2 flex -translate-x-1/2 gap-1 rounded-full bg-white/90 p-1 opacity-0 shadow-float backdrop-blur transition-opacity group-hover/item:opacity-100">
                             <button
                               type="button"
-                              data-hot="1"
                               onClick={() => moveItem(mod, item.id, -1)}
-                              className="flex h-6 w-6 items-center justify-center border border-cream/18 bg-smoke text-cream outline-none hover:border-paper"
+                              aria-label="Mover pra esquerda"
+                              className="flex h-7 w-7 items-center justify-center rounded-full text-abyss-700 outline-none hover:bg-mist-100"
                             >
-                              <i className="ri-arrow-left-s-line text-xs" />
+                              <i className="ri-arrow-left-s-line text-[15px]" />
                             </button>
                             <button
                               type="button"
-                              data-hot="1"
                               onClick={() => moveItem(mod, item.id, 1)}
-                              className="flex h-6 w-6 items-center justify-center border border-cream/18 bg-smoke text-cream outline-none hover:border-paper"
+                              aria-label="Mover pra direita"
+                              className="flex h-7 w-7 items-center justify-center rounded-full text-abyss-700 outline-none hover:bg-mist-100"
                             >
-                              <i className="ri-arrow-right-s-line text-xs" />
+                              <i className="ri-arrow-right-s-line text-[15px]" />
                             </button>
                           </div>
                         </div>
                       ))}
 
                       {single && (
-                        <div className="flex min-w-0 flex-1 flex-col justify-center gap-2.5 px-1.5">
-                          <span className="text-[15px] font-semibold tracking-[-0.01em] text-paper">{mod.items[0].name}</span>
-                          <span className="max-w-[60ch] text-[13.5px] leading-relaxed text-cream">
+                        <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 px-2">
+                          <span className="text-[20px] font-light tracking-[-0.03em] text-fg">{mod.items[0].name}</span>
+                          <span className="max-w-[60ch] text-[13.5px] leading-relaxed text-sub">
                             Uma aula só neste módulo.{' '}
                             {mod.items[0].type === 'aula' ? minutesLabel(mod.items[0].duration_seconds) : ''}
                           </span>
@@ -303,50 +340,49 @@ export function CourseDetail() {
 
                       <button
                         type="button"
-                        data-hot="1"
                         onClick={() => setAddingItemTo(mod.id)}
-                        className="flex aspect-2/3 w-[140px] flex-none flex-col items-center justify-center gap-2 border border-dashed border-cream/24 text-cream/55 outline-none hover:border-paper hover:text-paper"
+                        className="mt-1 flex aspect-2/3 w-[150px] flex-none flex-col items-center justify-center gap-2.5 rounded-[24px] border border-dashed border-mist-300 bg-mist-50 text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
                       >
-                        <i className="ri-add-line text-lg" />
-                        <span className="font-mono text-[9.5px] tracking-[0.12em] uppercase">item</span>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-soft">
+                          <i className="ri-add-line text-[18px]" />
+                        </span>
+                        <span className="text-[12.5px] font-medium">Item</span>
                       </button>
                     </div>
                   )}
                 </div>
               )
             })}
-          </div>
+          </section>
         ))}
 
         {/* Adicionar módulo */}
-        <div className="flex flex-col gap-3 border-t border-cream/10 pt-9.5">
+        <div className="flex flex-col gap-3">
           {addingModule ? (
-            <div className="flex flex-wrap items-end gap-3.5">
+            <div className="flex flex-wrap items-center gap-2.5 rounded-[28px] border border-mist-200 bg-surface p-4 shadow-soft">
               <input
                 value={moduleName}
                 onChange={(e) => setModuleName(e.target.value)}
                 placeholder="Nome do módulo"
-                className="border-b border-cream/22 bg-transparent py-1.5 text-[15px] text-paper outline-none placeholder:text-cream/30 focus:border-paper"
+                className={`${INPUT} min-w-[220px] flex-1`}
               />
               <input
                 value={moduleTrack}
                 onChange={(e) => setModuleTrack(e.target.value)}
-                placeholder="trilha (opcional)"
-                className="border-b border-cream/16 bg-transparent py-1.5 font-mono text-[11px] tracking-[0.1em] text-cream uppercase outline-none placeholder:text-cream/30 focus:border-paper"
+                placeholder="Trilha (opcional)"
+                className={`${INPUT} w-[220px]`}
               />
               <button
                 type="button"
-                data-hot="1"
                 onClick={addModule}
-                className="bg-paper px-4 py-2 text-[13px] font-semibold text-ink outline-none hover:bg-cream"
+                className="h-11 rounded-full bg-abyss-950 px-5 text-[14px] font-medium text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300"
               >
                 Adicionar
               </button>
               <button
                 type="button"
-                data-hot="1"
                 onClick={() => setAddingModule(false)}
-                className="text-[13px] text-cream/60 outline-none hover:text-paper"
+                className="h-11 rounded-full px-4 text-[14px] font-medium text-sub outline-none transition-colors hover:bg-mist-100 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
               >
                 Cancelar
               </button>
@@ -354,11 +390,10 @@ export function CourseDetail() {
           ) : (
             <button
               type="button"
-              data-hot="1"
               onClick={() => setAddingModule(true)}
-              className="flex w-fit items-center gap-2 border border-dashed border-cream/28 px-4 py-2.5 text-[13px] text-cream outline-none hover:border-paper hover:text-paper"
+              className="flex h-14 w-full items-center justify-center gap-2 rounded-[28px] border border-dashed border-mist-300 bg-surface/60 text-[14px] font-medium text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
             >
-              <i className="ri-add-line text-[15px]" />
+              <i className="ri-add-line text-[17px]" />
               <span>Adicionar módulo</span>
             </button>
           )}

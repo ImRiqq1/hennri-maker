@@ -2,13 +2,14 @@ import type { ReactNode } from 'react'
 import { cn } from '../lib/utils'
 import { Sheet, SheetContent, SheetTitle } from './ui/sheet'
 
+/** Painel lateral flutuante (cantos arredondados, solto da borda). */
 export const PANEL_CLASS =
-  'w-[520px] max-w-[520px] gap-0 rounded-none border-l border-cream/14 bg-smoke p-0 sm:max-w-[520px]'
+  'inset-y-3! right-3! h-auto! w-[520px] max-w-[calc(100vw-24px)] gap-0 rounded-[28px] border border-mist-200 bg-surface p-0 shadow-lift sm:max-w-[520px]'
 
 export const PANEL_CLASS_COMPACT =
-  'w-[480px] max-w-[480px] gap-0 rounded-none border-l border-cream/14 bg-smoke p-0 sm:max-w-[480px]'
+  'inset-y-3! right-3! h-auto! w-[480px] max-w-[calc(100vw-24px)] gap-0 rounded-[28px] border border-mist-200 bg-surface p-0 shadow-lift sm:max-w-[480px]'
 
-export const FIELD_LABEL = 'font-mono text-[10px] tracking-[0.16em] text-cream/45 uppercase'
+export const FIELD_LABEL = 'text-[12px] font-medium text-sub'
 
 /** Painel lateral padrão dos formulários: título + X em cima, Cancelar/Salvar embaixo. */
 export function EditorPanel({
@@ -35,37 +36,40 @@ export function EditorPanel({
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
       <SheetContent showCloseButton={false} className={compact ? PANEL_CLASS_COMPACT : PANEL_CLASS}>
         <SheetTitle className="sr-only">{title}</SheetTitle>
-        <div className={cn('flex flex-none items-center justify-between', compact ? 'px-6 py-5' : 'px-[26px] py-[22px]')}>
-          <span className="text-[17px] font-semibold tracking-[-0.015em] text-paper">{title}</span>
-          <button type="button" data-hot="1" onClick={onClose} className="flex text-cream outline-none hover:text-paper">
-            <i className="ri-close-line text-[19px]" />
+        <div className={cn('flex flex-none items-center justify-between', compact ? 'px-6 pt-6 pb-4' : 'px-7 pt-7 pb-5')}>
+          <span className="text-[20px] font-semibold tracking-[-0.02em] text-fg">{title}</span>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-mist-100 text-sub outline-none transition-colors hover:bg-mist-200 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
+          >
+            <i className="ri-close-line text-[18px]" />
           </button>
         </div>
 
-        <div
-          className={cn(
-            'flex flex-1 flex-col overflow-y-auto pb-8',
-            compact ? 'gap-6 px-6' : 'gap-7 px-[26px] pt-1',
-          )}
-        >
+        <div className={cn('flex flex-1 flex-col overflow-y-auto pb-8', compact ? 'gap-6 px-6' : 'gap-7 px-7 pt-1')}>
           {children}
         </div>
 
         <div
           className={cn(
-            'flex flex-none items-center justify-end gap-4.5 border-t border-cream/10 py-4',
-            compact ? 'px-6' : 'px-[26px]',
+            'flex flex-none items-center justify-end gap-2 border-t border-mist-200 py-4',
+            compact ? 'px-6' : 'px-7',
           )}
         >
-          <button type="button" data-hot="1" onClick={onClose} className="text-[13px] text-cream/60 outline-none hover:text-paper">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-10 rounded-full px-4 text-[14px] font-medium text-sub outline-none transition-colors hover:bg-mist-100 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
+          >
             Cancelar
           </button>
           <button
             type="button"
-            data-hot="1"
             onClick={onSave}
             disabled={saveDisabled}
-            className="bg-paper px-5 py-2.5 text-[13px] font-semibold text-ink outline-none hover:bg-cream disabled:opacity-40"
+            className="h-10 rounded-full bg-abyss-950 px-5 text-[14px] font-medium text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-35"
           >
             {saveLabel}
           </button>

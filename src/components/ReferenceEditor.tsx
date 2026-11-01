@@ -4,6 +4,12 @@ import { REFERENCE_TABS } from '../lib/constants'
 import type { Reference } from '../lib/types'
 import { Chip } from './Chip'
 import { EditorPanel, FIELD_LABEL } from './EditorPanel'
+import { ChipGroup } from './PageHeader'
+
+const INPUT =
+  'h-11 rounded-2xl border border-mist-200 bg-mist-50 px-4 text-[14px] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-mist-400 focus:border-ice-400 focus:ring-4 focus:ring-ice-200/60'
+const TEXTAREA =
+  'rounded-2xl border border-mist-200 bg-mist-50 p-4 text-[14px] leading-[1.6] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-mist-400 focus:border-ice-400 focus:ring-4 focus:ring-ice-200/60'
 
 export type ReferenceForm = {
   tab: string
@@ -104,51 +110,46 @@ export function ReferenceEditor({
       />
       <button
         type="button"
-        data-hot="1"
         onClick={() => fileRef.current?.click()}
-        className="relative flex h-[170px] flex-none flex-col items-center justify-center gap-3 overflow-hidden border border-dashed border-cream/28 text-cream/60 outline-none hover:border-paper hover:text-paper"
+        className="relative flex h-[180px] flex-none flex-col items-center justify-center gap-2.5 overflow-hidden rounded-[22px] border border-dashed border-mist-300 bg-mist-50 text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
       >
         {preview ? (
           <img src={preview} alt="" className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <>
-            <i className="ri-video-add-line text-[22px]" />
-            <span className="text-[13px]">{uploading ? 'enviando…' : 'Arraste o vídeo ou clique pra escolher'}</span>
-            <span className="font-mono text-[10px] tracking-[0.14em] text-cream/35">MP4 / GIF / PNG</span>
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-abyss-600 shadow-soft">
+              <i className="ri-video-add-line text-[19px]" />
+            </span>
+            <span className="text-[13.5px]">{uploading ? 'Enviando…' : 'Arraste o vídeo ou clique pra escolher'}</span>
+            <span className="text-[11.5px] text-mist-400">MP4 / GIF / PNG</span>
           </>
         )}
       </button>
 
       <div className="flex flex-col gap-2">
-        <span className={FIELD_LABEL}>nome</span>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Nome do movimento"
-          className="border-b border-cream/22 bg-transparent pb-2 text-[22px] font-semibold tracking-[-0.02em] text-paper outline-none placeholder:text-cream/28 focus:border-paper"
-        />
+        <span className={FIELD_LABEL}>Nome</span>
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome do movimento" className={INPUT} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <span className={FIELD_LABEL}>termo pra colar</span>
-        <div className="border border-cream/14 bg-[#101013] p-3.5">
-          <textarea
-            value={term}
-            onChange={(e) => setTerm(e.target.value)}
-            placeholder="low angle dolly-in, 35mm"
-            rows={2}
-            className="w-full resize-none bg-transparent font-mono text-[13px] leading-[1.6] text-cream outline-none placeholder:text-cream/28"
-          />
-        </div>
+        <span className={FIELD_LABEL}>Termo pra colar</span>
+        <textarea
+          value={term}
+          onChange={(e) => setTerm(e.target.value)}
+          placeholder="low angle dolly-in, 35mm"
+          rows={2}
+          className={`resize-none font-code text-[13px] ${TEXTAREA}`}
+        />
       </div>
 
       <div className="flex flex-col gap-2.5">
-        <span className={FIELD_LABEL}>aba</span>
-        <div className="flex flex-wrap gap-1.5">
+        <span className={FIELD_LABEL}>Aba</span>
+        <ChipGroup className="self-start shadow-none">
           {REFERENCE_TABS.map((t) => (
             <Chip
               key={t.id}
               active={tab === t.id}
+              className="h-8 px-3.5"
               onClick={() => {
                 setTab(t.id)
                 setFamily('')
@@ -157,40 +158,39 @@ export function ReferenceEditor({
               {t.label}
             </Chip>
           ))}
-        </div>
+        </ChipGroup>
       </div>
 
       <div className="flex flex-col gap-2.5">
-        <span className={FIELD_LABEL}>família</span>
-        <div className="flex flex-wrap gap-1.5">
-          {families.map((f) => (
-            <Chip
-              key={f}
-              active={family === f && !newFamily}
-              onClick={() => {
-                setFamily(f)
-                setNewFamily('')
-              }}
-            >
-              {f}
-            </Chip>
-          ))}
-        </div>
+        <span className={FIELD_LABEL}>Família</span>
+        {families.length > 0 && (
+          <ChipGroup className="self-start shadow-none">
+            {families.map((f) => (
+              <Chip
+                key={f}
+                active={family === f && !newFamily}
+                className="h-8 px-3.5"
+                onClick={() => {
+                  setFamily(f)
+                  setNewFamily('')
+                }}
+              >
+                {f}
+              </Chip>
+            ))}
+          </ChipGroup>
+        )}
         <input
           value={newFamily}
           onChange={(e) => setNewFamily(e.target.value)}
           placeholder="ou nova família"
-          className="border-b border-cream/16 bg-transparent py-1.5 font-mono text-[11px] tracking-[0.1em] text-paper uppercase outline-none placeholder:text-cream/30 focus:border-paper"
+          className={INPUT}
         />
       </div>
 
       <div className="flex flex-col gap-2.5">
-        <span className={FIELD_LABEL}>quando usar</span>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="min-h-[90px] border border-cream/14 bg-[#101013] p-3.5 text-[13.5px] leading-[1.6] text-paper outline-none"
-        />
+        <span className={FIELD_LABEL}>Quando usar</span>
+        <textarea value={description} onChange={(e) => setDescription(e.target.value)} className={`min-h-[96px] ${TEXTAREA}`} />
       </div>
     </EditorPanel>
   )

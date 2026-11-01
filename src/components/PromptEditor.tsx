@@ -5,6 +5,7 @@ import { highlightTags } from '../lib/promptText'
 import type { Prompt } from '../lib/types'
 import { Chip } from './Chip'
 import { EditorPanel, FIELD_LABEL as LABEL } from './EditorPanel'
+import { ChipGroup } from './PageHeader'
 
 export type PromptForm = {
   title: string
@@ -119,65 +120,65 @@ export function PromptEditor({
       />
       <button
         type="button"
-        data-hot="1"
         onClick={() => fileRef.current?.click()}
-        className="relative flex h-[180px] flex-none flex-col items-center justify-center gap-3 overflow-hidden border border-dashed border-cream/28 text-cream/60 outline-none hover:border-paper hover:text-paper"
+        className="relative flex h-[188px] flex-none flex-col items-center justify-center gap-2.5 overflow-hidden rounded-[22px] border border-dashed border-mist-300 bg-mist-50 text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
       >
         {preview ? (
           <img src={preview} alt="" className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <>
-            <i className="ri-image-add-line text-[22px]" />
-            <span className="text-[13px]">{uploading ? 'enviando…' : 'Arraste a imagem ou clique pra escolher'}</span>
-            <span className="font-mono text-[10px] tracking-[0.14em] text-cream/35">PNG / JPG / MP4</span>
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-abyss-600 shadow-soft">
+              <i className="ri-image-add-line text-[20px]" />
+            </span>
+            <span className="text-[13.5px] font-medium text-fg">{uploading ? 'Enviando…' : 'Arraste a imagem ou clique pra escolher'}</span>
+            <span className="text-[12px] text-sub">PNG, JPG ou MP4</span>
           </>
         )}
       </button>
 
       <div className="flex flex-col gap-2">
-        <span className={LABEL}>título</span>
+        <span className={LABEL}>Título</span>
         <input
           value={form.title}
           onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
           placeholder="Nome do prompt"
-          className="border-b border-cream/22 bg-transparent pb-2 text-[22px] font-semibold tracking-[-0.02em] text-paper outline-none placeholder:text-cream/28 focus:border-paper"
+          className="h-12 rounded-2xl border border-mist-200 bg-mist-50 px-4 text-[17px] font-medium tracking-[-0.02em] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-mist-400 focus:border-ice-400 focus:ring-4 focus:ring-ice-200/60"
         />
       </div>
 
       <div className="flex flex-col gap-2.5">
-        <span className={LABEL}>categoria</span>
-        <div className="flex flex-wrap gap-1.5">
+        <span className={LABEL}>Categoria</span>
+        <ChipGroup className="self-start shadow-none">
           {PROMPT_CATEGORIES.map((c) => (
             <Chip key={c} active={form.category === c} onClick={() => setForm((f) => ({ ...f, category: c }))}>
               {c}
             </Chip>
           ))}
-        </div>
+        </ChipGroup>
       </div>
 
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center justify-between gap-3">
-          <span className={LABEL}>o prompt</span>
-          <span className="font-mono text-[10px] text-cream/30">{form.prompt_text.length} caracteres</span>
+          <span className={LABEL}>O prompt</span>
+          <span className="tnum text-[12px] text-mist-400">{form.prompt_text.length} caracteres</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {PROMPT_TAGS.map((tag) => (
             <button
               key={tag}
               type="button"
-              data-hot="1"
               onClick={() => insertTag(tag)}
-              className="border border-cream/18 px-2.5 py-1 font-mono text-[10px] tracking-[0.08em] text-cream/70 outline-none hover:border-paper hover:text-paper"
+              className="rounded-full border border-mist-200 bg-surface px-3 py-1 text-[12px] font-medium text-abyss-600 outline-none transition-colors hover:border-ice-300 hover:bg-ice-100 focus-visible:ring-4 focus-visible:ring-ice-200"
             >
               {tag}
             </button>
           ))}
         </div>
-        <div className="relative min-h-[220px] border border-cream/14 bg-[#101013]">
+        <div className="relative min-h-[240px] overflow-hidden rounded-2xl border border-mist-200 bg-mist-50 transition-[border-color,box-shadow] focus-within:border-ice-400 focus-within:ring-4 focus-within:ring-ice-200/60">
           <div
             ref={highlightRef}
             aria-hidden
-            className="pointer-events-none absolute inset-0 overflow-hidden p-3.5 font-mono text-[12.5px] leading-[1.7] whitespace-pre-wrap text-white/88"
+            className="pointer-events-none absolute inset-0 overflow-hidden p-4 font-code text-[12.5px] leading-[1.7] whitespace-pre-wrap text-fg"
           >
             {highlightTags(form.prompt_text)}
           </div>
@@ -186,41 +187,41 @@ export function PromptEditor({
             value={form.prompt_text}
             onChange={(e) => setForm((f) => ({ ...f, prompt_text: e.target.value }))}
             onScroll={syncScroll}
-            className="relative min-h-[220px] w-full resize-none bg-transparent p-3.5 font-mono text-[12.5px] leading-[1.7] whitespace-pre-wrap text-transparent caret-white outline-none"
+            className="relative min-h-[240px] w-full resize-none bg-transparent p-4 font-code text-[12.5px] leading-[1.7] whitespace-pre-wrap text-transparent caret-abyss-950 outline-none"
           />
         </div>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2.5">
-          <span className={LABEL}>modelo</span>
-          <div className="flex flex-wrap gap-1.5">
+          <span className={LABEL}>Modelo</span>
+          <ChipGroup className="self-start shadow-none">
             {PROMPT_MODELS.map((m) => (
               <Chip
                 key={m}
                 active={form.model === m}
                 onClick={() => setForm((f) => ({ ...f, model: m }))}
-                className="px-3 py-1.5 tracking-[0.12em]"
+                className="h-8 px-3.5"
               >
                 {m}
               </Chip>
             ))}
-          </div>
+          </ChipGroup>
         </div>
         <div className="flex flex-col gap-2.5">
-          <span className={LABEL}>proporção</span>
-          <div className="flex flex-wrap gap-1.5">
+          <span className={LABEL}>Proporção</span>
+          <ChipGroup className="self-start shadow-none">
             {ASPECT_RATIOS.map((r) => (
               <Chip
                 key={r}
                 active={form.aspect_ratio === r}
                 onClick={() => setForm((f) => ({ ...f, aspect_ratio: r }))}
-                className="px-3 py-1.5 tracking-[0.12em]"
+                className="h-8 px-3.5"
               >
                 {r}
               </Chip>
             ))}
-          </div>
+          </ChipGroup>
         </div>
       </div>
     </EditorPanel>

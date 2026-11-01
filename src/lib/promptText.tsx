@@ -24,7 +24,7 @@ export function highlightTags(text: string): ReactNode[] {
   while ((match = TAG_RE.exec(text)) !== null) {
     if (match.index > last) out.push(text.slice(last, match.index))
     out.push(
-      <span key={`tag-${i++}`} className="font-medium text-cream">
+      <span key={`tag-${i++}`} className="font-medium text-abyss-500">
         {match[0]}
       </span>,
     )

@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { fileUrl, uploadFile } from '../lib/api'
-import { EditorPanel } from './EditorPanel'
+import { EditorPanel, FIELD_LABEL } from './EditorPanel'
 
 export type CourseForm = { name: string; author: string; cover_key: string | null }
+
+const INPUT =
+  'h-11 rounded-2xl border border-mist-200 bg-mist-50 px-4 text-[14px] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-mist-400 focus:border-ice-400 focus:ring-4 focus:ring-ice-200/60'
 
 export function CourseEditor({
   open,
@@ -52,45 +55,42 @@ export function CourseEditor({
 
   return (
     <EditorPanel open={open} title="Novo curso" onClose={onClose} onSave={handleSave} saveDisabled={saving || !name.trim()}>
-      <div className="flex gap-4.5">
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
-        />
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
+      />
+      <div className="flex flex-col gap-2">
+        <span className={FIELD_LABEL}>Capa</span>
         <button
           type="button"
-          data-hot="1"
           onClick={() => fileRef.current?.click()}
-          className="relative flex aspect-video w-[180px] flex-none flex-col items-center justify-center gap-2 overflow-hidden border border-dashed border-cream/28 text-cream/60 outline-none hover:border-paper hover:text-paper"
+          className="relative flex aspect-[16/7] w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-[22px] border border-dashed border-mist-300 bg-mist-50 text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
         >
           {cover ? (
             <img src={cover} alt="" className="absolute inset-0 h-full w-full object-cover" />
           ) : (
             <>
-              <i className="ri-image-add-line text-xl" />
-              <span className="font-mono text-[9.5px] tracking-[0.12em] uppercase">{uploading ? 'enviando…' : 'capa'}</span>
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface shadow-soft">
+                <i className="ri-image-add-line text-[19px]" />
+              </span>
+              <span className="text-[12.5px]">{uploading ? 'Enviando…' : 'Adicionar capa'}</span>
             </>
           )}
         </button>
-        <div className="flex min-w-0 flex-1 flex-col gap-4.5">
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Nome do curso"
-            className="border-b border-cream/22 bg-transparent pb-2 text-[22px] font-semibold tracking-[-0.02em] text-paper outline-none placeholder:text-cream/28 focus:border-paper"
-          />
-          <input
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            placeholder="autor"
-            className="border-b border-cream/16 bg-transparent pb-2 font-mono text-xs tracking-[0.12em] text-cream uppercase outline-none placeholder:text-cream/28 focus:border-paper"
-          />
-        </div>
       </div>
-      <span className="text-[12.5px] leading-relaxed text-cream/55">
+      <label className="flex flex-col gap-2">
+        <span className={FIELD_LABEL}>Nome do curso</span>
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome do curso" className={INPUT} />
+      </label>
+      <label className="flex flex-col gap-2">
+        <span className={FIELD_LABEL}>Autor</span>
+        <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Autor" className={INPUT} />
+      </label>
+      <span className="flex items-start gap-2 rounded-2xl bg-ice-50 px-4 py-3 text-[12.5px] leading-relaxed text-abyss-600">
+        <i className="ri-information-line mt-px text-[14px]" />
         Depois de criar, você adiciona módulos e aulas direto na página do curso.
       </span>
     </EditorPanel>

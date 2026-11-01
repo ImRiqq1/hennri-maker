@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Cursor } from '../components/Cursor'
 
 export function Login() {
   const [params] = useSearchParams()
@@ -19,42 +18,75 @@ export function Login() {
         body: JSON.stringify({ password }),
       })
       if (!res.ok) {
-        setError('senha incorreta.')
+        setError('Senha incorreta.')
         setLoading(false)
         return
       }
       window.location.href = params.get('next') || '/'
     } catch {
-      setError('não deu pra conectar. tenta de novo.')
+      setError('Não deu pra conectar. Tenta de novo.')
       setLoading(false)
     }
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-10 bg-ink px-6">
-      <Cursor />
-      <img src="/brand/wordmark-white.png" alt="HENNRI." className="h-7 w-auto" />
-      <form onSubmit={submit} className="flex w-full max-w-[360px] flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <span className="font-mono text-[10px] tracking-[0.16em] text-cream/45 uppercase">senha</span>
-          <input
-            type="password"
-            autoFocus
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border-b border-cream/22 bg-transparent pb-2 text-[17px] text-paper outline-none focus:border-paper"
-          />
-          {error && <span className="text-[12.5px] text-cream/70">{error}</span>}
+    <div
+      className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
+      style={{ background: 'var(--hero-gradient)' }}
+    >
+      {/* luzes Ice ao fundo */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 -left-32 h-[520px] w-[520px] rounded-full opacity-50 blur-3xl"
+        style={{ background: 'radial-gradient(circle, rgba(79,170,194,0.45), transparent 70%)' }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-40 -bottom-48 h-[560px] w-[560px] rounded-full opacity-30 blur-3xl"
+        style={{ background: 'radial-gradient(circle, rgba(134,203,221,0.4), transparent 70%)' }}
+      />
+
+      <div className="relative flex w-full max-w-[400px] flex-col items-center gap-9 animate-in fade-in-0 zoom-in-95 duration-500">
+        <div className="flex flex-col items-center gap-3">
+          <img src="/brand/wordmark-white.png" alt="HENNRI." className="h-7 w-auto" />
+          <span className="text-[12px] font-medium tracking-[0.14em] text-ice-300/80 uppercase">IA Maker</span>
         </div>
-        <button
-          type="submit"
-          data-hot="1"
-          disabled={loading || !password}
-          className="flex items-center justify-center gap-2 bg-paper px-5 py-3 text-[13px] font-semibold text-ink outline-none hover:bg-cream disabled:opacity-40"
+
+        <form
+          onSubmit={submit}
+          className="flex w-full flex-col gap-5 rounded-[28px] border border-white/10 bg-white/[0.06] p-7 shadow-float backdrop-blur-xl"
         >
-          <span>{loading ? 'entrando…' : 'Entrar'}</span>
-        </button>
-      </form>
+          <div className="flex flex-col gap-1">
+            <span className="text-[20px] font-semibold tracking-[-0.02em] text-white">Bem-vindo de volta</span>
+            <span className="text-[13.5px] text-white/55">Digite a senha pra entrar no acervo.</span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <input
+              type="password"
+              autoFocus
+              placeholder="Senha"
+              aria-label="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="h-12 rounded-2xl border border-white/12 bg-white/[0.07] px-4 text-[15px] text-white outline-none transition-[border-color,box-shadow] placeholder:text-white/35 focus:border-ice-400 focus:ring-4 focus:ring-ice-400/20"
+            />
+            {error && (
+              <span className="flex items-center gap-1.5 text-[13px] text-[#f0a49f]">
+                <i className="ri-error-warning-line" />
+                {error}
+              </span>
+            )}
+          </div>
+          <button
+            type="submit"
+            disabled={loading || !password}
+            className="flex h-12 items-center justify-center gap-2 rounded-full bg-ice-400 text-[15px] font-semibold text-abyss-950 outline-none transition-[background-color,transform] hover:bg-ice-300 focus-visible:ring-4 focus-visible:ring-ice-400/40 active:scale-[0.98] disabled:opacity-40"
+          >
+            <span>{loading ? 'Entrando…' : 'Entrar'}</span>
+            {!loading && <i className="ri-arrow-right-line text-[17px]" />}
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

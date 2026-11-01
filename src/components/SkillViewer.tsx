@@ -1,6 +1,7 @@
 import { indexLabel } from '../lib/format'
 import type { Skill } from '../lib/types'
 import { FIELD_LABEL, PANEL_CLASS } from './EditorPanel'
+import { Kbd } from './PageHeader'
 import { Sheet, SheetContent, SheetTitle } from './ui/sheet'
 
 /** Painel lateral com os detalhes de uma skill. */
@@ -26,33 +27,52 @@ export function SkillViewer({
         {skill && (
           <>
             <SheetTitle className="sr-only">{skill.name}</SheetTitle>
-            <div className="flex flex-none items-start justify-between gap-4 border-b border-cream/10 px-[26px] pt-6 pb-5">
-              <div className="flex min-w-0 flex-col gap-2.5">
-                <span className="font-mono text-[10px] tracking-[0.14em] text-cream/40">{indexLabel(index)}</span>
-                <span className="font-mono text-base font-medium break-words text-paper">{skill.name}</span>
-                <span className="self-start border border-cream/16 px-2.5 py-1 font-mono text-[9.5px] tracking-[0.12em] text-cream/60 uppercase">
-                  {skill.category}
-                </span>
+
+            {/* cabeçalho Abyss */}
+            <div
+              className="relative m-2 mb-0 flex flex-none flex-col gap-6 overflow-hidden rounded-[22px] p-6 text-white"
+              style={{ background: 'var(--hero-gradient)' }}
+            >
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full opacity-40 blur-3xl"
+                style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
+              />
+              <div className="relative flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="tnum rounded-full border border-white/12 bg-white/[0.07] px-2.5 py-1 text-[11.5px] font-medium text-white/70">
+                    {indexLabel(index, 2)}
+                  </span>
+                  <span className="rounded-full bg-ice-400 px-3 py-1 text-[12px] font-medium text-abyss-950">
+                    {skill.category}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label="Fechar"
+                  className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-white/14 text-white/75 outline-none transition-colors hover:bg-white hover:text-abyss-950 focus-visible:ring-2 focus-visible:ring-ice-400"
+                >
+                  <i className="ri-close-line text-[18px]" />
+                </button>
               </div>
-              <button type="button" data-hot="1" onClick={onClose} className="flex flex-none text-cream outline-none hover:text-paper">
-                <i className="ri-close-line text-[19px]" />
-              </button>
+              <span className="relative text-[30px] leading-[1.05] font-light tracking-[-0.04em] break-words">{skill.name}</span>
             </div>
 
-            <div className="flex flex-1 flex-col gap-7 overflow-y-auto px-[26px] py-6">
+            <div className="flex flex-1 flex-col gap-7 overflow-y-auto px-7 py-7">
               <div className="flex flex-col gap-2.5">
-                <span className={FIELD_LABEL}>o que faz</span>
-                <span className="text-sm leading-[1.55] text-white/88">{skill.description}</span>
+                <span className={FIELD_LABEL}>O que faz</span>
+                <span className="text-[15px] leading-[1.6] text-fg">{skill.description}</span>
               </div>
 
               {triggers.length > 0 && (
                 <div className="flex flex-col gap-2.5">
-                  <span className={FIELD_LABEL}>quando dispara</span>
+                  <span className={FIELD_LABEL}>Quando dispara</span>
                   <div className="flex flex-col gap-1.5">
                     {triggers.map((t, i) => (
-                      <div key={i} className="flex items-baseline gap-2.5 border border-cream/8 bg-[#101013] px-2.5 py-2">
-                        <span className="flex-none font-mono text-[10px] text-cream/35">›</span>
-                        <span className="font-mono text-[11.5px] leading-snug text-cream">{t}</span>
+                      <div key={i} className="flex items-baseline gap-3 rounded-2xl bg-mist-100 px-4 py-3">
+                        <i className="ri-flashlight-line flex-none text-[13px] text-abyss-500" />
+                        <span className="text-[13.5px] leading-snug text-abyss-700">{t}</span>
                       </div>
                     ))}
                   </div>
@@ -61,16 +81,16 @@ export function SkillViewer({
 
               {related.length > 0 && (
                 <div className="flex flex-col gap-2.5">
-                  <span className={FIELD_LABEL}>combina com</span>
+                  <span className={FIELD_LABEL}>Combina com</span>
                   <div className="flex flex-wrap gap-1.5">
                     {related.map((r) => (
                       <button
                         key={r.id}
                         type="button"
-                        data-hot="1"
                         onClick={() => onOpenRelated(r.id)}
-                        className="border border-cream/18 px-2.5 py-1.5 font-mono text-[10.5px] text-cream/80 outline-none hover:border-paper hover:text-paper"
+                        className="flex items-center gap-1.5 rounded-full border border-mist-200 bg-surface py-1.5 pr-3.5 pl-3 text-[13px] font-medium text-abyss-700 outline-none transition-colors hover:border-abyss-950 hover:bg-abyss-950 hover:text-white focus-visible:ring-4 focus-visible:ring-ice-200"
                       >
+                        <i className="ri-stack-line text-[13px]" />
                         {r.name}
                       </button>
                     ))}
@@ -79,14 +99,16 @@ export function SkillViewer({
               )}
             </div>
 
-            <div className="flex flex-none items-center justify-end gap-2 border-t border-cream/10 px-[26px] py-4">
+            <div className="flex flex-none items-center justify-between gap-2 border-t border-mist-200 px-7 py-4">
+              <span className="flex items-center gap-2 text-[12px] text-sub">
+                <Kbd>Esc</Kbd> fecha
+              </span>
               <button
                 type="button"
-                data-hot="1"
                 onClick={onCopyName}
-                className="flex items-center gap-2 border border-cream/24 px-4 py-2.5 text-[13px] font-medium text-cream outline-none hover:border-paper hover:text-paper"
+                className="flex h-10 items-center gap-2 rounded-full bg-abyss-950 px-5 text-[14px] font-medium text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300"
               >
-                <i className="ri-file-copy-line text-[15px]" />
+                <i className="ri-file-copy-line text-[15px] text-ice-300" />
                 <span>Copiar nome</span>
               </button>
             </div>

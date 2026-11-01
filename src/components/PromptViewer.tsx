@@ -3,12 +3,17 @@ import { fileUrl } from '../lib/api'
 import { formatDate, indexLabel } from '../lib/format'
 import { splitPromptBlocks } from '../lib/promptText'
 import type { Prompt } from '../lib/types'
+import { Kbd } from './PageHeader'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
+
+const ROUND_BTN =
+  'flex h-10 w-10 flex-none items-center justify-center rounded-full border border-mist-200 bg-surface text-abyss-700 outline-none transition-colors hover:border-mist-300 hover:bg-mist-50 hover:text-abyss-950 focus-visible:ring-4 focus-visible:ring-ice-200'
 
 function ImagePlaceholder({ aspect, className }: { aspect: string | null; className: string }) {
   return (
     <div className={className}>
-      <span className="font-mono text-[10px] tracking-[0.14em] text-cream/30 uppercase">[imagem {aspect || ''}]</span>
+      <i className="ri-image-line text-[30px] text-abyss-500/35" />
+      <span className="text-[12px] text-sub">Imagem {aspect || ''}</span>
     </div>
   )
 }
@@ -60,144 +65,171 @@ export function PromptViewer({
   const refImage = fileUrl(prompt.ref_image_key)
   const extraImage = fileUrl(prompt.extra_image_key)
 
+  const meta = [prompt.model || '—', prompt.aspect_ratio || '—', formatDate(prompt.created_at)]
+
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <button
         type="button"
-        data-hot="1"
         onClick={onPrev}
-        className="fixed top-1/2 left-7 z-[401] flex h-11 w-11 -translate-y-1/2 items-center justify-center border border-cream/20 text-cream outline-none hover:border-paper hover:text-paper"
+        aria-label="Prompt anterior"
+        className="fixed top-1/2 left-7 z-[401] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-abyss-950 shadow-lift outline-none backdrop-blur transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-ice-300"
       >
         <i className="ri-arrow-left-s-line text-[22px]" />
       </button>
       <button
         type="button"
-        data-hot="1"
         onClick={onNext}
-        className="fixed top-1/2 right-7 z-[401] flex h-11 w-11 -translate-y-1/2 items-center justify-center border border-cream/20 text-cream outline-none hover:border-paper hover:text-paper"
+        aria-label="Próximo prompt"
+        className="fixed top-1/2 right-7 z-[401] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-abyss-950 shadow-lift outline-none backdrop-blur transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-ice-300"
       >
         <i className="ri-arrow-right-s-line text-[22px]" />
       </button>
 
       <DialogContent
         showCloseButton={false}
-        className="flex max-h-[88vh] w-[min(1080px,calc(100%-2rem))] max-w-none flex-col sm:max-w-none gap-0 rounded-none border border-cream/14 bg-smoke p-0 ring-0"
+        className="flex max-h-[90vh] w-[min(1160px,calc(100%-2rem))] max-w-none flex-col gap-0 overflow-hidden rounded-[32px] border border-mist-200 bg-surface p-0 shadow-lift ring-0 sm:max-w-none"
       >
         <DialogTitle className="sr-only">{prompt.title}</DialogTitle>
 
-        {/* Cabeçalho */}
-        <div className="flex flex-none items-center justify-between gap-6 border-b border-cream/10 px-[22px] py-4">
-          <div className="flex items-center gap-3.5 font-mono text-[10px] tracking-[0.14em] text-cream/55 uppercase">
-            <span>{prompt.model || '—'}</span>
-            <span className="text-cream/25">/</span>
-            <span>{prompt.aspect_ratio || '—'}</span>
-            <span className="text-cream/25">/</span>
-            <span>{formatDate(prompt.created_at)}</span>
-            <span className="text-cream/25">/</span>
-            <span>{prompt.category}</span>
-            <span className="text-cream/25">/</span>
-            <span className="text-paper">{indexLabel(index)}</span>
-          </div>
-          <div className="flex items-center gap-3.5">
-            <span className="font-mono text-[10px] tracking-[0.16em] text-cream/35">ESC</span>
-            <button type="button" data-hot="1" onClick={onClose} className="flex text-cream outline-none hover:text-paper">
-              <i className="ri-close-line text-[19px]" />
-            </button>
-          </div>
-        </div>
-
-        {/* Imagens */}
-        {refImage ? (
-          <div className="flex h-[52vh] flex-none gap-4 bg-ink p-6">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <span className="flex-none font-mono text-[10px] tracking-[0.16em] text-cream/40 uppercase">Referência</span>
-              <div className="min-h-0 flex-1">
-                <img src={refImage} alt="" className="h-full w-full border border-cream/10 object-contain" />
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:h-[min(80vh,780px)] lg:flex-row lg:overflow-hidden">
+          {/* Imagens */}
+          <div className="flex min-h-0 flex-col gap-3 bg-mist-100 p-5 lg:w-[56%]">
+            {refImage ? (
+              <div className="flex h-[52vh] min-h-0 gap-3 lg:h-auto lg:flex-1">
+                <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+                  <span className="flex-none pl-1 text-[12px] text-sub">Referência</span>
+                  <div className="min-h-0 flex-1 overflow-hidden rounded-[22px] bg-surface">
+                    <img src={refImage} alt="" className="h-full w-full object-contain" />
+                  </div>
+                </div>
+                <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+                  <span className="flex-none pl-1 text-[12px] text-sub">Resultado</span>
+                  <div className="min-h-0 flex-1 overflow-hidden rounded-[22px] bg-surface">
+                    {image ? (
+                      <img src={image} alt={prompt.title} className="h-full w-full object-contain" />
+                    ) : (
+                      <ImagePlaceholder
+                        aspect={prompt.aspect_ratio}
+                        className="flex h-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-mist-100 to-ice-100"
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <span className="flex-none font-mono text-[10px] tracking-[0.16em] text-cream/40 uppercase">Resultado</span>
-              <div className="min-h-0 flex-1">
+            ) : (
+              <div className="flex h-[52vh] min-h-0 items-center justify-center lg:h-auto lg:flex-1">
                 {image ? (
-                  <img src={image} alt={prompt.title} className="h-full w-full border border-cream/10 object-contain" />
+                  <img src={image} alt={prompt.title} className="h-full w-auto max-w-full rounded-[22px] object-contain" />
                 ) : (
                   <ImagePlaceholder
                     aspect={prompt.aspect_ratio}
-                    className="flex h-full flex-col items-end justify-end gap-[3px] border border-cream/10 bg-[#101013] p-3.5"
+                    className="flex aspect-3/4 h-full flex-col items-center justify-center gap-2 rounded-[22px] bg-gradient-to-br from-mist-100 to-ice-100"
                   />
                 )}
               </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex h-[52vh] flex-none items-center justify-center bg-ink p-6">
-            {image ? (
-              <img src={image} alt={prompt.title} className="h-full w-auto border border-cream/10 object-contain" />
-            ) : (
-              <ImagePlaceholder
-                aspect={prompt.aspect_ratio}
-                className="flex aspect-3/4 h-full flex-col items-end justify-end gap-[3px] border border-cream/10 bg-[#101013] p-3.5"
-              />
+            )}
+
+            {extraImage && (
+              <div className="flex flex-none items-center gap-3.5 rounded-[22px] bg-surface p-3">
+                <img src={extraImage} alt="" className="h-16 w-auto rounded-xl object-contain" />
+                <span className="text-[12px] text-sub">Material de apoio</span>
+              </div>
             )}
           </div>
-        )}
 
-        {extraImage && (
-          <div className="flex flex-none items-center gap-3.5 border-t border-cream/10 bg-ink px-6 py-3.5">
-            <span className="flex-none font-mono text-[10px] tracking-[0.16em] text-cream/40 uppercase">Material de apoio</span>
-            <img src={extraImage} alt="" className="h-20 w-auto border border-cream/10 object-contain" />
-          </div>
-        )}
-
-        {/* Texto */}
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-7 pt-[26px] pb-[30px]">
-          <span className="text-[19px] font-semibold tracking-[-0.015em] text-paper">{prompt.title}</span>
-          {blocks.map((block, i) => (
-            <div key={i} className="text-sm leading-[1.55] text-white/85">
-              {block.tag && (
-                <span className="mr-2 font-mono text-[11.5px] font-medium tracking-[0.06em] text-cream">{block.tag}</span>
-              )}
-              <span>{block.text}</span>
+          {/* Texto */}
+          <div className="flex min-h-0 flex-1 flex-col">
+            <div className="flex flex-none items-center justify-between gap-4 px-7 pt-6 pb-2">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="rounded-full bg-ice-100 px-2.5 py-1 text-[12px] font-medium text-abyss-600">
+                  {prompt.category}
+                </span>
+                <span className="tnum text-[12px] text-mist-400">{indexLabel(index, 2)}</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Kbd>Esc</Kbd>
+                <button type="button" onClick={onClose} aria-label="Fechar" className={ROUND_BTN}>
+                  <i className="ri-close-line text-[18px]" />
+                </button>
+              </div>
             </div>
-          ))}
-        </div>
 
-        {/* Ações */}
-        <div className="flex flex-none items-center justify-between gap-5 border-t border-cream/10 bg-smoke px-[22px] py-3.5">
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              data-hot="1"
-              onClick={onEdit}
-              className="flex items-center gap-2 border border-cream/20 px-3 py-2 text-[13px] text-cream outline-none hover:border-paper hover:text-paper"
-            >
-              <i className="ri-pencil-line text-[15px]" />
-              <span>Editar</span>
-            </button>
-            <button type="button" data-hot="1" onClick={onDelete} className="flex px-2.5 py-2 text-cream/40 outline-none hover:text-paper">
-              <i className="ri-delete-bin-line text-base" />
-            </button>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              data-hot="1"
-              onClick={onCopy}
-              className="flex items-center gap-2 border border-cream/24 px-4 py-2.5 text-[13px] font-medium text-cream outline-none hover:border-paper hover:text-paper"
-            >
-              <i className="ri-file-copy-line text-[15px]" />
-              <span>Copiar prompt</span>
-            </button>
-            <button
-              type="button"
-              data-hot="1"
-              onClick={onDownload}
-              disabled={!image}
-              className="flex items-center gap-2 bg-paper px-4 py-2.5 text-[13px] font-semibold text-ink outline-none hover:bg-cream disabled:opacity-40"
-            >
-              <i className="ri-arrow-down-line text-[15px]" />
-              <span>Baixar imagem</span>
-            </button>
+            <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-7 pt-2 pb-6">
+              <h2 className="text-[30px] leading-[1.05] font-light tracking-[-0.04em] text-fg">{prompt.title}</h2>
+
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                {[
+                  ['Modelo', meta[0]],
+                  ['Proporção', meta[1]],
+                  ['Criado em', meta[2]],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex flex-col gap-0.5">
+                    <span className="text-[11.5px] text-sub">{label}</span>
+                    <span className="text-[13.5px] font-medium text-fg">{value}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* bloco Abyss com o texto do prompt */}
+              <div
+                className="relative flex flex-col gap-3.5 overflow-hidden rounded-[24px] p-6 text-white"
+                style={{ background: 'var(--hero-gradient)' }}
+              >
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -top-20 -right-16 h-52 w-52 rounded-full opacity-35 blur-3xl"
+                  style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
+                />
+                {blocks.map((block, i) => (
+                  <div key={i} className="relative text-[14px] leading-[1.6] text-white/85">
+                    {block.tag && (
+                      <span className="mr-2 inline-block rounded-full bg-white/[0.1] px-2 py-0.5 text-[11.5px] font-medium text-ice-300">
+                        {block.tag}
+                      </span>
+                    )}
+                    <span>{block.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ações */}
+            <div className="flex flex-none items-center justify-between gap-4 border-t border-mist-200 px-7 py-4">
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={onEdit} title="Editar" aria-label="Editar" className={ROUND_BTN}>
+                  <i className="ri-pencil-line text-[16px]" />
+                </button>
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  title="Apagar"
+                  aria-label="Apagar"
+                  className={ROUND_BTN + ' hover:border-danger/40 hover:text-danger'}
+                >
+                  <i className="ri-delete-bin-line text-[16px]" />
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onCopy}
+                  className="flex h-11 items-center gap-2 rounded-full border border-mist-200 px-4 text-[14px] font-medium text-abyss-700 outline-none transition-colors hover:bg-mist-50 hover:text-abyss-950 focus-visible:ring-4 focus-visible:ring-ice-200"
+                >
+                  <i className="ri-file-copy-line text-[15px]" />
+                  <span>Copiar prompt</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={onDownload}
+                  disabled={!image}
+                  className="flex h-11 items-center gap-2 rounded-full bg-abyss-950 px-5 text-[14px] font-medium text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-35"
+                >
+                  <i className="ri-arrow-down-line text-[15px] text-ice-300" />
+                  <span>Baixar imagem</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </DialogContent>

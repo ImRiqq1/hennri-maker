@@ -3,6 +3,7 @@ import { REFERENCE_TABS } from '../lib/constants'
 import { indexLabel } from '../lib/format'
 import type { Reference } from '../lib/types'
 import { FIELD_LABEL } from './EditorPanel'
+import { Kbd } from './PageHeader'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 
 export function ReferenceViewer({
@@ -24,53 +25,71 @@ export function ReferenceViewer({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent
         showCloseButton={false}
-        className="flex max-h-[88vh] w-[min(1000px,calc(100%-2rem))] max-w-none flex-col sm:max-w-none gap-0 overflow-y-auto rounded-none border border-cream/14 bg-smoke p-0 ring-0"
+        className="grid max-h-[88vh] w-[min(1080px,calc(100%-2rem))] max-w-none grid-cols-1 gap-0 overflow-hidden rounded-[32px] border border-mist-200 bg-surface p-0 ring-0 sm:max-w-none md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]"
       >
         <DialogTitle className="sr-only">{reference.name}</DialogTitle>
-        <div className="flex flex-none items-center justify-between gap-6 border-b border-cream/10 px-[22px] py-4">
-          <div className="flex items-center gap-3.5 font-mono text-[10px] tracking-[0.14em] text-cream/55 uppercase">
-            <span>{tabLabel}</span>
-            <span className="text-cream/25">/</span>
-            <span>{reference.family}</span>
-            <span className="text-cream/25">/</span>
-            <span className="text-paper">{indexLabel(index)}</span>
-          </div>
-          <div className="flex items-center gap-3.5">
-            <span className="font-mono text-[10px] tracking-[0.16em] text-cream/35">ESC</span>
-            <button type="button" data-hot="1" onClick={onClose} className="flex text-cream outline-none hover:text-paper">
-              <i className="ri-close-line text-[19px]" />
-            </button>
-          </div>
-        </div>
 
-        <div className="bg-ink p-6">
+        {/* mídia */}
+        <div className="flex items-center bg-mist-100 p-3">
           {media ? (
-            <img src={media} alt={reference.name} className="aspect-video w-full border border-cream/10 object-cover" />
+            <img src={media} alt={reference.name} className="aspect-video w-full rounded-[22px] object-cover" />
           ) : (
-            <div className="flex aspect-video flex-col justify-end border border-cream/10 bg-[#101013] p-4">
-              <span className="font-mono text-[10px] tracking-[0.14em] text-cream/30 uppercase">[vídeo 16:9]</span>
+            <div className="flex aspect-video w-full items-center justify-center rounded-[22px] bg-gradient-to-br from-mist-100 to-ice-100">
+              <i className="ri-film-line text-[34px] text-abyss-500/35" />
             </div>
           )}
         </div>
 
-        <div className="flex flex-col gap-5.5 px-7 pt-[26px] pb-[30px]">
-          <span className="text-[22px] font-semibold tracking-[-0.02em] text-paper">{reference.name}</span>
-          {reference.description && (
-            <span className="text-[14.5px] leading-[1.6] text-white/85">{reference.description}</span>
-          )}
-          <div className="flex flex-col gap-2.5">
-            <span className={FIELD_LABEL}>termo</span>
-            <div className="flex items-center justify-between gap-5 border border-cream/12 bg-[#101013] px-4.5 py-4">
-              <span className="font-mono text-[13px] leading-snug break-words text-cream">{reference.term}</span>
+        {/* detalhes */}
+        <div className="flex min-h-0 flex-col overflow-y-auto">
+          <div className="flex flex-none items-center justify-between gap-4 px-7 pt-6">
+            <div className="flex flex-wrap items-center gap-1.5 text-[12px]">
+              <span className="rounded-full bg-ice-100 px-2.5 py-1 font-medium text-abyss-600">{tabLabel}</span>
+              <span className="rounded-full border border-mist-200 px-2.5 py-1 text-sub lowercase first-letter:uppercase">
+                {reference.family}
+              </span>
+              <span className="tnum px-1 text-mist-400">{indexLabel(index, 2)}</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Kbd>Esc</Kbd>
               <button
                 type="button"
-                data-hot="1"
-                onClick={onCopy}
-                className="flex flex-none items-center gap-2 bg-paper px-3.5 py-2.5 text-[12.5px] font-semibold whitespace-nowrap text-ink outline-none hover:bg-cream"
+                onClick={onClose}
+                aria-label="Fechar"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-mist-100 text-sub outline-none transition-colors hover:bg-mist-200 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
               >
-                <i className="ri-file-copy-line text-sm" />
-                <span>Copiar termo</span>
+                <i className="ri-close-line text-[18px]" />
               </button>
+            </div>
+          </div>
+
+          <div className="flex flex-1 flex-col gap-5 px-7 pt-6 pb-7">
+            <span className="text-[34px] leading-[1.05] font-light tracking-[-0.045em] text-fg">{reference.name}</span>
+            {reference.description && (
+              <span className="text-[14.5px] leading-[1.6] text-abyss-700">{reference.description}</span>
+            )}
+
+            <div className="mt-auto flex flex-col gap-2.5 pt-4">
+              <span className={FIELD_LABEL}>Termo</span>
+              <div
+                className="relative flex flex-col gap-5 overflow-hidden rounded-[22px] p-5 text-white"
+                style={{ background: 'var(--hero-gradient)' }}
+              >
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -top-16 -right-12 h-44 w-44 rounded-full opacity-40 blur-3xl"
+                  style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
+                />
+                <span className="relative font-code text-[14px] leading-[1.55] break-words text-ice-100">{reference.term}</span>
+                <button
+                  type="button"
+                  onClick={onCopy}
+                  className="relative flex h-10 items-center gap-2 self-start rounded-full bg-white px-4 text-[13.5px] font-medium whitespace-nowrap text-abyss-950 outline-none transition-colors hover:bg-ice-100 focus-visible:ring-2 focus-visible:ring-ice-400"
+                >
+                  <i className="ri-file-copy-line text-[15px] text-abyss-500" />
+                  <span>Copiar termo</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
