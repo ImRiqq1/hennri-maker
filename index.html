@@ -8,8 +8,10 @@
     <title>HENNRI IA MAKER</title>
     <script>
       try {
+        var d = localStorage.getItem('hm-design') || 'abyss'
         var t = localStorage.getItem('hm-theme')
-        if (t === 'claro' || t === 'escuro') document.documentElement.setAttribute('data-theme', t)
+        document.documentElement.setAttribute('data-ds', d)
+        if (d === 'abyss' && (t === 'claro' || t === 'escuro')) document.documentElement.setAttribute('data-theme', t)
       } catch (e) {}
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />

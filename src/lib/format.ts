@@ -32,3 +32,13 @@ export function driveId(url: string | null | undefined) {
   const q = url.match(/[?&]id=([a-zA-Z0-9_-]+)/)
   return q ? q[1] : null
 }
+
+/** timestamp -> "hoje", "ontem", "há 3 dias", "há 2 meses" */
+export function formatRelative(ts: number) {
+  const days = Math.floor((Date.now() - ts) / 86_400_000)
+  if (days <= 0) return 'hoje'
+  if (days === 1) return 'ontem'
+  if (days < 30) return `há ${days} dias`
+  const months = Math.floor(days / 30)
+  return months === 1 ? 'há 1 mês' : `há ${months} meses`
+}

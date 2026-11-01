@@ -22,9 +22,9 @@ Roda num **Cloudflare Worker** (`hennri-maker`):
 | Quero mudar… | Arquivo |
 | --- | --- |
 | Cores e fontes | `src/index.css` (bloco `:root`) |
-| Temas Claro e Escuro (engrenagem no topo) | `src/index.css` (blocos `[data-theme=…]`), `src/lib/theme.ts` |
-| Textos da página inicial (título, "UM ACERVO, NÃO UM APP", rodapé) | `src/pages/Home.tsx` |
-| Itens do menu (barra do topo) e busca | `src/components/TopBar.tsx` |
+| Design systems (Abyss, Workspace, Command) e cores (engrenagem) | `src/lib/design.tsx`, `src/components/shells/`, `src/pages/home/`, `src/lib/theme.ts` |
+| Textos da página inicial (título, "UM ACERVO, NÃO UM APP", rodapé) | `src/pages/home/` (uma por design system) |
+| Itens do menu e busca | `src/lib/nav.ts`, `src/components/SearchBox.tsx` |
 | Categorias de prompt, modelos, proporções, tags `[Pedido]`… | `src/lib/constants.ts` |
 | Categorias de skill e abas de referência | `src/lib/constants.ts` |
 | Página de Prompts / card / modal / editor | `src/pages/Prompts.tsx`, `src/components/Prompt*.tsx` |

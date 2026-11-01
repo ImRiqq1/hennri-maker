@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
+import { DesignProvider } from './lib/design'
 import { CourseDetail } from './pages/CourseDetail'
 import { Courses } from './pages/Courses'
 import { Home } from './pages/Home'
@@ -14,6 +15,7 @@ import './index.css'
 
 function App() {
   return (
+    <DesignProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -28,6 +30,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </DesignProvider>
   )
 }
 

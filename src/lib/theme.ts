@@ -1,4 +1,4 @@
-// Aparência do site. A escolha fica salva só neste navegador (localStorage).
+// Cores do design system Abyss. A escolha fica salva só neste navegador (localStorage).
 // O index.html aplica o tema salvo antes do React carregar, pra não piscar.
 
 export type ThemeId = 'abyss' | 'claro' | 'escuro'
@@ -19,10 +19,12 @@ export function getTheme(): ThemeId {
   return 'abyss'
 }
 
-export function applyTheme(id: ThemeId) {
+/** Aplica as cores na página; `persist` salva a escolha (falso quando outro design system está ativo). */
+export function applyTheme(id: ThemeId, persist = true) {
   const root = document.documentElement
   if (id === 'abyss') root.removeAttribute('data-theme')
   else root.setAttribute('data-theme', id)
+  if (!persist) return
   try {
     localStorage.setItem(KEY, id)
   } catch {}
