@@ -7,7 +7,7 @@ import { Kbd } from './PageHeader'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 
 const ROUND_BTN =
-  'flex h-10 w-10 flex-none items-center justify-center rounded-full border border-mist-200 bg-surface text-abyss-700 outline-none transition-colors hover:border-mist-300 hover:bg-mist-50 hover:text-abyss-950 focus-visible:ring-4 focus-visible:ring-ice-200'
+  'flex h-10 w-10 flex-none items-center justify-center rounded-full border border-mist-200 bg-surface text-abyss-700 outline-none transition-colors hover:border-mist-300 hover:bg-mist-50 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200'
 
 function ImagePlaceholder({ aspect, className }: { aspect: string | null; className: string }) {
   return (
@@ -73,7 +73,7 @@ export function PromptViewer({
         type="button"
         onClick={onPrev}
         aria-label="Prompt anterior"
-        className="fixed top-1/2 left-7 z-[401] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-abyss-950 shadow-lift outline-none backdrop-blur transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-ice-300"
+        className="fixed top-1/2 left-7 z-[401] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-surface/90 text-abyss-950 shadow-lift outline-none backdrop-blur transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-ice-300"
       >
         <i className="ri-arrow-left-s-line text-[22px]" />
       </button>
@@ -81,7 +81,7 @@ export function PromptViewer({
         type="button"
         onClick={onNext}
         aria-label="Próximo prompt"
-        className="fixed top-1/2 right-7 z-[401] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-abyss-950 shadow-lift outline-none backdrop-blur transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-ice-300"
+        className="fixed top-1/2 right-7 z-[401] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-surface/90 text-abyss-950 shadow-lift outline-none backdrop-blur transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-ice-300"
       >
         <i className="ri-arrow-right-s-line text-[22px]" />
       </button>
@@ -176,11 +176,6 @@ export function PromptViewer({
                 className="relative flex flex-col gap-3.5 overflow-hidden rounded-[24px] p-6 text-white"
                 style={{ background: 'var(--hero-gradient)' }}
               >
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute -top-20 -right-16 h-52 w-52 rounded-full opacity-35 blur-3xl"
-                  style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
-                />
                 {blocks.map((block, i) => (
                   <div key={i} className="relative text-[14px] leading-[1.6] text-white/85">
                     {block.tag && (
@@ -214,7 +209,7 @@ export function PromptViewer({
                 <button
                   type="button"
                   onClick={onCopy}
-                  className="flex h-11 items-center gap-2 rounded-full border border-mist-200 px-4 text-[14px] font-medium text-abyss-700 outline-none transition-colors hover:bg-mist-50 hover:text-abyss-950 focus-visible:ring-4 focus-visible:ring-ice-200"
+                  className="flex h-11 items-center gap-2 rounded-full border border-mist-200 px-4 text-[14px] font-medium text-abyss-700 outline-none transition-colors hover:bg-mist-50 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
                 >
                   <i className="ri-file-copy-line text-[15px]" />
                   <span>Copiar prompt</span>
@@ -223,7 +218,7 @@ export function PromptViewer({
                   type="button"
                   onClick={onDownload}
                   disabled={!image}
-                  className="flex h-11 items-center gap-2 rounded-full bg-abyss-950 px-5 text-[14px] font-medium text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-35"
+                  className="flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-[14px] font-medium text-primary-foreground outline-none transition-colors hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-35"
                 >
                   <i className="ri-arrow-down-line text-[15px] text-ice-300" />
                   <span>Baixar imagem</span>

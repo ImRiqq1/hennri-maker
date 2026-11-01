@@ -82,7 +82,7 @@ export function References() {
             <h1 className="font-display text-[clamp(52px,5.6vw,84px)] leading-[0.92] font-light tracking-[-0.05em] text-fg">
               {tabLabel}
             </h1>
-            <span className="tnum mt-2 flex h-8 min-w-8 items-center justify-center rounded-full bg-abyss-950 px-2.5 text-[13px] font-medium text-white">
+            <span className="tnum mt-2 flex h-8 min-w-8 items-center justify-center rounded-full bg-primary px-2.5 text-[13px] font-medium text-primary-foreground">
               {references.length}
             </span>
           </div>
@@ -97,8 +97,8 @@ export function References() {
                   className={cn(
                     'inline-flex h-9 items-center rounded-full px-4 text-[13px] font-medium outline-none transition-[background-color,color,box-shadow] duration-300 ease-apple focus-visible:ring-4 focus-visible:ring-ice-200',
                     active
-                      ? 'bg-abyss-950 text-white shadow-[0_6px_14px_-8px_rgb(4_26_33/0.7)] hover:text-white'
-                      : 'text-abyss-700 hover:bg-mist-100 hover:text-abyss-950',
+                      ? 'bg-primary text-primary-foreground shadow-[0_6px_14px_-8px_rgb(4_26_33/0.7)] hover:text-primary-foreground'
+                      : 'text-abyss-700 hover:bg-mist-100 hover:text-fg',
                   )}
                 >
                   {t.label}

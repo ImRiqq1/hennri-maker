@@ -34,17 +34,6 @@ export function Login() {
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
       style={{ background: 'var(--hero-gradient)' }}
     >
-      {/* luzes Ice ao fundo */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 -left-32 h-[520px] w-[520px] rounded-full opacity-50 blur-3xl"
-        style={{ background: 'radial-gradient(circle, rgba(79,170,194,0.45), transparent 70%)' }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-40 -bottom-48 h-[560px] w-[560px] rounded-full opacity-30 blur-3xl"
-        style={{ background: 'radial-gradient(circle, rgba(134,203,221,0.4), transparent 70%)' }}
-      />
 
       <div className="relative flex w-full max-w-[400px] flex-col items-center gap-9 animate-in fade-in-0 zoom-in-95 duration-500">
         <div className="flex flex-col items-center gap-3">

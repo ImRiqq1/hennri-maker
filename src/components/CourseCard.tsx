@@ -23,11 +23,11 @@ export function CourseCard({ course }: { course: CourseSummary }) {
         ) : (
           <i className="ri-graduation-cap-line text-[34px] text-abyss-500/35" />
         )}
-        <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/90 py-1 pr-2.5 pl-1.5 text-[11.5px] font-medium text-abyss-700 shadow-soft backdrop-blur">
+        <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-surface/90 py-1 pr-2.5 pl-1.5 text-[11.5px] font-medium text-abyss-700 shadow-soft backdrop-blur">
           <span className={done ? 'h-1.5 w-1.5 rounded-full bg-success' : 'h-1.5 w-1.5 rounded-full bg-ice-500'} />
           {done ? 'Concluído' : 'Em andamento'}
         </span>
-        <span className="absolute right-3 bottom-3 flex h-10 w-10 translate-y-1 items-center justify-center rounded-full bg-abyss-950 text-white opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <span className="absolute right-3 bottom-3 flex h-10 w-10 translate-y-1 items-center justify-center rounded-full bg-primary text-primary-foreground opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <i className="ri-arrow-right-up-line text-[17px]" />
         </span>
       </div>
@@ -46,7 +46,7 @@ export function CourseCard({ course }: { course: CourseSummary }) {
         </div>
         <div className="h-2.5 overflow-hidden rounded-full" style={{ backgroundImage: HATCH }}>
           <div
-            className="h-full rounded-full bg-abyss-950 transition-[width] duration-700 ease-apple"
+            className="h-full rounded-full bg-primary transition-[width] duration-700 ease-apple"
             style={{ width: `${pct > 0 ? Math.max(pct, 4) : 0}%` }}
           />
         </div>

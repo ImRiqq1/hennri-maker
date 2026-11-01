@@ -22,6 +22,7 @@ Roda num **Cloudflare Worker** (`hennri-maker`):
 | Quero mudar… | Arquivo |
 | --- | --- |
 | Cores e fontes | `src/index.css` (bloco `:root`) |
+| Temas Claro e Escuro (engrenagem no topo) | `src/index.css` (blocos `[data-theme=…]`), `src/lib/theme.ts` |
 | Textos da página inicial (título, "UM ACERVO, NÃO UM APP", rodapé) | `src/pages/Home.tsx` |
 | Itens do menu (barra do topo) e busca | `src/components/TopBar.tsx` |
 | Categorias de prompt, modelos, proporções, tags `[Pedido]`… | `src/lib/constants.ts` |

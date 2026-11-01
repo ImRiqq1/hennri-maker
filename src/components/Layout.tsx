@@ -37,18 +37,11 @@ export function Layout() {
     <ToastProvider>
       <div
         className="relative flex h-screen flex-col overflow-hidden px-3 pb-3 text-fg"
-        style={{ background: 'var(--hero-gradient)' }}
+        style={{ background: 'var(--frame-bg)' }}
       >
-        {/* luz Ice difusa atrás do menu */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-40 left-1/3 h-80 w-[640px] rounded-full opacity-35 blur-3xl"
-          style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.55), transparent)' }}
-        />
-
         <TopBar />
 
-        <main className="relative z-[1] min-h-0 flex-1 overflow-hidden rounded-[32px] rounded-tl-none bg-canvas shadow-[0_30px_60px_-30px_rgb(0_0_0/0.5)]">
+        <main className="relative z-[1] min-h-0 flex-1 overflow-hidden rounded-[32px] rounded-tl-none bg-canvas shadow-[0_30px_60px_-30px_rgb(0_0_0/0.35)]">
           <div id="page-scroll" className="h-full overflow-x-hidden overflow-y-auto">
             <div className="mx-auto w-full max-w-[1520px] px-10 pt-9 pb-20">
               <Outlet />

@@ -33,11 +33,6 @@ export function SkillViewer({
               className="relative m-2 mb-0 flex flex-none flex-col gap-6 overflow-hidden rounded-[22px] p-6 text-white"
               style={{ background: 'var(--hero-gradient)' }}
             >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full opacity-40 blur-3xl"
-                style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
-              />
               <div className="relative flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <span className="tnum rounded-full border border-white/12 bg-white/[0.07] px-2.5 py-1 text-[11.5px] font-medium text-white/70">
@@ -51,7 +46,7 @@ export function SkillViewer({
                   type="button"
                   onClick={onClose}
                   aria-label="Fechar"
-                  className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-white/14 text-white/75 outline-none transition-colors hover:bg-white hover:text-abyss-950 focus-visible:ring-2 focus-visible:ring-ice-400"
+                  className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-white/14 text-white/75 outline-none transition-colors hover:bg-white hover:text-fg focus-visible:ring-2 focus-visible:ring-ice-400"
                 >
                   <i className="ri-close-line text-[18px]" />
                 </button>
@@ -88,7 +83,7 @@ export function SkillViewer({
                         key={r.id}
                         type="button"
                         onClick={() => onOpenRelated(r.id)}
-                        className="flex items-center gap-1.5 rounded-full border border-mist-200 bg-surface py-1.5 pr-3.5 pl-3 text-[13px] font-medium text-abyss-700 outline-none transition-colors hover:border-abyss-950 hover:bg-abyss-950 hover:text-white focus-visible:ring-4 focus-visible:ring-ice-200"
+                        className="flex items-center gap-1.5 rounded-full border border-mist-200 bg-surface py-1.5 pr-3.5 pl-3 text-[13px] font-medium text-abyss-700 outline-none transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground focus-visible:ring-4 focus-visible:ring-ice-200"
                       >
                         <i className="ri-stack-line text-[13px]" />
                         {r.name}
@@ -106,7 +101,7 @@ export function SkillViewer({
               <button
                 type="button"
                 onClick={onCopyName}
-                className="flex h-10 items-center gap-2 rounded-full bg-abyss-950 px-5 text-[14px] font-medium text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300"
+                className="flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-[14px] font-medium text-primary-foreground outline-none transition-colors hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ice-300"
               >
                 <i className="ri-file-copy-line text-[15px] text-ice-300" />
                 <span>Copiar nome</span>

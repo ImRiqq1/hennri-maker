@@ -19,7 +19,7 @@ export function PageHeader({
           <h1 className="font-display text-[clamp(52px,5.6vw,84px)] leading-[0.92] font-light tracking-[-0.05em] text-fg capitalize">
             {title.toLowerCase()}
           </h1>
-          <span className="tnum mt-2 flex h-8 min-w-8 items-center justify-center rounded-full bg-abyss-950 px-2.5 text-[13px] font-medium text-white">
+          <span className="tnum mt-2 flex h-8 min-w-8 items-center justify-center rounded-full bg-primary px-2.5 text-[13px] font-medium text-primary-foreground">
             {count}
           </span>
         </div>
@@ -111,7 +111,7 @@ export function IconButton({
       className={
         'flex h-10 w-10 flex-none items-center justify-center rounded-full border outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ice-200 disabled:opacity-30 ' +
         (active
-          ? 'border-abyss-950 bg-abyss-950 text-white'
+          ? 'border-primary bg-primary text-primary-foreground'
           : 'border-mist-200 bg-surface text-abyss-700 hover:border-mist-300 hover:bg-mist-50')
       }
     >

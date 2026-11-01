@@ -32,7 +32,7 @@ export function ReferenceCard({
         ) : (
           <i className="ri-film-line text-[30px] text-abyss-500/35" />
         )}
-        <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 shadow-soft backdrop-blur">
+        <span className="absolute top-3 left-3 rounded-full bg-surface/90 px-2.5 py-1 shadow-soft backdrop-blur">
           <IndexNum n={index} className="text-abyss-600" />
         </span>
         <button
@@ -41,7 +41,7 @@ export function ReferenceCard({
             e.stopPropagation()
             onCopy()
           }}
-          className="absolute right-3 bottom-3 flex h-10 translate-y-1 items-center gap-2 rounded-full bg-abyss-950 px-4 text-[13px] font-medium whitespace-nowrap text-white opacity-0 shadow-float outline-none transition-[opacity,transform,background-color] duration-300 ease-apple group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 hover:bg-abyss-800 focus-visible:translate-y-0 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ice-400"
+          className="absolute right-3 bottom-3 flex h-10 translate-y-1 items-center gap-2 rounded-full bg-primary px-4 text-[13px] font-medium whitespace-nowrap text-primary-foreground opacity-0 shadow-float outline-none transition-[opacity,transform,background-color] duration-300 ease-apple group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 hover:bg-primary-hover focus-visible:translate-y-0 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ice-400"
         >
           <i className="ri-file-copy-line text-[15px] text-ice-300" />
           <span>Copiar termo</span>

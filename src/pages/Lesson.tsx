@@ -94,11 +94,6 @@ export function Lesson() {
             className="relative flex flex-col gap-3 overflow-hidden rounded-[22px] p-5 text-white"
             style={{ background: 'var(--hero-gradient)' }}
           >
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full opacity-50 blur-2xl"
-              style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
-            />
             <div className="relative flex flex-col gap-1">
               <span className="truncate text-[16px] font-medium tracking-[-0.02em]">{course.name}</span>
               {course.author && <span className="truncate text-[12.5px] text-white/55">{course.author}</span>}
@@ -152,7 +147,7 @@ export function Lesson() {
                             onClick={() => navigate(`/cursos/${course.id}/aula/${a.id}`)}
                             className={cn(
                               'flex items-center gap-2.5 rounded-[14px] px-3 py-2 text-left outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ice-200',
-                              current ? 'bg-abyss-950 text-white' : 'text-abyss-700 hover:bg-mist-100',
+                              current ? 'bg-primary text-primary-foreground' : 'text-abyss-700 hover:bg-mist-100',
                             )}
                           >
                             <span
@@ -196,18 +191,13 @@ export function Lesson() {
               src={`https://drive.google.com/file/d/${videoId}/preview`}
               allow="autoplay"
               allowFullScreen
-              className="aspect-video w-full rounded-[28px] bg-abyss-950 shadow-lift"
+              className="aspect-video w-full rounded-[28px] bg-graphite-950 shadow-lift"
             />
           ) : (
             <div
               className="relative flex aspect-video items-center justify-center overflow-hidden rounded-[28px] text-white shadow-lift"
               style={{ background: 'var(--hero-gradient)' }}
             >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full opacity-40 blur-3xl"
-                style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
-              />
               <span className="absolute top-5 left-5 rounded-full border border-white/12 bg-white/[0.07] px-3 py-1 text-[12px] text-white/70 backdrop-blur">
                 Sem link do Drive ainda
               </span>
@@ -250,7 +240,7 @@ export function Lesson() {
                   'flex h-11 items-center gap-2 rounded-full pr-5 pl-4 text-[14px] font-medium whitespace-nowrap outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ice-300',
                   completed
                     ? 'border border-success/30 bg-success/10 text-success hover:bg-success/15'
-                    : 'bg-abyss-950 text-white hover:bg-abyss-800',
+                    : 'bg-primary text-primary-foreground hover:bg-primary-hover',
                 )}
               >
                 <i className={completed ? 'ri-check-line' : 'ri-check-double-line'} style={{ fontSize: 16 }} />
@@ -268,7 +258,7 @@ export function Lesson() {
                 aria-pressed={tab === t}
                 className={cn(
                   'h-9 rounded-full px-4 text-[13px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple focus-visible:ring-4 focus-visible:ring-ice-200',
-                  tab === t ? 'bg-abyss-950 text-white' : 'text-abyss-700 hover:bg-mist-100',
+                  tab === t ? 'bg-primary text-primary-foreground' : 'text-abyss-700 hover:bg-mist-100',
                 )}
               >
                 {t}

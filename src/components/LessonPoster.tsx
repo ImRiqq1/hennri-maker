@@ -48,11 +48,6 @@ export function LessonPoster({
           className="absolute inset-0 overflow-hidden"
           style={{ background: isMaterial ? 'var(--floating-gradient)' : 'var(--hero-gradient)' }}
         >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-16 -right-16 h-44 w-44 rounded-full opacity-50 blur-2xl"
-            style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.65), transparent)' }}
-          />
           <span className="absolute top-4 right-4 left-4 truncate text-[11.5px] text-white/50">{moduleLabel}</span>
           <span
             className="tnum absolute bottom-16 left-3 leading-[0.8] font-light tracking-[-0.07em] text-white/90"
@@ -63,7 +58,7 @@ export function LessonPoster({
         </div>
       )}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-abyss-950/90 via-abyss-950/45 to-transparent" />
-      <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/90 py-1 pr-2.5 pl-1.5 text-[11px] font-medium text-abyss-700 backdrop-blur">
+      <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-surface/90 py-1 pr-2.5 pl-1.5 text-[11px] font-medium text-abyss-700 backdrop-blur">
         <i className={cn(isMaterial ? 'ri-file-zip-line' : 'ri-play-circle-line', 'text-[12px] text-abyss-500')} />
         {isMaterial ? 'Material' : 'Aula'}
       </span>

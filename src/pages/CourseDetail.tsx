@@ -137,23 +137,17 @@ export function CourseDetail() {
         className="relative mb-14 flex min-h-[440px] flex-col justify-end overflow-hidden rounded-[36px] text-white shadow-lift"
         style={{ background: 'var(--hero-gradient)' }}
       >
-        {cover ? (
+        {cover && (
           <>
             <img src={cover} alt="" className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-abyss-950 via-abyss-950/60 to-abyss-950/10" />
           </>
-        ) : (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-40 -right-32 h-[520px] w-[520px] rounded-full opacity-45 blur-3xl"
-            style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
-          />
         )}
 
         <div className="relative flex flex-wrap items-end justify-between gap-8 p-10">
           <div className="flex min-w-0 flex-col gap-4">
             {course.author && (
-              <span className="w-fit rounded-full border border-white/12 bg-white/[0.07] px-3 py-1 text-[12.5px] font-medium text-ice-200 backdrop-blur">
+              <span className="w-fit rounded-full border border-white/12 bg-white/[0.07] px-3 py-1 text-[12.5px] font-medium text-ice-300 backdrop-blur">
                 {course.author}
               </span>
             )}
@@ -181,9 +175,9 @@ export function CourseDetail() {
                 type="button"
                 onClick={() => nextItem && navigate(`/cursos/${course.id}/aula/${nextItem.id}`)}
                 disabled={!nextItem}
-                className="flex h-12 items-center gap-2 rounded-full bg-white pr-6 pl-4 text-[14.5px] font-medium whitespace-nowrap text-abyss-950 outline-none transition-[background-color,transform] hover:bg-ice-100 focus-visible:ring-2 focus-visible:ring-ice-400 active:scale-[0.98] disabled:opacity-40"
+                className="flex h-12 items-center gap-2 rounded-full bg-white pr-6 pl-4 text-[14.5px] font-medium whitespace-nowrap text-abyss-950 outline-none transition-[background-color,transform] hover:bg-[#eaf7fb] focus-visible:ring-2 focus-visible:ring-ice-400 active:scale-[0.98] disabled:opacity-40"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-abyss-950 text-white">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
                   <i className="ri-play-fill text-[15px]" />
                 </span>
                 <span>Continuar</span>
@@ -274,7 +268,7 @@ export function CourseDetail() {
                         type="button"
                         onClick={() => toggleModule(mod.id)}
                         title={isOpen ? 'Fechar módulo' : 'Abrir módulo'}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-abyss-950 text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300"
+                        className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground outline-none transition-colors hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ice-300"
                       >
                         <i
                           className={`ri-arrow-down-s-line text-[18px] transition-transform duration-300 ease-apple ${isOpen ? 'rotate-180' : ''}`}
@@ -307,7 +301,7 @@ export function CourseDetail() {
                                 : flash('Arquivo baixado')
                             }
                           />
-                          <div className="absolute bottom-[88px] left-1/2 flex -translate-x-1/2 gap-1 rounded-full bg-white/90 p-1 opacity-0 shadow-float backdrop-blur transition-opacity group-hover/item:opacity-100">
+                          <div className="absolute bottom-[88px] left-1/2 flex -translate-x-1/2 gap-1 rounded-full bg-surface/90 p-1 opacity-0 shadow-float backdrop-blur transition-opacity group-hover/item:opacity-100">
                             <button
                               type="button"
                               onClick={() => moveItem(mod, item.id, -1)}
@@ -375,7 +369,7 @@ export function CourseDetail() {
               <button
                 type="button"
                 onClick={addModule}
-                className="h-11 rounded-full bg-abyss-950 px-5 text-[14px] font-medium text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300"
+                className="h-11 rounded-full bg-primary px-5 text-[14px] font-medium text-primary-foreground outline-none transition-colors hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ice-300"
               >
                 Adicionar
               </button>

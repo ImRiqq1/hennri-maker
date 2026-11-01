@@ -75,16 +75,11 @@ export function ReferenceViewer({
                 className="relative flex flex-col gap-5 overflow-hidden rounded-[22px] p-5 text-white"
                 style={{ background: 'var(--hero-gradient)' }}
               >
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute -top-16 -right-12 h-44 w-44 rounded-full opacity-40 blur-3xl"
-                  style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
-                />
-                <span className="relative font-code text-[14px] leading-[1.55] break-words text-ice-100">{reference.term}</span>
+                <span className="relative font-code text-[14px] leading-[1.55] break-words text-ice-300">{reference.term}</span>
                 <button
                   type="button"
                   onClick={onCopy}
-                  className="relative flex h-10 items-center gap-2 self-start rounded-full bg-white px-4 text-[13.5px] font-medium whitespace-nowrap text-abyss-950 outline-none transition-colors hover:bg-ice-100 focus-visible:ring-2 focus-visible:ring-ice-400"
+                  className="relative flex h-10 items-center gap-2 self-start rounded-full bg-white px-4 text-[13.5px] font-medium whitespace-nowrap text-abyss-950 outline-none transition-colors hover:bg-[#eaf7fb] focus-visible:ring-2 focus-visible:ring-ice-400"
                 >
                   <i className="ri-file-copy-line text-[15px] text-abyss-500" />
                   <span>Copiar termo</span>

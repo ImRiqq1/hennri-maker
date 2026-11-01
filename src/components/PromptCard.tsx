@@ -38,7 +38,7 @@ export function PromptCard({
           </div>
         )}
 
-        <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11.5px] font-medium text-abyss-700 shadow-soft backdrop-blur">
+        <span className="absolute top-3 left-3 rounded-full bg-surface/90 px-2.5 py-1 text-[11.5px] font-medium text-abyss-700 shadow-soft backdrop-blur">
           {prompt.category}
         </span>
 
@@ -53,7 +53,7 @@ export function PromptCard({
               onDownload()
             }}
             disabled={!image}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-abyss-950 shadow-soft outline-none backdrop-blur transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-surface/90 text-abyss-950 shadow-soft outline-none backdrop-blur transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-40"
           >
             <i className="ri-arrow-down-line text-[17px]" />
           </button>
@@ -65,7 +65,7 @@ export function PromptCard({
               e.stopPropagation()
               onCopy()
             }}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-abyss-950 text-white shadow-soft outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-soft outline-none transition-colors hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ice-300"
           >
             <i className="ri-file-copy-line text-[16px]" />
           </button>

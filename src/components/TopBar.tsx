@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import type { SearchResult } from '../lib/types'
 import { cn } from '../lib/utils'
+import { FRAME_ICON_BUTTON, SettingsMenu } from './SettingsMenu'
 
 const NAV = [
   { to: '/', label: 'Início', icon: 'ri-home-5-line', match: '/' },
@@ -92,9 +93,9 @@ export function TopBar() {
       {/* aba do painel com o logo */}
       <Link
         to="/"
-        className="relative flex w-[92px] flex-none items-center gap-3 rounded-t-[32px] md:w-[232px] bg-canvas px-7 outline-none"
+        className="relative flex w-[92px] flex-none items-center gap-3 rounded-t-[32px] bg-canvas px-7 md:w-[232px] outline-none"
       >
-        <img src="/brand/wordmark-white.png" alt="HENNRI" className="block h-[17px] w-auto invert" />
+        <img src="/brand/wordmark-white.png" alt="HENNRI" className="block h-[17px] w-auto [filter:var(--logo-filter)]" />
         <span className="hidden h-4 w-px bg-mist-300 md:block" />
         <span className="hidden text-[13px] font-medium tracking-[-0.01em] text-abyss-600 md:inline">IA Maker</span>
         {/* curva côncava que liga a aba ao painel */}
@@ -110,7 +111,7 @@ export function TopBar() {
       </Link>
 
       <div className="flex min-w-0 flex-1 items-center justify-between gap-3 pr-1 pb-3 pl-8 xl:gap-6 xl:pl-10">
-        <nav className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.06] p-1 backdrop-blur-md">
+        <nav className="flex items-center gap-1 rounded-full border border-[var(--nav-group-border)] bg-[var(--nav-group-bg)] p-1 shadow-[0_10px_28px_-18px_rgb(0_0_0/0.45)] backdrop-blur-md">
           {NAV.map((item) => {
             const active = item.match === '/' ? location.pathname === '/' : location.pathname.startsWith(item.match)
             return (
@@ -121,11 +122,11 @@ export function TopBar() {
                   'flex h-10 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium outline-none transition-[background-color,color] duration-300 ease-apple',
                   'focus-visible:ring-2 focus-visible:ring-ice-400',
                   active
-                    ? 'bg-white text-abyss-950 shadow-[0_6px_16px_-8px_rgb(0_0_0/0.5)]'
-                    : 'text-white/60 hover:bg-white/[0.07] hover:text-white',
+                    ? 'bg-[var(--nav-active-bg)] text-[var(--nav-active-text)] shadow-[0_6px_16px_-8px_rgb(0_0_0/0.5)]'
+                    : 'text-[var(--nav-text)] hover:bg-[var(--nav-hover-bg)] hover:text-[var(--nav-text-hover)]',
                 )}
               >
-                <i className={cn(item.icon, 'text-[16px] leading-none', active ? 'text-abyss-500' : '')} />
+                <i className={cn(item.icon, 'text-[16px] leading-none', active ? 'text-[var(--nav-active-icon)]' : '')} />
                 <span className="hidden lg:inline">{item.label}</span>
               </Link>
             )
@@ -136,9 +137,9 @@ export function TopBar() {
           <div ref={wrapRef} className="relative w-[200px] xl:w-[320px]">
             <div
               onClick={() => inputRef.current?.focus()}
-              className="flex h-12 cursor-text items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.06] px-4 backdrop-blur-md transition-[border-color,background-color] focus-within:border-ice-400/70 focus-within:bg-white/[0.1]"
+              className="flex h-12 cursor-text items-center gap-2.5 rounded-full border border-[var(--frame-field-border)] bg-[var(--frame-field-bg)] px-4 backdrop-blur-md transition-[border-color,box-shadow] focus-within:border-ice-400/70 focus-within:ring-4 focus-within:ring-ice-400/15"
             >
-              <i className="ri-search-line flex-none text-[16px] text-white/50" />
+              <i className="ri-search-line flex-none text-[16px] text-[var(--frame-field-muted)]" />
               <input
                 ref={inputRef}
                 value={query}
@@ -146,9 +147,9 @@ export function TopBar() {
                 onFocus={() => results.length > 0 && setOpen(true)}
                 onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
                 placeholder="Buscar em tudo"
-                className="w-full flex-1 bg-transparent text-[14px] text-white outline-none placeholder:text-white/40"
+                className="w-full flex-1 bg-transparent text-[14px] text-[var(--frame-field-text)] outline-none placeholder:text-[var(--frame-field-muted)]"
               />
-              <kbd className="flex-none rounded-md border border-white/12 px-1.5 py-0.5 font-sans text-[10.5px] font-medium text-white/50">
+              <kbd className="flex-none rounded-md border border-[var(--frame-field-border)] px-1.5 py-0.5 font-sans text-[10.5px] font-medium text-[var(--frame-field-muted)]">
                 Ctrl K
               </kbd>
             </div>
@@ -183,12 +184,13 @@ export function TopBar() {
             )}
           </div>
 
+          <SettingsMenu />
           <button
             type="button"
             onClick={logout}
             title="Sair"
             aria-label="Sair"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 outline-none transition-colors hover:bg-white/[0.12] hover:text-white focus-visible:ring-2 focus-visible:ring-ice-400"
+            className={FRAME_ICON_BUTTON}
           >
             <i className="ri-logout-circle-r-line text-[18px]" />
           </button>

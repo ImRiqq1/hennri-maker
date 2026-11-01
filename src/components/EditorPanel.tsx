@@ -69,7 +69,7 @@ export function EditorPanel({
             type="button"
             onClick={onSave}
             disabled={saveDisabled}
-            className="h-10 rounded-full bg-abyss-950 px-5 text-[14px] font-medium text-white outline-none transition-colors hover:bg-abyss-800 focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-35"
+            className="h-10 rounded-full bg-primary px-5 text-[14px] font-medium text-primary-foreground outline-none transition-colors hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-35"
           >
             {saveLabel}
           </button>

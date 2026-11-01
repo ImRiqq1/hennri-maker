@@ -23,8 +23,8 @@ export function Chip({
         'focus-visible:ring-4 focus-visible:ring-ice-200',
         className,
         active
-          ? 'bg-abyss-950 text-white shadow-[0_6px_14px_-8px_rgb(4_26_33/0.7)]'
-          : 'text-abyss-700 hover:bg-mist-100 hover:text-abyss-950',
+          ? 'bg-primary text-primary-foreground shadow-[0_6px_14px_-8px_rgb(4_26_33/0.7)]'
+          : 'text-abyss-700 hover:bg-mist-100 hover:text-fg',
       )}
     >
       {children}

@@ -17,7 +17,7 @@ export function SkillRow({ skill, index, onOpen }: { skill: Skill; index: number
       <span className="rounded-full bg-ice-100 px-3 py-1 text-[12px] font-medium whitespace-nowrap text-abyss-600">
         {skill.category}
       </span>
-      <span className="flex h-9 w-9 items-center justify-center rounded-full border border-mist-200 text-abyss-700 transition-[background-color,color,border-color] duration-300 group-hover:border-abyss-950 group-hover:bg-abyss-950 group-hover:text-white">
+      <span className="flex h-9 w-9 items-center justify-center rounded-full border border-mist-200 text-abyss-700 transition-[background-color,color,border-color] duration-300 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
         <i className="ri-arrow-right-up-line text-[16px]" />
       </span>
     </div>

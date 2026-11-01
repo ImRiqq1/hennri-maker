@@ -114,11 +114,6 @@ export function Home() {
           className="relative flex min-h-[420px] flex-col overflow-hidden rounded-[36px] p-8 text-white shadow-lift xl:col-span-7"
           style={{ background: 'var(--hero-gradient)' }}
         >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-36 -right-28 h-[460px] w-[460px] rounded-full opacity-40 blur-3xl"
-            style={{ background: 'radial-gradient(closest-side, rgba(79,170,194,0.7), transparent)' }}
-          />
 
           <div className="relative flex items-center justify-between">
             <span className="flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.07] py-1.5 pr-3.5 pl-2 text-[13px] font-medium backdrop-blur">
@@ -131,7 +126,7 @@ export function Home() {
               type="button"
               onClick={() => navigate('/prompts')}
               aria-label="Abrir prompts"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/14 text-white/80 outline-none transition-colors hover:bg-white hover:text-abyss-950 focus-visible:ring-2 focus-visible:ring-ice-400"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/14 text-white/80 outline-none transition-colors hover:bg-white hover:text-fg focus-visible:ring-2 focus-visible:ring-ice-400"
             >
               <i className="ri-arrow-right-up-line text-[18px]" />
             </button>
@@ -172,7 +167,7 @@ export function Home() {
             <button
               type="button"
               onClick={() => navigate('/prompts')}
-              className="flex h-11 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-medium text-abyss-950 outline-none transition-transform hover:bg-ice-100 focus-visible:ring-2 focus-visible:ring-ice-400 active:scale-[0.98]"
+              className="flex h-11 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-medium text-abyss-950 outline-none transition-transform hover:bg-[#eaf7fb] focus-visible:ring-2 focus-visible:ring-ice-400 active:scale-[0.98]"
             >
               Abrir acervo
             </button>
@@ -196,7 +191,7 @@ export function Home() {
                 type="button"
                 onClick={() => navigate('/referencias/camera')}
                 aria-label="Abrir referências"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-mist-200 text-abyss-700 outline-none transition-colors hover:bg-abyss-950 hover:text-white focus-visible:ring-4 focus-visible:ring-ice-200"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-mist-200 text-abyss-700 outline-none transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:ring-4 focus-visible:ring-ice-200"
               >
                 <i className="ri-arrow-right-up-line text-[17px]" />
               </button>
@@ -239,14 +234,14 @@ export function Home() {
             </div>
             <div className="mt-4 h-3 overflow-hidden rounded-full" style={{ backgroundImage: HATCH_LIGHT }}>
               <div
-                className="h-full rounded-full bg-abyss-950 transition-[width] duration-700 ease-apple"
+                className="h-full rounded-full bg-primary transition-[width] duration-700 ease-apple"
                 style={{ width: `${Math.max(lessonsPct, lessonsTotal ? 4 : 0)}%` }}
               />
             </div>
             <button
               type="button"
               onClick={() => navigate('/cursos')}
-              className="mt-5 flex h-10 items-center justify-center gap-2 self-start rounded-full border border-mist-200 px-4 text-[13.5px] font-medium text-abyss-700 outline-none transition-colors hover:bg-abyss-950 hover:text-white focus-visible:ring-4 focus-visible:ring-ice-200"
+              className="mt-5 flex h-10 items-center justify-center gap-2 self-start rounded-full border border-mist-200 px-4 text-[13.5px] font-medium text-abyss-700 outline-none transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:ring-4 focus-visible:ring-ice-200"
             >
               Ver cursos
               <i className="ri-arrow-right-line text-[15px]" />
@@ -284,11 +279,11 @@ export function Home() {
                     />
                   ) : null}
                   <i className={`${kind.icon} text-[30px] text-abyss-500/35`} />
-                  <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/90 py-1 pr-2.5 pl-1.5 text-[11.5px] font-medium text-abyss-700 shadow-soft backdrop-blur">
+                  <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-surface/90 py-1 pr-2.5 pl-1.5 text-[11.5px] font-medium text-abyss-700 shadow-soft backdrop-blur">
                     <i className={`${kind.icon} text-[12px] text-abyss-500`} />
                     {kind.label}
                   </span>
-                  <span className="absolute right-3 bottom-3 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full bg-abyss-950 text-white opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <span className="absolute right-3 bottom-3 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full bg-primary text-primary-foreground opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                     <i className="ri-arrow-right-up-line text-[16px]" />
                   </span>
                 </div>

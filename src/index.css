@@ -43,7 +43,7 @@
   --danger: #d2615a;
 
   /* Gradientes */
-  --hero-gradient: radial-gradient(120% 140% at 0% 0%, #1f4a5e 0%, #0b3341 38%, #072630 68%, #041a21 100%);
+  --hero-gradient: linear-gradient(160deg, #1f4a5e 0%, #0b3341 38%, #072630 70%, #041a21 100%);
   --floating-gradient: linear-gradient(180deg, #3d4347 0%, #2c3135 100%);
 
   /* ---------- Papéis usados pelos componentes ---------- */
@@ -74,6 +74,87 @@
   --input: var(--mist-200);
   --ring: var(--ice-500);
   --radius: 14px;
+  --primary-hover: var(--abyss-800);
+
+  /* ---------- Moldura e menu do topo ---------- */
+  --frame-bg: var(--hero-gradient);
+  --logo-filter: invert(1); /* logo branco na aba clara */
+  --nav-group-bg: rgb(255 255 255 / 0.06);
+  --nav-group-border: rgb(255 255 255 / 0.1);
+  --nav-text: rgb(255 255 255 / 0.6);
+  --nav-text-hover: #ffffff;
+  --nav-hover-bg: rgb(255 255 255 / 0.07);
+  --nav-active-bg: #ffffff;
+  --nav-active-text: var(--abyss-950);
+  --nav-active-icon: var(--abyss-500);
+  --frame-field-bg: rgb(255 255 255 / 0.06);
+  --frame-field-border: rgb(255 255 255 / 0.1);
+  --frame-field-text: #ffffff;
+  --frame-field-muted: rgb(255 255 255 / 0.5);
+
+  --shadow-soft-v: 0 1px 2px rgb(4 26 33 / 0.04), 0 10px 30px -18px rgb(4 26 33 / 0.22);
+  --shadow-lift-v: 0 2px 4px rgb(4 26 33 / 0.05), 0 22px 44px -22px rgb(4 26 33 / 0.32);
+  color-scheme: light;
+}
+
+/* ---------- Tema Claro: tudo claro e arejado ---------- */
+:root[data-theme='claro'] {
+  --canvas: #f7f9fa;
+  --well: var(--mist-100);
+  --frame-bg: linear-gradient(160deg, #e8edf0 0%, #dfe6ea 55%, #d6dfe4 100%);
+  --nav-group-bg: #ffffff;
+  --nav-group-border: var(--mist-200);
+  --nav-text: var(--mist-500);
+  --nav-text-hover: var(--abyss-950);
+  --nav-hover-bg: var(--mist-100);
+  --nav-active-bg: var(--abyss-950);
+  --nav-active-text: #ffffff;
+  --nav-active-icon: var(--ice-300);
+  --frame-field-bg: #ffffff;
+  --frame-field-border: var(--mist-200);
+  --frame-field-text: var(--abyss-950);
+  --frame-field-muted: var(--mist-500);
+}
+
+/* ---------- Tema Escuro: grafite com destaques Ice ---------- */
+:root[data-theme='escuro'] {
+  --mist-50: #22272a;
+  --mist-100: #282d31;
+  --mist-200: #33393d;
+  --mist-300: #454c51;
+  --mist-400: #6c767b;
+  --mist-500: #9aa4a9;
+  --ice-50: #172a30;
+  --ice-100: #1b3540;
+  --ice-200: #24505f;
+  --abyss-500: #86cbdd;
+  --abyss-600: #b4e2ee;
+  --abyss-700: #c9d1d6;
+
+  --hero-gradient: linear-gradient(160deg, #3d4347 0%, #2c3135 45%, #1f2326 100%);
+  --canvas: #16191b;
+  --surface: #1f2326;
+  --well: #282d31;
+  --fg: #eef2f4;
+  --sub: #9aa4a9;
+  --primary: var(--ice-400);
+  --primary-foreground: #041a21;
+  --primary-hover: var(--ice-300);
+
+  --frame-bg: linear-gradient(180deg, #1a1d20 0%, #101214 100%);
+  --logo-filter: none;
+  --nav-group-bg: #ffffff;
+  --nav-group-border: #ffffff;
+  --nav-text: var(--graphite-600);
+  --nav-text-hover: var(--graphite-950);
+  --nav-hover-bg: #eef2f4;
+  --nav-active-bg: var(--ice-400);
+  --nav-active-text: #041a21;
+  --nav-active-icon: #041a21;
+
+  --shadow-soft-v: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 30px -18px rgb(0 0 0 / 0.7);
+  --shadow-lift-v: 0 2px 6px rgb(0 0 0 / 0.35), 0 24px 48px -22px rgb(0 0 0 / 0.85);
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -130,8 +211,10 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --shadow-soft: 0 1px 2px rgb(4 26 33 / 0.04), 0 10px 30px -18px rgb(4 26 33 / 0.22);
-  --shadow-lift: 0 2px 4px rgb(4 26 33 / 0.05), 0 22px 44px -22px rgb(4 26 33 / 0.32);
+  --color-primary-hover: var(--primary-hover);
+
+  --shadow-soft: var(--shadow-soft-v);
+  --shadow-lift: var(--shadow-lift-v);
   --shadow-float: 0 12px 32px -10px rgb(22 25 27 / 0.45), inset 0 1px 0 rgb(255 255 255 / 0.06);
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -197,4 +280,12 @@
 /* tabular nos números grandes */
 @utility tnum {
   font-variant-numeric: tabular-nums;
+}
+
+/* blocos escuros: fio de luz fino na borda de cima, no lugar de brilhos */
+[style*='--hero-gradient'] {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    inset 0 0 0 1px rgb(255 255 255 / 0.04),
+    var(--shadow-lift-v);
 }
