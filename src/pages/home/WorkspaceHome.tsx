@@ -91,7 +91,7 @@ export function WorkspaceHome() {
     { title: 'Skills', sub: `${a.skills.length} skills catalogadas`, icon: 'ri-stack-line', tone: 'abyss' as const, to: '/skills' },
     {
       title: 'Referências',
-      sub: `${a.references.length} termos de câmera, cena e luz`,
+      sub: `${a.references.length} termos salvos`,
       icon: 'ri-camera-lens-line',
       tone: 'mist' as const,
       to: '/referencias/camera',

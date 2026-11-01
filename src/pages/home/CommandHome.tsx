@@ -9,7 +9,7 @@ import { cn } from '../../lib/utils'
 
 const GLASS = 'rounded-[28px] border border-white/[0.08] bg-white/[0.035] shadow-[inset_0_1px_0_rgb(255_255_255/0.05)]'
 const STRIPES = 'repeating-linear-gradient(-45deg, var(--ice-400) 0 4px, var(--ice-300) 4px 8px)'
-const NOTCH = 22
+const NOTCH = 20
 
 type Tab = 'todos' | AcervoKind
 type Period = 'tudo' | '7' | '30' | '90'
@@ -241,9 +241,9 @@ export function CommandHome() {
       </div>
 
       {/* Painel branco com as abas recortadas no topo */}
-      <section className="relative mt-5 rounded-[32px] bg-canvas p-5 pt-12 text-fg">
+      <section className="relative mt-5 rounded-[32px] bg-canvas p-5 pt-[84px] text-fg">
         <div
-          className="absolute top-0 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-b-[24px] px-2 pt-0 pb-2"
+          className="absolute top-0 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-b-[20px] px-2.5 pt-2.5 pb-2.5"
           style={{ background: COMMAND_BG }}
         >
           <span

@@ -34,7 +34,7 @@ export function CommandShell({ children }: { children: ReactNode }) {
         className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[34px] border border-white/[0.06] shadow-[0_40px_80px_-30px_rgb(0_0_0/0.8)]"
         style={{ background: COMMAND_BG }}
       >
-        <header className="flex h-[84px] flex-none items-center gap-3 px-6">
+        <header className="flex h-[84px] flex-none items-center gap-3 pr-8 pl-6">
           <Link to="/" className="mr-2 flex items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-ice-400">
             <i className="ri-asterisk text-[22px] text-white" />
             <img src="/brand/wordmark-white.png" alt="HENNRI" className="hidden h-[15px] w-auto xl:block" />
@@ -56,7 +56,6 @@ export function CommandShell({ children }: { children: ReactNode }) {
                     active ? 'bg-ice-400 text-abyss-950' : 'text-graphite-600 hover:bg-mist-100 hover:text-graphite-950',
                   )}
                 >
-                  {active && <i className="ri-add-line mr-1 text-[14px]" />}
                   {item.label}
                 </Link>
               )
@@ -88,7 +87,7 @@ export function CommandShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main id="page-scroll" className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+        <main id="page-scroll" className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto [scrollbar-gutter:stable]">
           {isHome ? (
             <div className="mx-auto w-full max-w-[1520px] px-6 pt-2 pb-10">{children}</div>
           ) : (

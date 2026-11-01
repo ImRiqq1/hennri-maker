@@ -13,6 +13,10 @@ function newAction(pathname: string) {
   return { label: 'Novo prompt', to: '/prompts?new=1' }
 }
 
+/** cores da onda (Abyss 600 → 800) */
+const WAVE_TOP = '#1d5770'
+const WAVE_BOTTOM = '#0b3341'
+
 const RAIL_BUTTON =
   'flex h-11 w-11 items-center justify-center rounded-[14px] outline-none transition-[background-color,color,box-shadow] duration-300 ease-apple focus-visible:ring-2 focus-visible:ring-ice-300'
 
@@ -29,62 +33,61 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-screen bg-[#dfe6ea] p-4 text-fg">
       <div className="relative flex min-w-0 flex-1 overflow-hidden rounded-[40px] bg-canvas shadow-[0_40px_80px_-40px_rgb(4_26_33/0.35)]">
-        {/* barra lateral */}
-        <aside className="relative flex w-[92px] flex-none flex-col items-center py-6">
-          <svg
-            aria-hidden
-            viewBox="0 0 92 800"
-            preserveAspectRatio="none"
-            className="pointer-events-none absolute inset-y-0 left-0 h-full w-full"
-          >
-            <defs>
-              <linearGradient id="ws-wave" x1="0" y1="0" x2="0.4" y2="1">
-                <stop offset="0" stopColor="#1d5770" />
-                <stop offset="1" stopColor="#072630" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M0 150 C0 150 2 196 40 206 C66 213 74 226 74 260 L74 610 C74 644 66 657 40 664 C2 674 0 720 0 720 Z"
-              fill="url(#ws-wave)"
-            />
-          </svg>
+        {/* barra lateral: tudo centrado no mesmo eixo (coluna de 76px) */}
+        <aside className="relative flex w-[88px] flex-none flex-col">
+          <div className="flex h-[84px] w-[76px] flex-none items-center justify-center">
+            <Link
+              to="/"
+              title="HENNRI IA Maker"
+              className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-primary shadow-soft outline-none focus-visible:ring-2 focus-visible:ring-ice-300"
+            >
+              <img src="/brand/iso-white.png" alt="HENNRI" className="h-3.5 w-auto" />
+            </Link>
+          </div>
 
-          <Link
-            to="/"
-            title="HENNRI IA Maker"
-            className="relative flex h-12 w-12 items-center justify-center rounded-[16px] bg-primary shadow-soft outline-none focus-visible:ring-2 focus-visible:ring-ice-300"
-          >
-            <img src="/brand/iso-white.png" alt="HENNRI" className="h-3.5 w-auto" />
-          </Link>
+          {/* onda Abyss: curvas de tamanho fixo em cima e embaixo, corpo reto no meio */}
+          <div className="flex min-h-0 flex-1 items-center">
+            <div className="flex w-[76px] flex-col">
+              <svg aria-hidden viewBox="0 0 76 56" className="-mb-px block h-[56px] w-[76px]">
+                <path d="M0 0 C0 34 76 22 76 56 L0 56 Z" fill={WAVE_TOP} />
+              </svg>
+              <nav
+                className="flex flex-col items-center gap-2.5 py-3"
+                style={{ background: `linear-gradient(180deg, ${WAVE_TOP} 0%, ${WAVE_BOTTOM} 100%)` }}
+              >
+                {NAV.map((item) => {
+                  const active = isNavActive(location.pathname, item.match)
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      aria-label={item.label}
+                      className={cn(
+                        'group/rail relative',
+                        RAIL_BUTTON,
+                        active
+                          ? 'bg-white text-abyss-700 shadow-[0_8px_18px_-8px_rgb(0_0_0/0.45)]'
+                          : 'text-white/65 hover:bg-white/12 hover:text-white',
+                      )}
+                    >
+                      <i className={cn(active ? item.activeIcon : item.icon, 'text-[19px]')} />
+                      <span
+                        className="pointer-events-none absolute left-full z-20 ml-5 rounded-full px-3 py-1.5 text-[12.5px] font-medium whitespace-nowrap text-white opacity-0 shadow-float transition-[opacity,transform] duration-200 group-hover/rail:translate-x-0.5 group-hover/rail:opacity-100"
+                        style={{ background: 'var(--floating-gradient)' }}
+                      >
+                        {item.label}
+                      </span>
+                    </Link>
+                  )
+                })}
+              </nav>
+              <svg aria-hidden viewBox="0 0 76 56" className="-mt-px block h-[56px] w-[76px]">
+                <path d="M0 0 L76 0 C76 34 0 22 0 56 Z" fill={WAVE_BOTTOM} />
+              </svg>
+            </div>
+          </div>
 
-          <nav className="relative mt-[150px] flex flex-col items-center gap-2.5 pr-[18px]">
-            {NAV.map((item) => {
-              const active = isNavActive(location.pathname, item.match)
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  aria-label={item.label}
-                  className={cn(
-                    'group/rail relative',
-                    RAIL_BUTTON,
-                    active
-                      ? 'bg-white text-abyss-700 shadow-[0_8px_18px_-8px_rgb(0_0_0/0.45)]'
-                      : 'text-white/65 hover:bg-white/12 hover:text-white',
-                  )}
-                >
-                  <i className={cn(active ? item.activeIcon : item.icon, 'text-[19px]')} />
-                  <span className="pointer-events-none absolute left-full z-20 ml-4 rounded-full px-3 py-1.5 text-[12.5px] font-medium whitespace-nowrap text-white opacity-0 shadow-float transition-[opacity,transform] duration-200 group-hover/rail:translate-x-0.5 group-hover/rail:opacity-100" style={{ background: 'var(--floating-gradient)' }}>
-                    {item.label}
-                  </span>
-                </Link>
-              )
-            })}
-          </nav>
-
-          <div className="flex-1" />
-
-          <div className="relative flex flex-col items-center gap-2">
+          <div className="flex w-[76px] flex-none flex-col items-center gap-2 pb-[18px]">
             <SettingsMenu
               align="left"
               buttonClassName={cn(RAIL_BUTTON, 'border border-mist-200 bg-surface text-sub hover:text-fg')}
@@ -103,7 +106,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
 
         {/* topo + conteúdo */}
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-[84px] flex-none items-center justify-between gap-6 pr-8 pl-4">
+          <header className="flex h-[84px] flex-none items-center justify-between gap-6 pr-10 pl-4">
             <div className="flex items-center gap-6">
               <span className="flex items-center gap-2 text-[14px] font-semibold text-fg">
                 <i className={cn(current.activeIcon, 'text-[17px] text-abyss-600')} />
@@ -134,7 +137,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             </button>
           </header>
 
-          <main id="page-scroll" className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+          <main id="page-scroll" className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto [scrollbar-gutter:stable]">
             <div className="mx-auto w-full max-w-[1480px] px-4 pt-2 pb-12 pr-8">{children}</div>
           </main>
         </div>
