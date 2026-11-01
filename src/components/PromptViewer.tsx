@@ -88,7 +88,7 @@ export function PromptViewer({
 
       <DialogContent
         showCloseButton={false}
-        className="flex max-h-[90vh] w-[min(1160px,calc(100%-2rem))] max-w-none flex-col gap-0 overflow-hidden rounded-[32px] border border-mist-200 bg-surface p-0 shadow-lift ring-0 sm:max-w-none"
+        className="flex max-h-[90vh] w-[min(1160px,calc(100%-2rem))] max-w-none flex-col gap-0 overflow-hidden rounded-[var(--r-panel)] border border-mist-200 bg-surface p-0 shadow-lift ring-0 sm:max-w-none"
       >
         <DialogTitle className="sr-only">{prompt.title}</DialogTitle>
 
@@ -99,13 +99,13 @@ export function PromptViewer({
               <div className="flex h-[52vh] min-h-0 gap-3 lg:h-auto lg:flex-1">
                 <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
                   <span className="flex-none pl-1 text-[12px] text-sub">Referência</span>
-                  <div className="min-h-0 flex-1 overflow-hidden rounded-[22px] bg-surface">
+                  <div className="min-h-0 flex-1 overflow-hidden rounded-[var(--r-inner)] bg-surface">
                     <img src={refImage} alt="" className="h-full w-full object-contain" />
                   </div>
                 </div>
                 <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
                   <span className="flex-none pl-1 text-[12px] text-sub">Resultado</span>
-                  <div className="min-h-0 flex-1 overflow-hidden rounded-[22px] bg-surface">
+                  <div className="min-h-0 flex-1 overflow-hidden rounded-[var(--r-inner)] bg-surface">
                     {image ? (
                       <img src={image} alt={prompt.title} className="h-full w-full object-contain" />
                     ) : (
@@ -120,18 +120,18 @@ export function PromptViewer({
             ) : (
               <div className="flex h-[52vh] min-h-0 items-center justify-center lg:h-auto lg:flex-1">
                 {image ? (
-                  <img src={image} alt={prompt.title} className="h-full w-auto max-w-full rounded-[22px] object-contain" />
+                  <img src={image} alt={prompt.title} className="h-full w-auto max-w-full rounded-[var(--r-inner)] object-contain" />
                 ) : (
                   <ImagePlaceholder
                     aspect={prompt.aspect_ratio}
-                    className="flex aspect-3/4 h-full flex-col items-center justify-center gap-2 rounded-[22px] bg-gradient-to-br from-mist-100 to-ice-100"
+                    className="flex aspect-3/4 h-full flex-col items-center justify-center gap-2 rounded-[var(--r-inner)] bg-gradient-to-br from-mist-100 to-ice-100"
                   />
                 )}
               </div>
             )}
 
             {extraImage && (
-              <div className="flex flex-none items-center gap-3.5 rounded-[22px] bg-surface p-3">
+              <div className="flex flex-none items-center gap-3.5 rounded-[var(--r-inner)] bg-surface p-3">
                 <img src={extraImage} alt="" className="h-16 w-auto rounded-xl object-contain" />
                 <span className="text-[12px] text-sub">Material de apoio</span>
               </div>

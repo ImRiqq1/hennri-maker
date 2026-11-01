@@ -108,7 +108,7 @@ export function Skills() {
           action={newButton}
         />
       ) : (
-        <div className="stagger overflow-hidden rounded-[32px] border border-mist-200 bg-surface p-2 shadow-soft">
+        <div className="stagger overflow-hidden rounded-[var(--r-panel)] border border-mist-200 bg-surface p-2 shadow-soft">
           {visible.map((s, i) => (
             <SkillRow key={s.id} skill={s} index={i + 1} onOpen={() => setOpenId(s.id)} />
           ))}

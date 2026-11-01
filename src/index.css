@@ -76,6 +76,22 @@
   --radius: 14px;
   --primary-hover: var(--abyss-800);
 
+  /* ---------- Formas e títulos (cada design system muda estes valores) ---------- */
+  --r-panel: 32px; /* blocos grandes */
+  --r-card: 28px; /* cards */
+  --r-inner: 22px; /* áreas dentro de cards (imagem, campos grandes) */
+  --r-control: 999px; /* botões, filtros, pílulas */
+  --title-size: clamp(52px, 5.6vw, 84px);
+  --title-weight: 300;
+  --title-track: -0.05em;
+  --chipgroup-bg: var(--surface);
+  --chipgroup-border: var(--mist-200);
+  --chip-text: var(--abyss-700);
+  --chip-text-hover: var(--fg);
+  --chip-hover-bg: var(--mist-100);
+  --chip-active-bg: var(--primary);
+  --chip-active-text: var(--primary-foreground);
+
   /* ---------- Moldura e menu do topo ---------- */
   --frame-bg: var(--hero-gradient);
   --logo-filter: invert(1); /* logo branco na aba clara */
@@ -290,9 +306,37 @@
     var(--shadow-lift-v);
 }
 
-/* ---------- Design system Workspace: quadro claro ---------- */
+/* ---------- Design system Workspace: quadro claro, cantos menores, títulos em negrito ---------- */
 :root[data-ds='workspace'] {
   --canvas: #f6f8f9;
+  --r-panel: 26px;
+  --r-card: 22px;
+  --r-inner: 16px;
+  --r-control: 12px;
+  --title-size: clamp(32px, 2.8vw, 42px);
+  --title-weight: 600;
+  --title-track: -0.035em;
+}
+/* no Workspace o botão "+ Novo" já fica no topo; não repete no cabeçalho da página */
+:root[data-ds='workspace'] [data-page-actions] {
+  display: none;
+}
+
+/* ---------- Design system Command: filtros em barra escura, destaques Ice ---------- */
+:root[data-ds='command'] {
+  --r-panel: 28px;
+  --r-card: 24px;
+  --r-inner: 18px;
+  --primary: var(--ice-400);
+  --primary-foreground: #041a21;
+  --primary-hover: var(--ice-300);
+  --chipgroup-bg: var(--graphite-900);
+  --chipgroup-border: var(--graphite-900);
+  --chip-text: rgb(255 255 255 / 0.7);
+  --chip-text-hover: #ffffff;
+  --chip-hover-bg: rgb(255 255 255 / 0.08);
+  --chip-active-bg: var(--ice-400);
+  --chip-active-text: #041a21;
 }
 
 /* ===================== Motion ===================== */

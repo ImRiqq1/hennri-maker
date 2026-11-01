@@ -67,7 +67,7 @@ export function CourseEditor({
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="relative flex aspect-[16/7] w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-[22px] border border-dashed border-mist-300 bg-mist-50 text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
+          className="relative flex aspect-[16/7] w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-[var(--r-inner)] border border-dashed border-mist-300 bg-mist-50 text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
         >
           {cover ? (
             <img src={cover} alt="" className="absolute inset-0 h-full w-full object-cover" />

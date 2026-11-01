@@ -9,7 +9,7 @@ export function SkillRow({ skill, index, onOpen }: { skill: Skill; index: number
       tabIndex={0}
       onClick={onOpen}
       onKeyDown={(e) => e.key === 'Enter' && onOpen()}
-      className="group relative grid min-h-[76px] cursor-pointer grid-cols-[36px_minmax(160px,280px)_minmax(0,1fr)_auto_auto] items-center gap-5 rounded-[22px] px-5 py-4 outline-none transition-colors duration-300 ease-apple hover:bg-mist-50 focus-visible:ring-4 focus-visible:ring-ice-200 [&+&]:before:absolute [&+&]:before:inset-x-5 [&+&]:before:top-0 [&+&]:before:h-px [&+&]:before:bg-mist-200 hover:before:opacity-0 [&:hover+&]:before:opacity-0"
+      className="group relative grid min-h-[76px] cursor-pointer grid-cols-[36px_minmax(160px,280px)_minmax(0,1fr)_auto_auto] items-center gap-5 rounded-[var(--r-inner)] px-5 py-4 outline-none transition-colors duration-300 ease-apple hover:bg-mist-50 focus-visible:ring-4 focus-visible:ring-ice-200 [&+&]:before:absolute [&+&]:before:inset-x-5 [&+&]:before:top-0 [&+&]:before:h-px [&+&]:before:bg-mist-200 hover:before:opacity-0 [&:hover+&]:before:opacity-0"
     >
       <IndexNum n={index} />
       <span className="min-w-0 truncate text-[15.5px] font-medium tracking-[-0.02em] text-fg">{skill.name}</span>

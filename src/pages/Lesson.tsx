@@ -89,9 +89,9 @@ export function Lesson() {
 
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
         {/* Sidebar do curso */}
-        <aside className="flex min-w-0 flex-col gap-5 rounded-[28px] border border-mist-200 bg-surface p-5 shadow-soft lg:sticky lg:top-0">
+        <aside className="flex min-w-0 flex-col gap-5 rounded-[var(--r-card)] border border-mist-200 bg-surface p-5 shadow-soft lg:sticky lg:top-0">
           <div
-            className="relative flex flex-col gap-3 overflow-hidden rounded-[22px] p-5 text-white"
+            className="relative flex flex-col gap-3 overflow-hidden rounded-[var(--r-inner)] p-5 text-white"
             style={{ background: 'var(--hero-gradient)' }}
           >
             <div className="relative flex flex-col gap-1">
@@ -180,7 +180,7 @@ export function Lesson() {
         {/* Player + abas */}
         <div className="flex min-w-0 flex-col gap-6">
           {loadingPlayer ? (
-            <div className="aspect-video animate-pulse rounded-[28px] bg-gradient-to-br from-mist-200 to-mist-100 p-6">
+            <div className="aspect-video animate-pulse rounded-[var(--r-card)] bg-gradient-to-br from-mist-200 to-mist-100 p-6">
               <div className="flex h-full w-3/5 flex-col justify-end gap-2.5">
                 <div className="h-3 rounded-full bg-mist-300/60" />
                 <div className="h-3 w-[55%] rounded-full bg-mist-300/40" />
@@ -191,11 +191,11 @@ export function Lesson() {
               src={`https://drive.google.com/file/d/${videoId}/preview`}
               allow="autoplay"
               allowFullScreen
-              className="aspect-video w-full rounded-[28px] bg-graphite-950 shadow-lift"
+              className="aspect-video w-full rounded-[var(--r-card)] bg-graphite-950 shadow-lift"
             />
           ) : (
             <div
-              className="relative flex aspect-video items-center justify-center overflow-hidden rounded-[28px] text-white shadow-lift"
+              className="relative flex aspect-video items-center justify-center overflow-hidden rounded-[var(--r-card)] text-white shadow-lift"
               style={{ background: 'var(--hero-gradient)' }}
             >
               <span className="absolute top-5 left-5 rounded-full border border-white/12 bg-white/[0.07] px-3 py-1 text-[12px] text-white/70 backdrop-blur">
@@ -267,12 +267,12 @@ export function Lesson() {
           </div>
 
           {tab === 'Anotações' && (
-            <div className="flex flex-col gap-2 rounded-[28px] border border-mist-200 bg-surface p-2 shadow-soft">
+            <div className="flex flex-col gap-2 rounded-[var(--r-card)] border border-mist-200 bg-surface p-2 shadow-soft">
               <textarea
                 value={notes}
                 onChange={(e) => changeNotes(e.target.value)}
                 placeholder="Escreva suas anotações da aula…"
-                className="min-h-[220px] resize-y rounded-[22px] bg-mist-50 p-5 text-[14.5px] leading-[1.7] text-fg outline-none transition-[box-shadow] placeholder:text-mist-400 focus:ring-4 focus:ring-ice-200/60"
+                className="min-h-[220px] resize-y rounded-[var(--r-inner)] bg-mist-50 p-5 text-[14.5px] leading-[1.7] text-fg outline-none transition-[box-shadow] placeholder:text-mist-400 focus:ring-4 focus:ring-ice-200/60"
               />
               <span className="flex items-center gap-1.5 self-end px-3 pb-1.5 text-[12px] text-sub">
                 <i className="ri-cloud-line text-[13px]" />
@@ -284,7 +284,7 @@ export function Lesson() {
           {tab === 'Anexos' && (
             <div className="flex flex-col gap-2">
               {materials.length === 0 ? (
-                <span className="rounded-[28px] border border-dashed border-mist-300 bg-surface/60 px-6 py-10 text-center text-[13.5px] text-sub">
+                <span className="rounded-[var(--r-card)] border border-dashed border-mist-300 bg-surface/60 px-6 py-10 text-center text-[13.5px] text-sub">
                   Nenhum material neste módulo.
                 </span>
               ) : (
@@ -311,7 +311,7 @@ export function Lesson() {
           )}
 
           {tab === 'Sobre' && (
-            <p className="max-w-[70ch] rounded-[28px] border border-mist-200 bg-surface p-6 text-[14.5px] leading-[1.7] text-abyss-700 shadow-soft">
+            <p className="max-w-[70ch] rounded-[var(--r-card)] border border-mist-200 bg-surface p-6 text-[14.5px] leading-[1.7] text-abyss-700 shadow-soft">
               Aula do módulo {mod.order_index} — {mod.name}. O arquivo vem do Drive; o player aqui é só o container do
               embed.
             </p>

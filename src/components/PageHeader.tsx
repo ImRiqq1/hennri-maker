@@ -17,7 +17,7 @@ export function PageHeader({
     <div className="mb-10 flex items-end justify-between gap-8">
       <div className="flex min-w-0 flex-col gap-5">
         <div className="flex items-start gap-3">
-          <h1 className="font-display text-[clamp(52px,5.6vw,84px)] leading-[0.92] font-light tracking-[-0.05em] text-fg capitalize">
+          <h1 className="font-display text-[length:var(--title-size)] leading-[0.95] tracking-[var(--title-track)] text-fg [font-weight:var(--title-weight)] capitalize">
             <span className="reveal-title">
               <span>{title.toLowerCase()}</span>
             </span>
@@ -37,7 +37,7 @@ export function PageHeader({
           ))}
         </div>
       </div>
-      <div className="flex flex-none items-center gap-3">{actions}</div>
+      <div data-page-actions className="flex flex-none items-center gap-3">{actions}</div>
     </div>
   )
 }
@@ -54,7 +54,7 @@ export function EmptyState({
   tracking?: string
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-5 rounded-[32px] border border-dashed border-mist-300 bg-surface/60 px-6 py-24 text-center">
+    <div className="flex flex-col items-center justify-center gap-5 rounded-[var(--r-panel)] border border-dashed border-mist-300 bg-surface/60 px-6 py-24 text-center">
       <span className="flex h-16 w-16 items-center justify-center rounded-full bg-surface text-abyss-600 shadow-soft">
         <i className="ri-inbox-2-line text-[26px]" />
       </span>
@@ -81,7 +81,8 @@ export function ChipGroup({ children, className }: { children: ReactNode; classN
   return (
     <div
       className={
-        'flex flex-wrap items-center gap-1 rounded-[24px] border border-mist-200 bg-surface p-1 shadow-soft ' + (className ?? '')
+        'flex flex-wrap items-center gap-1 rounded-[calc(var(--r-control)+4px)] border border-[var(--chipgroup-border)] bg-[var(--chipgroup-bg)] p-1 shadow-soft ' +
+        (className ?? '')
       }
     >
       {children}
@@ -112,7 +113,7 @@ export function IconButton({
       aria-label={label}
       aria-pressed={active}
       className={
-        'press flex h-10 w-10 flex-none items-center justify-center rounded-full border outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ice-200 disabled:opacity-30 ' +
+        'press flex h-10 w-10 flex-none items-center justify-center rounded-[var(--r-control)] border outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ice-200 disabled:opacity-30 ' +
         (active
           ? 'border-primary bg-primary text-primary-foreground'
           : 'border-mist-200 bg-surface text-abyss-700 hover:border-mist-300 hover:bg-mist-50')

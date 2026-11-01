@@ -111,7 +111,7 @@ export function ReferenceEditor({
       <button
         type="button"
         onClick={() => fileRef.current?.click()}
-        className="relative flex h-[180px] flex-none flex-col items-center justify-center gap-2.5 overflow-hidden rounded-[22px] border border-dashed border-mist-300 bg-mist-50 text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
+        className="relative flex h-[180px] flex-none flex-col items-center justify-center gap-2.5 overflow-hidden rounded-[var(--r-inner)] border border-dashed border-mist-300 bg-mist-50 text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
       >
         {preview ? (
           <img src={preview} alt="" className="absolute inset-0 h-full w-full object-cover" />

@@ -30,7 +30,7 @@ export function SkillViewer({
 
             {/* cabeçalho Abyss */}
             <div
-              className="relative m-2 mb-0 flex flex-none flex-col gap-6 overflow-hidden rounded-[22px] p-6 text-white"
+              className="relative m-2 mb-0 flex flex-none flex-col gap-6 overflow-hidden rounded-[var(--r-inner)] p-6 text-white"
               style={{ background: 'var(--hero-gradient)' }}
             >
               <div className="relative flex items-center justify-between gap-4">

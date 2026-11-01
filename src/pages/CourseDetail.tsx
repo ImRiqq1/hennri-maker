@@ -134,7 +134,7 @@ export function CourseDetail() {
 
       {/* Herói Abyss */}
       <section
-        className="relative mb-14 flex min-h-[440px] flex-col justify-end overflow-hidden rounded-[36px] text-white shadow-lift"
+        className="relative mb-14 flex min-h-[440px] flex-col justify-end overflow-hidden rounded-[var(--r-panel)] text-white shadow-lift"
         style={{ background: 'var(--hero-gradient)' }}
       >
         {cover && (
@@ -223,7 +223,7 @@ export function CourseDetail() {
               const allMaterial = mod.items.every((i) => i.type === 'material')
               const doneCount = mod.items.filter((i) => i.completed_at).length
               return (
-                <div key={mod.id} className="flex flex-col gap-5 rounded-[28px] border border-mist-200 bg-surface p-5 shadow-soft">
+                <div key={mod.id} className="flex flex-col gap-5 rounded-[var(--r-card)] border border-mist-200 bg-surface p-5 shadow-soft">
                   <div className="flex items-center gap-3.5">
                     <button
                       type="button"
@@ -353,7 +353,7 @@ export function CourseDetail() {
         {/* Adicionar módulo */}
         <div className="flex flex-col gap-3">
           {addingModule ? (
-            <div className="flex flex-wrap items-center gap-2.5 rounded-[28px] border border-mist-200 bg-surface p-4 shadow-soft">
+            <div className="flex flex-wrap items-center gap-2.5 rounded-[var(--r-card)] border border-mist-200 bg-surface p-4 shadow-soft">
               <input
                 value={moduleName}
                 onChange={(e) => setModuleName(e.target.value)}
@@ -385,7 +385,7 @@ export function CourseDetail() {
             <button
               type="button"
               onClick={() => setAddingModule(true)}
-              className="flex h-14 w-full items-center justify-center gap-2 rounded-[28px] border border-dashed border-mist-300 bg-surface/60 text-[14px] font-medium text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
+              className="flex h-14 w-full items-center justify-center gap-2 rounded-[var(--r-card)] border border-dashed border-mist-300 bg-surface/60 text-[14px] font-medium text-sub outline-none transition-colors hover:border-ice-400 hover:bg-ice-50 hover:text-abyss-600 focus-visible:ring-4 focus-visible:ring-ice-200"
             >
               <i className="ri-add-line text-[17px]" />
               <span>Adicionar módulo</span>

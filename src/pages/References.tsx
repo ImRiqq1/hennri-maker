@@ -79,7 +79,7 @@ export function References() {
       <div className="mb-10 flex items-end justify-between gap-8">
         <div className="flex min-w-0 flex-col gap-5">
           <div className="flex items-start gap-3">
-            <h1 className="font-display text-[clamp(52px,5.6vw,84px)] leading-[0.92] font-light tracking-[-0.05em] text-fg">
+            <h1 className="font-display text-[length:var(--title-size)] leading-[0.95] tracking-[var(--title-track)] text-fg [font-weight:var(--title-weight)]">
               {tabLabel}
             </h1>
             <span className="tnum mt-2 flex h-8 min-w-8 items-center justify-center rounded-full bg-primary px-2.5 text-[13px] font-medium text-primary-foreground">
@@ -107,7 +107,7 @@ export function References() {
             })}
           </ChipGroup>
         </div>
-        <div className="flex flex-none items-center gap-3">{newButton}</div>
+        <div data-page-actions className="flex flex-none items-center gap-3">{newButton}</div>
       </div>
 
       {!loading && references.length === 0 && (

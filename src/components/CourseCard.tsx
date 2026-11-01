@@ -11,9 +11,9 @@ export function CourseCard({ course }: { course: CourseSummary }) {
   return (
     <Link
       to={`/cursos/${course.id}`}
-      className="group relative block overflow-hidden rounded-[28px] border border-mist-200 bg-surface p-2 shadow-soft outline-none transition-[transform,box-shadow] duration-500 ease-apple hover:-translate-y-1 hover:shadow-lift focus-visible:ring-4 focus-visible:ring-ice-200"
+      className="group relative block overflow-hidden rounded-[var(--r-card)] border border-mist-200 bg-surface p-2 shadow-soft outline-none transition-[transform,box-shadow] duration-500 ease-apple hover:-translate-y-1 hover:shadow-lift focus-visible:ring-4 focus-visible:ring-ice-200"
     >
-      <div className="relative flex aspect-[16/7] items-center justify-center overflow-hidden rounded-[22px] bg-gradient-to-br from-mist-100 via-mist-100 to-ice-100">
+      <div className="relative flex aspect-[16/7] items-center justify-center overflow-hidden rounded-[var(--r-inner)] bg-gradient-to-br from-mist-100 via-mist-100 to-ice-100">
         {cover ? (
           <img
             src={cover}

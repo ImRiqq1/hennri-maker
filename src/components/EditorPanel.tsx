@@ -4,10 +4,10 @@ import { Sheet, SheetContent, SheetTitle } from './ui/sheet'
 
 /** Painel lateral flutuante (cantos arredondados, solto da borda). */
 export const PANEL_CLASS =
-  'inset-y-3! right-3! h-auto! w-[520px] max-w-[calc(100vw-24px)] gap-0 rounded-[28px] border border-mist-200 bg-surface p-0 shadow-lift sm:max-w-[520px]'
+  'inset-y-3! right-3! h-auto! w-[520px] max-w-[calc(100vw-24px)] gap-0 rounded-[var(--r-card)] border border-mist-200 bg-surface p-0 shadow-lift sm:max-w-[520px]'
 
 export const PANEL_CLASS_COMPACT =
-  'inset-y-3! right-3! h-auto! w-[480px] max-w-[calc(100vw-24px)] gap-0 rounded-[28px] border border-mist-200 bg-surface p-0 shadow-lift sm:max-w-[480px]'
+  'inset-y-3! right-3! h-auto! w-[480px] max-w-[calc(100vw-24px)] gap-0 rounded-[var(--r-card)] border border-mist-200 bg-surface p-0 shadow-lift sm:max-w-[480px]'
 
 export const FIELD_LABEL = 'text-[12px] font-medium text-sub'
 
@@ -61,7 +61,7 @@ export function EditorPanel({
           <button
             type="button"
             onClick={onClose}
-            className="h-10 rounded-full px-4 text-[14px] font-medium text-sub outline-none transition-colors hover:bg-mist-100 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
+            className="press h-10 rounded-[var(--r-control)] px-4 text-[14px] font-medium text-sub outline-none transition-colors hover:bg-mist-100 hover:text-fg focus-visible:ring-4 focus-visible:ring-ice-200"
           >
             Cancelar
           </button>
@@ -69,7 +69,7 @@ export function EditorPanel({
             type="button"
             onClick={onSave}
             disabled={saveDisabled}
-            className="h-10 rounded-full bg-primary px-5 text-[14px] font-medium text-primary-foreground outline-none transition-colors hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-35"
+            className="press h-10 rounded-[var(--r-control)] bg-primary px-5 text-[14px] font-medium text-primary-foreground outline-none transition-colors hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ice-300 disabled:opacity-35"
           >
             {saveLabel}
           </button>

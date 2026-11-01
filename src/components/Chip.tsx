@@ -19,12 +19,12 @@ export function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'press inline-flex items-center rounded-full text-[13px] font-medium outline-none transition-[background-color,color,box-shadow] duration-300 ease-apple',
+        'press inline-flex items-center rounded-[var(--r-control)] text-[13px] font-medium outline-none transition-[background-color,color,box-shadow] duration-300 ease-apple',
         'focus-visible:ring-4 focus-visible:ring-ice-200',
         className,
         active
-          ? 'bg-primary text-primary-foreground shadow-[0_6px_14px_-8px_rgb(4_26_33/0.7)]'
-          : 'text-abyss-700 hover:bg-mist-100 hover:text-fg',
+          ? 'bg-[var(--chip-active-bg)] text-[var(--chip-active-text)] shadow-[0_6px_14px_-8px_rgb(4_26_33/0.7)]'
+          : 'text-[var(--chip-text)] hover:bg-[var(--chip-hover-bg)] hover:text-[var(--chip-text-hover)]',
       )}
     >
       {children}

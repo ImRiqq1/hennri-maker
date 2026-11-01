@@ -25,16 +25,16 @@ export function ReferenceViewer({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent
         showCloseButton={false}
-        className="grid max-h-[88vh] w-[min(1080px,calc(100%-2rem))] max-w-none grid-cols-1 gap-0 overflow-hidden rounded-[32px] border border-mist-200 bg-surface p-0 ring-0 sm:max-w-none md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]"
+        className="grid max-h-[88vh] w-[min(1080px,calc(100%-2rem))] max-w-none grid-cols-1 gap-0 overflow-hidden rounded-[var(--r-panel)] border border-mist-200 bg-surface p-0 ring-0 sm:max-w-none md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]"
       >
         <DialogTitle className="sr-only">{reference.name}</DialogTitle>
 
         {/* mídia */}
         <div className="flex items-center bg-mist-100 p-3">
           {media ? (
-            <img src={media} alt={reference.name} className="aspect-video w-full rounded-[22px] object-cover" />
+            <img src={media} alt={reference.name} className="aspect-video w-full rounded-[var(--r-inner)] object-cover" />
           ) : (
-            <div className="flex aspect-video w-full items-center justify-center rounded-[22px] bg-gradient-to-br from-mist-100 to-ice-100">
+            <div className="flex aspect-video w-full items-center justify-center rounded-[var(--r-inner)] bg-gradient-to-br from-mist-100 to-ice-100">
               <i className="ri-film-line text-[34px] text-abyss-500/35" />
             </div>
           )}
@@ -72,7 +72,7 @@ export function ReferenceViewer({
             <div className="mt-auto flex flex-col gap-2.5 pt-4">
               <span className={FIELD_LABEL}>Termo</span>
               <div
-                className="relative flex flex-col gap-5 overflow-hidden rounded-[22px] p-5 text-white"
+                className="relative flex flex-col gap-5 overflow-hidden rounded-[var(--r-inner)] p-5 text-white"
                 style={{ background: 'var(--hero-gradient)' }}
               >
                 <span className="relative font-code text-[14px] leading-[1.55] break-words text-ice-300">{reference.term}</span>
