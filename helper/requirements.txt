@@ -1,0 +1,12 @@
+# Ajudante do HENNRI IA MAKER
+# (o PyTorch com CUDA 12.8 é instalado à parte pelo INICIAR.bat, pra placas RTX 50)
+yt-dlp[default,curl-cffi]
+gallery-dl
+deno
+requests
+mutagen
+pystray
+pillow
+imageio-ffmpeg
+audio-separator[gpu]
+audioread  # o audio-separator usa, mas não declara

@@ -1,0 +1,3 @@
+# Trava o PyTorch com CUDA 12.8 (placas RTX 50): sem isso o pip troca pela versão sem GPU.
+torch==2.11.0+cu128
+torchaudio==2.11.0+cu128
