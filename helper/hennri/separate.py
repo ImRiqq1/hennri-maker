@@ -12,6 +12,9 @@ from .util import Cancelado, caminho_livre, nome_seguro, para_mp3
 # BS-Roformer: o melhor separador voz/instrumental aberto hoje; cabe folgado em 8 GB.
 MODELO = "model_bs_roformer_ep_317_sdr_12.9755.ckpt"
 MODELO_RESERVA = "UVR-MDX-NET-Inst_HQ_4.onnx"  # mais leve, se o principal não carregar
+# Melhorar voz: tira o eco/reverberação da sala (faixa "noreverb"/"no reverb")
+MODELO_ECO = "dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt"
+MODELO_ECO_RESERVA = "UVR-DeEcho-DeReverb.pth"
 MODELOS_DIR = DADOS / "models"
 
 _lock = threading.Lock()
@@ -55,8 +58,9 @@ def _descarregar():
     _modelo_carregado = None
 
 
-def _carregar(trabalho: Path):
-    """Carrega o modelo uma vez e reaproveita nos próximos pedidos (a saída vai sempre pra `trabalho`)."""
+def _carregar(trabalho: Path, modelos: tuple[str, ...] = (MODELO, MODELO_RESERVA)):
+    """Carrega o modelo uma vez e reaproveita nos próximos pedidos (a saída vai sempre pra `trabalho`).
+    Troca de modelo só quando o pedido precisa de outro (ex.: o de eco do Melhorar voz)."""
     global _separador, _modelo_carregado
     from audio_separator.separator import Separator
 
@@ -76,8 +80,9 @@ def _carregar(trabalho: Path):
             _separador.torch_device = _separador.torch_device_cpu
             _separador.torch_device_mps = None
             _separador.onnx_execution_provider = ["CPUExecutionProvider"]
-    if _modelo_carregado is None:
-        for nome in (MODELO, MODELO_RESERVA):
+    if _modelo_carregado not in modelos:
+        _modelo_carregado = None
+        for nome in modelos:
             try:
                 _separador.load_model(model_filename=nome)
                 _modelo_carregado = nome
@@ -90,20 +95,25 @@ def _carregar(trabalho: Path):
     return _separador
 
 
-def separar_arquivo(ctx, entrada: Path, nome: str) -> tuple[Path, Path]:
-    """Separa e devolve (voz.wav, instrumental.wav) numa pasta própria em Trilhas\\Separadas."""
+def faixa(a: Path) -> str:
+    """O audio-separator salva <entrada>_(Vocals)_<modelo>.wav: olha só o sufixo que ele põe, não o nome
+    da música (uma "X (Instrumental)" separada de novo casava com os dois arquivos)."""
+    achado = re.findall(r"_\(([^()]+)\)_", a.stem)
+    return achado[-1].lower() if achado else ""
+
+
+def rodar_modelo(ctx, entrada: Path, modelos: tuple[str, ...], rotulo: str) -> list[Path]:
+    """Passa `entrada` por um modelo do audio-separator (um pedido de cada vez na GPU) e devolve as faixas."""
     if not disponivel():
         raise ErroAmigavel("O separador de voz não está instalado. Rode o INICIAR de novo.")
-    saida = ctx.pastas.separadas / nome_seguro(nome, 100)
-    saida.mkdir(parents=True, exist_ok=True)
     trabalho = ctx.pastas.tmp / "separando"
     global _so_cpu
     with _lock:
-        ctx.progresso(None, "Carregando o modelo na GPU…" if _modelo_carregado is None else "Separando a voz…",
+        ctx.progresso(None, "Carregando o modelo na GPU…" if _modelo_carregado not in modelos else rotulo,
                       forcar=True)
-        sep = _carregar(trabalho)
+        sep = _carregar(trabalho, modelos)
         ctx.checar()
-        ctx.progresso(None, "Separando a voz…", forcar=True)
+        ctx.progresso(None, rotulo, forcar=True)
         try:
             saidas = sep.separate(str(entrada))
         except Exception as e:  # noqa: BLE001
@@ -113,18 +123,20 @@ def separar_arquivo(ctx, entrada: Path, nome: str) -> tuple[Path, Path]:
             log.warning("separação no chip Apple falhou (%s); refazendo no processador", e)
             _so_cpu = True
             _descarregar()
-            ctx.progresso(None, "A GPU do Mac não deu conta; separando no processador (mais lento)…", forcar=True)
-            sep = _carregar(trabalho)
+            ctx.progresso(None, "A GPU do Mac não deu conta; usando o processador (mais lento)…", forcar=True)
+            sep = _carregar(trabalho, modelos)
             ctx.checar()
             saidas = sep.separate(str(entrada))
         arquivos = [Path(a) if Path(a).is_absolute() else trabalho / a for a in saidas]
     ctx.checar()
-    # o audio-separator salva <entrada>_(Vocals)_<modelo>.wav: olha só o sufixo que ele põe, não o nome
-    # da música (uma "X (Instrumental)" separada de novo casava com os dois arquivos)
-    def faixa(a: Path) -> str:
-        achado = re.findall(r"_\(([^()]+)\)_", a.stem)
-        return achado[-1].lower() if achado else ""
+    return arquivos
 
+
+def separar_arquivo(ctx, entrada: Path, nome: str) -> tuple[Path, Path]:
+    """Separa e devolve (voz.wav, instrumental.wav) numa pasta própria em Trilhas\\Separadas."""
+    saida = ctx.pastas.separadas / nome_seguro(nome, 100)
+    saida.mkdir(parents=True, exist_ok=True)
+    arquivos = rodar_modelo(ctx, entrada, (MODELO, MODELO_RESERVA), "Separando a voz…")
     voz = next((a for a in arquivos if faixa(a) == "vocals"), None)
     inst = next((a for a in arquivos if faixa(a) in ("instrumental", "other")), None)
     if not voz or not inst:

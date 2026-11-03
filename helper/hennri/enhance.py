@@ -1,4 +1,5 @@
-"""Melhorar voz: tira ruído, equilibra e deixa a voz no volume de entrega (-16 LUFS)."""
+"""Melhorar voz: IA na GPU isola a voz (tira ruído, música e barulho de fundo) e tira o eco da sala;
+depois equaliza, comprime e deixa no volume de entrega (-16 LUFS). Sem a IA, cai no filtro do ffmpeg."""
 import shutil
 import uuid
 from pathlib import Path
@@ -6,7 +7,7 @@ from pathlib import Path
 from .config import log
 from .util import AUDIO_EXT, MAX_UPLOAD, VIDEO_EXT, Cancelado, caminho_livre, ffmpeg, nome_seguro
 
-# corta graves de vento/ar-condicionado e chiado agudo, tira ruído de fundo,
+# reserva (sem IA): corta graves de vento/ar-condicionado e chiado agudo, tira ruído de fundo,
 # segura picos e normaliza o volume (-16 LUFS, padrão de redes/YouTube)
 CADEIA_FFMPEG = (
     "highpass=f=80,"
@@ -14,6 +15,14 @@ CADEIA_FFMPEG = (
     "afftdn=nf=-28:tn=1,"
     "equalizer=f=3000:t=q:w=1.2:g=2,"
     "acompressor=threshold=-21dB:ratio=3:attack=5:release=90:makeup=2,"
+    "loudnorm=I=-16:TP=-1.5:LRA=11"
+)
+# depois da IA a voz já vem limpa: só acabamento (presença, brilho, compressor e volume)
+CADEIA_IA = (
+    "highpass=f=70,"
+    "equalizer=f=3000:t=q:w=1.2:g=2,"
+    "treble=g=1.5:f=9000,"
+    "acompressor=threshold=-20dB:ratio=3:attack=5:release=80:makeup=2,"
     "loudnorm=I=-16:TP=-1.5:LRA=11"
 )
 
@@ -24,20 +33,48 @@ class ErroAmigavel(Exception):
         self.amigavel = amigavel
 
 
-def _deepfilter(entrada_wav: Path, saida_wav: Path) -> bool:
-    """Se o DeepFilterNet estiver instalado, usa ele pra tirar o ruído (melhor que o filtro do ffmpeg)."""
+def _so_a_faixa(faixas: list[Path], nome: str) -> Path | None:
+    """Fica com a faixa `nome` e apaga as outras que o modelo gerou."""
+    from .separate import faixa
+
+    escolhida = next((a for a in faixas if faixa(a).replace(" ", "") == nome), None)
+    for a in faixas:
+        if a != escolhida:
+            a.unlink(missing_ok=True)
+    return escolhida
+
+
+def _limpar_com_ia(ctx, wav: Path) -> Path | None:
+    """Voz isolada (BS-Roformer) e sem eco (MelBand Roformer de-reverb). None se a IA não estiver disponível."""
+    from . import separate
+
+    if not separate.disponivel():
+        return None
     try:
-        from df.enhance import enhance, init_df, load_audio, save_audio
-    except Exception:
-        return False
+        faixas = separate.rodar_modelo(ctx, wav, (separate.MODELO, separate.MODELO_RESERVA),
+                                       "Isolando a voz e tirando o ruído (IA)…")
+        voz = _so_a_faixa(faixas, "vocals")
+    except Cancelado:
+        raise
+    except Exception as e:  # noqa: BLE001 - modelo não carregou, GPU sem memória…: entrega pelo ffmpeg
+        log.warning("melhorar voz: IA falhou, uso só o ffmpeg: %s", e)
+        return None
+    if not voz:
+        return None
     try:
-        modelo, estado, _ = init_df()
-        audio, _ = load_audio(str(entrada_wav), sr=estado.sr())
-        save_audio(str(saida_wav), enhance(modelo, estado, audio), estado.sr())
-        return True
-    except Exception as e:  # noqa: BLE001
-        log.warning("DeepFilterNet falhou, uso só o ffmpeg: %s", e)
-        return False
+        faixas = separate.rodar_modelo(ctx, voz, (separate.MODELO_ECO, separate.MODELO_ECO_RESERVA),
+                                       "Tirando o eco da sala (IA)…")
+        seca = _so_a_faixa(faixas, "noreverb")
+    except Cancelado:
+        voz.unlink(missing_ok=True)
+        raise
+    except Exception as e:  # noqa: BLE001 - sem o de-reverb, a voz isolada já é bem melhor que nada
+        log.warning("melhorar voz: tirar o eco falhou, sigo com a voz isolada: %s", e)
+        seca = None
+    if not seca:
+        return voz
+    voz.unlink(missing_ok=True)
+    return seca
 
 
 def executar(ctx):
@@ -66,23 +103,23 @@ def executar(ctx):
     e_video = local.suffix.lower() in VIDEO_EXT
     trabalho = ctx.pastas.tmp / uuid.uuid4().hex[:8]
     trabalho.mkdir(parents=True, exist_ok=True)
-    audio_final = video_final = None
+    audio_final = video_final = limpa = None
     try:
         ctx.checar()
-        ctx.progresso(20, "Limpando o ruído…", forcar=True)
+        ctx.progresso(10, "Preparando o áudio…", forcar=True)
         wav = trabalho / "entrada.wav"
-        ffmpeg("-i", str(local), "-vn", "-ac", "1", "-ar", "48000", str(wav))
-        limpo = trabalho / "limpo.wav"
-        origem = limpo if _deepfilter(wav, limpo) else wav
+        # os modelos de IA trabalham em 44,1 kHz estéreo
+        ffmpeg("-i", str(local), "-vn", "-ac", "2", "-ar", "44100", str(wav))
+        limpa = _limpar_com_ia(ctx, wav)
         ctx.checar()
-        ctx.progresso(60, "Equilibrando e ajustando o volume…", forcar=True)
+        ctx.progresso(80, "Equilibrando e ajustando o volume…", forcar=True)
         audio_final = caminho_livre(ctx.pastas.voz / f"{base} (voz melhorada).mp3")
-        ffmpeg("-i", str(origem), "-af", CADEIA_FFMPEG, "-ar", "48000", "-codec:a", "libmp3lame", "-b:a", "192k",
-               str(audio_final))
+        ffmpeg("-i", str(limpa or wav), "-af", CADEIA_IA if limpa else CADEIA_FFMPEG, "-ac", "1", "-ar", "48000",
+               "-codec:a", "libmp3lame", "-b:a", "192k", str(audio_final))
 
         video_final = None
         if e_video:  # devolve também o vídeo com a voz nova (imagem intacta)
-            ctx.progresso(80, "Montando o vídeo com a voz nova…", forcar=True)
+            ctx.progresso(88, "Montando o vídeo com a voz nova…", forcar=True)
             video_final = caminho_livre(ctx.pastas.voz / f"{base} (voz melhorada).mp4")
             ffmpeg("-i", str(local), "-i", str(audio_final), "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy",
                    "-c:a", "aac", "-b:a", "192k", "-shortest", str(video_final))
@@ -99,14 +136,17 @@ def executar(ctx):
             "kind": "video" if enviar.suffix == ".mp4" else "audio",
             "name": enviar.name,
             "local_path": str(video_final or audio_final),
+            "engine": "ia" if limpa else "ffmpeg",
         }
-        return resultado, "Voz melhorada" + (" (vídeo e áudio)" if video_final else "")
+        return resultado, "Voz melhorada" + (" com IA" if limpa else "") + (" (vídeo e áudio)" if video_final else "")
     except Cancelado:  # cancelado no meio: não deixa arquivo pela metade em Voz melhorada
         for f in (audio_final, video_final):
             if f:
                 f.unlink(missing_ok=True)
         raise
     finally:
+        if limpa:  # a IA escreve na pasta de trabalho do separador
+            limpa.unlink(missing_ok=True)
         shutil.rmtree(trabalho, ignore_errors=True)
         if tmp_entrada:
             tmp_entrada.unlink(missing_ok=True)

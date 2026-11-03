@@ -8,7 +8,7 @@ import { createJob, parseJSON, useHelperStatus, useJobs } from '../../lib/trilha
 import type { Track } from '../../lib/types'
 import { Dropdown } from '../../components/Dropdown'
 
-type EnhanceResult = { output_key?: string; name?: string; local_path?: string }
+type EnhanceResult = { output_key?: string; name?: string; local_path?: string; engine?: 'ia' | 'ffmpeg' }
 
 export function MelhorarVoz() {
   const { flash } = useToast()
@@ -48,8 +48,9 @@ export function MelhorarVoz() {
           <div className="flex flex-col gap-1">
             <h2 className="text-[22px] font-light tracking-[-0.03em] text-fg">Melhorar voz</h2>
             <p className="text-[13px] leading-[1.5] text-sub">
-              Tira ruído de fundo, chiado e eco, e deixa a voz mais limpa e no volume certo. Funciona com áudio ou com o vídeo
-              gravado (o ajudante tira o áudio sozinho). Uma cópia também fica salva no PC.
+              A IA isola a sua voz (tira ruído, música e barulho de fundo) e tira o eco da sala, depois deixa no volume certo.
+              Roda na placa de vídeo do seu PC. Funciona com áudio ou com o vídeo gravado (o ajudante tira o áudio sozinho).
+              Uma cópia também fica salva no PC.
             </p>
           </div>
           <FileDrop accept="audio/*,video/*" hint="Áudio ou vídeo (MP3, WAV, M4A, MP4, MOV) · até 95 MB" onUploaded={uploaded} />
@@ -100,7 +101,11 @@ export function MelhorarVoz() {
                   job={job}
                   icon="ri-mic-2-line"
                   title={result.name || payload.name || 'Gravação'}
-                  subtitle={result.local_path ? 'salvo no PC' : undefined}
+                  subtitle={
+                    [result.engine === 'ia' ? 'com IA' : result.engine === 'ffmpeg' ? 'sem IA (filtro simples)' : null, result.local_path ? 'salvo no PC' : null]
+                      .filter(Boolean)
+                      .join(' · ') || undefined
+                  }
                   helperOnline={status?.online}
                   onChange={reload}
                 >
