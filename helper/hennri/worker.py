@@ -28,7 +28,7 @@ class Contexto:
         self.cancelado = False
         self._ultimo = 0.0
 
-    def progresso(self, pct: float | None = None, msg: str | None = None, forcar: bool = False):
+    def progresso(self, pct: float | None = None, msg: str | None = None, forcar: bool = False, detalhe: dict | None = None):
         """No máximo uma chamada por segundo (a não ser forçada). Levanta Cancelado se o site cancelou."""
         if self.cancelado:
             raise Cancelado()
@@ -37,7 +37,7 @@ class Contexto:
             return
         self._ultimo = agora
         try:
-            r = self.api.progress(self.id, None if pct is None else round(pct, 1), msg)
+            r = self.api.progress(self.id, None if pct is None else round(pct, 1), msg, detalhe)
             if r and r.get("cancel"):
                 self.cancelado = True
                 raise Cancelado()
@@ -75,7 +75,7 @@ class Worker:
 
     # ------------------------------------------------------------ info
     def info(self) -> dict:
-        from . import separate
+        from . import drive, separate
 
         try:
             import yt_dlp
@@ -105,6 +105,7 @@ class Worker:
                 "deno": bool(DENO),
             },
             "separator_ready": separate.disponivel(),
+            "google": drive.conta_conectada(),
             "busy": bool(self.ativos),
         }
 
@@ -223,7 +224,7 @@ class Worker:
                 return
 
     def _executar(self, job: dict, gpu: bool):
-        from . import actions, downloader, enhance, music, separate
+        from . import actions, downloader, drive, enhance, music, separate
 
         job["_iniciado"] = True
         if gpu:
@@ -237,12 +238,16 @@ class Worker:
             "enhance": "melhorando voz",
             "open": "abrindo pasta",
             "update_tools": "atualizando",
+            "drive_scan": "lendo pasta do Drive",
+            "drive": "baixando do Drive",
+            "drive_google": "conectando o Google",
         }.get(tipo, tipo)
         with self.lock:
             self.ativos[job["id"]] = descricao
         self._avisar()
         ctx = Contexto(self.api, job, self.pastas)
-        log.info("pedido %s (%s) %s", job["id"][:8], tipo, job.get("payload"))
+        payload = {k: ("…" if "secret" in k else v) for k, v in (job.get("payload") or {}).items()}
+        log.info("pedido %s (%s) %s", job["id"][:8], tipo, payload)
         try:
             handler = {
                 "download": downloader.executar,
@@ -251,6 +256,9 @@ class Worker:
                 "enhance": enhance.executar,
                 "open": actions.abrir,
                 "update_tools": actions.atualizar,
+                "drive_scan": drive.ler_pasta,
+                "drive": drive.baixar,
+                "drive_google": drive.google,
             }.get(tipo)
             if not handler:
                 raise RuntimeError(f"Tipo de pedido desconhecido: {tipo}")

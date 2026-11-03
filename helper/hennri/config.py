@@ -71,8 +71,9 @@ class Pastas:
         self.musicas = self.raiz / "Trilhas" / "Músicas"
         self.separadas = self.raiz / "Trilhas" / "Separadas"
         self.voz = self.raiz / "Trilhas" / "Voz melhorada"
+        self.drive = self.raiz / "Drive"
         self.tmp = self.raiz / ".tmp"
-        for p in (self.baixador, self.musicas, self.separadas, self.voz, self.tmp):
+        for p in (self.baixador, self.musicas, self.separadas, self.voz, self.drive, self.tmp):
             p.mkdir(parents=True, exist_ok=True)
 
 

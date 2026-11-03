@@ -123,7 +123,7 @@ export interface NamedItem {
   created_at: number
 }
 
-export type JobType = 'download' | 'music' | 'separate' | 'enhance' | 'open' | 'update_tools'
+export type JobType = 'download' | 'music' | 'separate' | 'enhance' | 'open' | 'update_tools' | 'drive_scan' | 'drive' | 'drive_google'
 export type JobStatus = 'fila' | 'rodando' | 'ok' | 'erro' | 'cancelado'
 
 export interface Job {
@@ -149,6 +149,8 @@ export interface HelperInfo {
   root?: string
   tools?: Record<string, string | null>
   separator_ready?: boolean
+  /** e-mail da conta Google conectada no ajudante (pastas privadas do Drive) */
+  google?: string | null
   busy?: boolean
 }
 

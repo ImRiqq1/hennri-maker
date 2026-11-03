@@ -32,6 +32,8 @@ def abrir(ctx):
         alvo = local if local and local.exists() else ctx.pastas.musicas
     elif kind == "music":
         alvo = ctx.pastas.musicas
+    elif kind == "path" and p.get("path") and Path(p["path"]).is_dir():
+        alvo = Path(p["path"])  # pasta de um download do Drive
     abrir_no_explorer(alvo)
     return {"path": str(alvo)}, "Pasta aberta no PC"
 

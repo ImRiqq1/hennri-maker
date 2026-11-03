@@ -24,6 +24,14 @@ function invalidPayload(type: JobType, p: Record<string, unknown>): string | nul
       return str('kind') ? null : 'kind é obrigatório'
     case 'update_tools':
       return null
+    case 'drive_scan':
+    case 'drive':
+      if (!str('url') || !/^https?:\/\/(drive|docs)\.google\.com\//.test(String(p.url))) return 'link do Google Drive inválido'
+      if (p.dest !== undefined && typeof p.dest !== 'string') return 'dest inválido'
+      return null
+    case 'drive_google':
+      if (p.action === 'logout') return null
+      return str('client_id') && str('client_secret') ? null : 'client_id e client_secret são obrigatórios'
   }
 }
 

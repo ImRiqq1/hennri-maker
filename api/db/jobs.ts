@@ -1,6 +1,6 @@
 import type { HelperToken, Job, JobStatus, JobType, PairRequest } from '../types'
 
-export const JOB_TYPES: JobType[] = ['download', 'music', 'separate', 'enhance', 'open', 'update_tools']
+export const JOB_TYPES: JobType[] = ['download', 'music', 'separate', 'enhance', 'open', 'update_tools', 'drive_scan', 'drive', 'drive_google']
 
 /** Um pedido "rodando" sem notícia há mais que isso volta pra fila (o ajudante caiu no meio). */
 const STALE_MS = 15 * 60 * 1000
@@ -68,7 +68,11 @@ export async function getJob(db: D1Database, id: string): Promise<Job | null> {
 
 export async function cancelJob(db: D1Database, id: string): Promise<boolean> {
   const res = await db
-    .prepare(`UPDATE jobs SET status = 'cancelado', updated_at = ? WHERE id = ? AND status IN ('fila', 'rodando')`)
+    .prepare(
+      `UPDATE jobs SET status = 'cancelado', updated_at = ?,
+         payload = CASE WHEN type = 'drive_google' THEN '{}' ELSE payload END
+       WHERE id = ? AND status IN ('fila', 'rodando')`,
+    )
     .bind(Date.now(), id)
     .run()
   return res.meta.changes > 0
@@ -106,12 +110,15 @@ export async function reportProgress(
   id: string,
   progress: number | null,
   message: string | null,
+  detail?: unknown,
 ): Promise<JobStatus | null> {
+  // detail (andamento detalhado, ex.: Drive) fica no result enquanto o pedido roda
   const job = await db
     .prepare(
-      `UPDATE jobs SET progress = ?, message = ?, updated_at = ? WHERE id = ? AND status = 'rodando' RETURNING status`,
+      `UPDATE jobs SET progress = ?, message = ?, result = COALESCE(?, result), updated_at = ?
+       WHERE id = ? AND status = 'rodando' RETURNING status`,
     )
-    .bind(progress, message, Date.now(), id)
+    .bind(progress, message, detail === undefined ? null : JSON.stringify(detail), Date.now(), id)
     .first<{ status: JobStatus }>()
   if (job) return job.status
   const current = await getJob(db, id)
@@ -127,7 +134,10 @@ export async function finishJob(
 ): Promise<boolean> {
   const res = await db
     .prepare(
-      `UPDATE jobs SET status = ?, progress = ?, result = ?, message = ?, updated_at = ? WHERE id = ? AND status = 'rodando'`,
+      // a chave secreta do Google (drive_google) não fica guardada depois que o ajudante usou
+      `UPDATE jobs SET status = ?, progress = ?, result = ?, message = ?, updated_at = ?,
+         payload = CASE WHEN type = 'drive_google' THEN '{}' ELSE payload END
+       WHERE id = ? AND status = 'rodando'`,
     )
     .bind(status, status === 'ok' ? 100 : null, result === undefined ? null : JSON.stringify(result), message, Date.now(), id)
     .run()

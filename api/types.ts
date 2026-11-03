@@ -78,7 +78,7 @@ export interface LessonNote {
   updated_at: number | null
 }
 
-export type JobType = 'download' | 'music' | 'separate' | 'enhance' | 'open' | 'update_tools'
+export type JobType = 'download' | 'music' | 'separate' | 'enhance' | 'open' | 'update_tools' | 'drive_scan' | 'drive' | 'drive_google'
 export type JobStatus = 'fila' | 'rodando' | 'ok' | 'erro' | 'cancelado'
 
 export interface Job {

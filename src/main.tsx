@@ -13,6 +13,7 @@ import { Prompts } from './pages/Prompts'
 import { References } from './pages/References'
 import { Skills } from './pages/Skills'
 import { Baixador } from './pages/Baixador'
+import { Drive } from './pages/Drive'
 import { BaixarMusica } from './pages/trilhas/BaixarMusica'
 import { Biblioteca } from './pages/trilhas/Biblioteca'
 import { MelhorarVoz } from './pages/trilhas/MelhorarVoz'
@@ -39,6 +40,7 @@ function App() {
           <Route path="/trilhas/separar" element={<RemoverVoz />} />
           <Route path="/trilhas/melhorar" element={<MelhorarVoz />} />
           <Route path="/baixador" element={<Baixador />} />
+          <Route path="/baixador/drive" element={<Drive />} />
         </Route>
       </Routes>
     </BrowserRouter>

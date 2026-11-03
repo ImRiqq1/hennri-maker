@@ -103,7 +103,8 @@ helperAgent.post('/jobs/:id/progress', async (c) => {
   const body = await c.req.json().catch(() => ({}))
   const progress = typeof body.progress === 'number' ? Math.max(0, Math.min(100, body.progress)) : null
   const message = typeof body.message === 'string' ? body.message.slice(0, 300) : null
-  const status = await reportProgress(c.env.DB, c.req.param('id'), progress, message)
+  const detail = body.detail && typeof body.detail === 'object' ? body.detail : undefined
+  const status = await reportProgress(c.env.DB, c.req.param('id'), progress, message, detail)
   if (!status) return c.json({ error: 'pedido não encontrado' }, 404)
   return c.json({ status, cancel: status === 'cancelado' })
 })

@@ -1,5 +1,5 @@
 HENNRI / AJUDANTE — o motor do maker.hennri.com no seu computador (Windows e Mac)
-Baixador (Insta · YouTube · Pinterest · TikTok · X) · Músicas (Spotify/YouTube) · Separar voz · Melhorar voz
+Baixador (Insta · YouTube · Pinterest · TikTok · X) · Pastas do Google Drive · Músicas (Spotify/YouTube) · Separar voz · Melhorar voz
 =========================================================================================
 
 COMO FUNCIONA
@@ -35,11 +35,19 @@ Abrir o site · Abrir a pasta dos arquivos · Sair (e "Conectar este computador"
 
 ONDE FICAM OS ARQUIVOS (Downloads/HENNRI no Windows e no Mac)
   Baixador/<pasta de ref>/   vídeos, fotos e pins baixados
+  Drive/<nome da pasta>/     pastas do Google Drive, igual ao Drive (ou a pasta que você escrever no site)
   Trilhas/Músicas/           músicas baixadas (MP3 320 com capa)
   Trilhas/Separadas/         voz e instrumental de cada música (WAV)
   Trilhas/Voz melhorada/     áudios/vídeos com a voz tratada
 As músicas, a voz separada e a voz melhorada também vão pro site (player e biblioteca).
 Os vídeos do Baixador ficam só no computador; o site mostra a lista e a miniatura.
+
+PASTAS DO GOOGLE DRIVE (site: Baixador -> Drive)
+Cole o link da pasta, clique em Ler pasta (mostra quantos arquivos e GB) e em Baixar tudo.
+Baixa 4 arquivos de cada vez e continua de onde parou se a internet cair ou o PC desligar.
+Pasta que só abre com o seu e-mail: conecte sua conta Google uma vez (passo a passo no site).
+"Muita gente baixou esse arquivo": é um bloqueio do Google que dura de minutos a 24h.
+O ajudante espera um pouco; se não liberar, clique em Continuar mais tarde (ele só baixa o que falta).
 
 FORMATO DO BAIXADOR
   Premiere -> H.264, abre liso no Premiere/After (YouTube até 1080p)

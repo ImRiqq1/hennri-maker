@@ -62,8 +62,11 @@ class Api:
         r = self._req("POST", "/jobs/claim", tentativas=1, timeout=20)
         return None if r.status_code == 204 else self._json(r)
 
-    def progress(self, job_id: str, progress=None, message=None) -> dict:
-        return self._json(self._req("POST", f"/jobs/{job_id}/progress", json={"progress": progress, "message": message}))
+    def progress(self, job_id: str, progress=None, message=None, detail=None) -> dict:
+        corpo = {"progress": progress, "message": message}
+        if detail is not None:
+            corpo["detail"] = detail  # andamento detalhado (Drive: arquivos, GB, velocidade)
+        return self._json(self._req("POST", f"/jobs/{job_id}/progress", json=corpo))
 
     def done(self, job_id: str, result=None, message=None):
         r = self._req("POST", f"/jobs/{job_id}/done", json={"result": result, "message": message})

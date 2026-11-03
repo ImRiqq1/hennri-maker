@@ -12,6 +12,7 @@ import type { Download, Job, RefFolder } from '../lib/types'
 import { cn } from '../lib/utils'
 import { Dropdown } from '../components/Dropdown'
 import { TargetPicker } from '../components/trilhas/TargetPicker'
+import { BaixadorTabs } from '../components/BaixadorTabs'
 
 type Mode = 'premiere' | 'max' | 'audio'
 
@@ -180,6 +181,7 @@ export function Baixador() {
         count={downloads.length}
         actions={<NewButton label="Nova pasta de ref" onClick={newFolder} />}
       />
+      <BaixadorTabs extra={false} />
 
       {/* formato + login + baixar */}
       <div className="mb-6 flex flex-wrap items-center gap-3">
