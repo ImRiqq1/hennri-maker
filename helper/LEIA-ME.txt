@@ -1,5 +1,5 @@
 HENNRI / AJUDANTE — o motor do maker.hennri.com no seu computador (Windows e Mac)
-Baixador (Insta · YouTube · Pinterest · TikTok · X) · Pastas do Google Drive · Músicas (Spotify/YouTube) · Separar voz · Melhorar voz
+Baixador (Insta · YouTube · Pinterest · TikTok · X · Giphy) · Pastas do Google Drive · Músicas (Spotify/YouTube) · Separar voz · Melhorar voz
 =========================================================================================
 
 COMO FUNCIONA
@@ -53,6 +53,7 @@ FORMATO DO BAIXADOR
   Premiere -> H.264, abre liso no Premiere/After (YouTube até 1080p)
   Máx      -> maior resolução (4K no YT), pode vir AV1/VP9
   Áudio    -> MP3 320
+  Giphy    -> sempre o MP4 (abre no Premiere) e o GIF original
 
 INSTAGRAM / PINTEREST DERAM ERRO?
 No site, em "Login do navegador", escolha o navegador onde você está logado (Firefox é o mais

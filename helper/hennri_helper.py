@@ -14,6 +14,13 @@ import subprocess
 import sys
 import threading
 
+# pythonw (sem console) deixa stdout/stderr = None: a barra de progresso do download do modelo
+# (tqdm) quebrava com "'NoneType' object has no attribute 'write'" e a separação de voz nunca carregava.
+if sys.stdout is None:
+    sys.stdout = open(os.devnull, "w", encoding="utf-8")
+if sys.stderr is None:
+    sys.stderr = open(os.devnull, "w", encoding="utf-8")
+
 from hennri.api import Api, ChaveInvalida, SemConexao
 from hennri.config import SITE_PADRAO, Pastas, configurar_log, ler_config, log, raiz_padrao, salvar_config
 

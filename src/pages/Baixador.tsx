@@ -37,6 +37,7 @@ const PLATFORM: Record<string, { label: string; icon: string; tone: string }> = 
   PIN: { label: 'Pinterest', icon: 'ri-pinterest-line', tone: 'bg-[#e60023]/10 text-[#c4001e]' },
   TT: { label: 'TikTok', icon: 'ri-tiktok-line', tone: 'bg-graphite-900/10 text-graphite-900' },
   X: { label: 'X', icon: 'ri-twitter-x-line', tone: 'bg-graphite-900/10 text-graphite-900' },
+  GIF: { label: 'Giphy', icon: 'ri-file-gif-line', tone: 'bg-[#9933ff]/10 text-[#7a1fe0]' },
   WEB: { label: 'Link', icon: 'ri-global-line', tone: 'bg-mist-100 text-sub' },
 }
 
@@ -49,6 +50,7 @@ function platformOf(url: string) {
   if (u.includes('pinterest.') || u.includes('pin.it')) return 'PIN'
   if (u.includes('tiktok.com')) return 'TT'
   if (u.includes('twitter.com') || u.includes('x.com/')) return 'X'
+  if (u.includes('giphy.com') || u.includes('gph.is')) return 'GIF'
   return 'WEB'
 }
 
@@ -176,7 +178,7 @@ export function Baixador() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        tags={['instagram', 'youtube', 'pinterest', 'tiktok', 'x']}
+        tags={['instagram', 'youtube', 'pinterest', 'tiktok', 'x', 'giphy']}
         title="BAIXADOR"
         count={downloads.length}
         actions={<NewButton label="Nova pasta de ref" onClick={newFolder} />}
@@ -273,7 +275,7 @@ export function Baixador() {
                     ))}
                   </span>
                 ) : (
-                  <span className="text-[12px] text-mist-400">Instagram, YouTube, Pinterest (pin ou pasta inteira), TikTok, X</span>
+                  <span className="text-[12px] text-mist-400">Instagram, YouTube, Pinterest (pin ou pasta inteira), TikTok, X, Giphy</span>
                 )}
                 {thumbs.length > 0 && (
                   <span className="ml-auto flex -space-x-2">

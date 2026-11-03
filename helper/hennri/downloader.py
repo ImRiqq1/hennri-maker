@@ -1,4 +1,4 @@
-"""Baixador: refs em massa (Instagram, YouTube, Pinterest, TikTok, X) — lógica do HENNRI-Baixador antigo."""
+"""Baixador: refs em massa (Instagram, YouTube, Pinterest, TikTok, X, Giphy) — lógica do HENNRI-Baixador antigo."""
 import json
 import re
 import shutil
@@ -8,9 +8,10 @@ import time
 import uuid
 from pathlib import Path
 
+import requests
 import yt_dlp
 
-from .config import DADOS, HELPER_DIR, IndiceLocal, log
+from .config import DADOS, HELPER_DIR, IndiceLocal, ler_config, log
 from .util import ANSI, DENO, FFMPEG, IMAGEM_EXT, SEM_JANELA, VIDEO_EXT, Cancelado, miniatura, nome_seguro
 
 LIMITE_PASTA_PINTEREST = 300  # máx. de pins por pasta/board do Pinterest
@@ -52,6 +53,8 @@ def plataforma(url: str) -> str:
         return "TT"
     if "twitter.com" in u or "x.com/" in u:
         return "X"
+    if "giphy.com" in u or "gph.is" in u:
+        return "GIF"
     return "WEB"
 
 
@@ -202,6 +205,70 @@ def baixar_gallery(ctx, url: str, destino: Path, navegador: str, estado: dict, t
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def _giphy_id(url: str) -> str | None:
+    """giphy.com/gifs|stickers|clips/<slug>-<ID>, media*.giphy.com/media/[v1.../]<ID>/giphy.gif, i.giphy.com/<ID>.gif"""
+    caminho = url.split("?")[0].split("#")[0].rstrip("/")
+    m = re.search(r"giphy\.com/(?:gifs|stickers|clips|embed)/(?:[^/]*-)?([A-Za-z0-9]+)$", caminho)
+    if m:
+        return m.group(1)
+    m = re.search(r"giphy\.com/media/(?:v1\.[^/]+/)?([A-Za-z0-9]+)/", caminho)
+    if m:
+        return m.group(1)
+    m = re.search(r"i\.giphy\.com/(?:media/)?([A-Za-z0-9]+)(?:\.\w+)?$", caminho)
+    return m.group(1) if m else None
+
+
+def baixar_giphy(ctx, url: str, destino: Path, modo: str, estado: dict):
+    """Giphy: o MP4 (H.264, abre no Premiere) e o GIF original de cada link."""
+    if modo == "audio":
+        raise ErroAmigavel("GIF do Giphy não tem áudio → escolha Premiere ou Máx.")
+    ua = {"User-Agent": "Mozilla/5.0"}
+    if "gph.is" in url.lower():  # link curto: segue o redirecionamento até o giphy.com
+        url = requests.get(url, headers=ua, timeout=20, allow_redirects=True).url
+    gid = _giphy_id(url)
+    if not gid:
+        raise ErroAmigavel("Link do Giphy não reconhecido → abra o GIF no site e copie o link da página.")
+
+    # título: API do Giphy se tiver chave ("giphy_api_key" no config.json); senão vem do próprio link
+    # (giphy.com/gifs/ai-cat-boxing-<ID> → "ai cat boxing") — a página do Giphy bloqueia robô
+    titulo = None
+    chave = ler_config().get("giphy_api_key")
+    if chave:
+        try:
+            r = requests.get(f"https://api.giphy.com/v1/gifs/{gid}", params={"api_key": chave}, timeout=20)
+            if r.ok:
+                titulo = ((r.json().get("data") or {}).get("title") or "").strip() or None
+        except (requests.RequestException, ValueError) as e:
+            log.warning("giphy: API não respondeu pra %s: %s", gid, e)
+    if not titulo:
+        m = re.search(r"/(?:gifs|stickers|clips)/(.+)-" + re.escape(gid), url)
+        titulo = m.group(1).replace("-", " ").strip() if m else "Giphy"
+    estado["titulo"] = titulo
+    base = f"{nome_seguro(titulo, 70)} [{gid}]"
+
+    for ext in ("mp4", "gif"):
+        alvo = destino / f"{base}.{ext}"
+        if alvo.exists():
+            continue
+        ctx.progresso(0, f"Baixando · {titulo[:70]} ({ext.upper()})", forcar=True)
+        parcial = alvo.with_name(alvo.name + ".part")
+        with requests.get(f"https://i.giphy.com/media/{gid}/giphy.{ext}", headers=ua, timeout=60, stream=True) as r:
+            if r.status_code == 404:
+                raise ErroAmigavel("GIF não encontrado no Giphy (apagado ou link errado).")
+            r.raise_for_status()
+            total = int(r.headers.get("content-length") or 0)
+            feito = 0
+            with open(parcial, "wb") as f:
+                for pedaco in r.iter_content(256 * 1024):
+                    if ctx.cancelado:
+                        raise Cancelado()
+                    f.write(pedaco)
+                    feito += len(pedaco)
+                    ctx.progresso(feito * 100 / total if total else None, f"Baixando · {titulo[:70]} ({ext.upper()})")
+        parcial.replace(alvo)
+        estado["arquivos"].append(str(alvo))
+
+
 def _limpar_pedacos(destino: Path, desde: float):
     """Download cancelado: apaga os pedaços (.part, .ytdl, fragmentos) que ficaram pela metade."""
     for f in destino.iterdir():
@@ -245,6 +312,8 @@ def executar(ctx):
     try:
         if plat == "PIN" and e_board_pinterest(url):
             baixar_gallery(ctx, url, destino, navegador, estado, ctx.pastas.tmp)
+        elif plat == "GIF":
+            baixar_giphy(ctx, url, destino, modo, estado)
         else:
             try:
                 baixar_ytdlp(ctx, url, destino, modo, navegador, estado)
