@@ -93,7 +93,10 @@ helperAgent.post('/heartbeat', async (c) => {
 // pega o próximo pedido da fila; 204 = nada pra fazer
 helperAgent.post('/jobs/claim', async (c) => {
   await touchHelper(c.env.DB, c.get('helper').id)
-  const job = await claimNextJob(c.env.DB, c.get('helper').id)
+  // { types: [...] }: só os tipos que o ajudante tem vaga agora (ex.: GPU ocupada → só downloads)
+  const body = await c.req.json().catch(() => ({}))
+  const types = Array.isArray(body?.types) ? body.types.filter((t: unknown): t is string => typeof t === 'string') : null
+  const job = await claimNextJob(c.env.DB, c.get('helper').id, types)
   if (!job) return c.body(null, 204)
   return c.json({ ...job, payload: JSON.parse(job.payload) })
 })

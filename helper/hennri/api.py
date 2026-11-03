@@ -30,6 +30,8 @@ class Api:
     def _req(self, metodo: str, rota: str, tentativas: int = 3, timeout: float = 30, **kw):
         ultimo = None
         for i in range(tentativas):
+            if hasattr(kw.get("data"), "seek"):
+                kw["data"].seek(0)  # upload repetido: sem isso a 2ª tentativa mandava o arquivo vazio/cortado
             try:
                 r = self.s.request(metodo, self.base + rota, timeout=timeout, **kw)
             except requests.RequestException as e:
@@ -58,8 +60,9 @@ class Api:
     def heartbeat(self, info: dict):
         self._json(self._req("POST", "/heartbeat", json={"info": info}, tentativas=1, timeout=15))
 
-    def claim(self):
-        r = self._req("POST", "/jobs/claim", tentativas=1, timeout=20)
+    def claim(self, tipos: list[str] | None = None):
+        """tipos: só pega pedidos desses tipos (os que têm vaga agora)."""
+        r = self._req("POST", "/jobs/claim", tentativas=1, timeout=20, json={"types": tipos} if tipos else None)
         return None if r.status_code == 204 else self._json(r)
 
     def progress(self, job_id: str, progress=None, message=None, detail=None) -> dict:

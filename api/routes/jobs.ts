@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import type { AppEnv, JobType } from '../types'
-import { JOB_TYPES, cancelJob, createJobs, deleteJob, listJobs } from '../db/jobs'
+import { JOB_TYPES, cancelJob, createJobs, deleteJob, helperExists, listJobs } from '../db/jobs'
 
 const app = new Hono<AppEnv>()
 
@@ -49,7 +49,8 @@ app.post('/', async (c) => {
   }
   const batchId = payloads.length > 1 ? crypto.randomUUID() : null
   // target = id do ajudante (PC ou Mac) que deve fazer; sem target, qualquer um online pega
-  const target = typeof body.target === 'string' && body.target ? body.target : null
+  let target = typeof body.target === 'string' && body.target ? body.target : null
+  if (target && !(await helperExists(c.env.DB, target))) target = null // computador desconectado
   const jobs = await createJobs(c.env.DB, type, payloads, batchId, target)
   return c.json({ batch_id: batchId, jobs }, 201)
 })

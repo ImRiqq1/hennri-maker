@@ -126,6 +126,9 @@ def rodar_bandeja(worker, ao_sair):
     ultimo = {"estado": None}
 
     def aplicar(w):
+        if w.parar.is_set():  # o worker parou (ex.: depois de atualizar): solta a thread principal pra reiniciar
+            icon.stop()
+            return
         est = _estado(w)
         if est != ultimo["estado"]:
             ultimo["estado"] = est

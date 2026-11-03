@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import sys
+import threading
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
@@ -82,14 +83,19 @@ class IndiceLocal:
 
     def __init__(self, nome: str):
         self.caminho = DADOS / f"{nome}.json"
+        self.lock = threading.Lock()  # até 3 downloads terminam ao mesmo tempo
         try:
             self.dados = json.loads(self.caminho.read_text("utf-8"))
         except Exception:
             self.dados = {}
 
     def get(self, chave: str, padrao=None):
-        return self.dados.get(chave, padrao)
+        with self.lock:
+            return self.dados.get(chave, padrao)
 
     def set(self, chave: str, valor):
-        self.dados[chave] = valor
-        self.caminho.write_text(json.dumps(self.dados, ensure_ascii=False, indent=1), "utf-8")
+        with self.lock:
+            self.dados[chave] = valor
+            tmp = self.caminho.with_suffix(".json.tmp")
+            tmp.write_text(json.dumps(self.dados, ensure_ascii=False, indent=1), "utf-8")
+            os.replace(tmp, self.caminho)

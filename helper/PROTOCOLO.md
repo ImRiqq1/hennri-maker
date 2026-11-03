@@ -16,7 +16,7 @@ Assim dá pra pedir até pelo celular (com o PC ligado) sem abrir porta no rotea
 | Rota | O que faz |
 | --- | --- |
 | `POST /heartbeat` `{ info }` | Sinal de vida + info (versões, GPU, pasta). Online = contato nos últimos 40s. |
-| `POST /jobs/claim` | Pega o próximo pedido (`200` com o pedido, `payload` já em objeto) ou `204` se não tem nada. Também conta como sinal de vida. |
+| `POST /jobs/claim` | Pega o próximo pedido (`200` com o pedido, `payload` já em objeto) ou `204` se não tem nada. Corpo opcional `{ "types": [...] }`: só pega pedidos desses tipos (o ajudante manda só os que têm vaga — GPU ocupada não trava downloads). Também conta como sinal de vida. |
 | `POST /jobs/:id/progress` `{ progress?: 0-100, message?, detail? }` | Andamento (`detail` = objeto que fica no `result` enquanto roda). Resposta `{ status, cancel }` — se `cancel: true`, pare e não chame done/fail. |
 | `POST /jobs/:id/done` `{ result?, message? }` | Terminou bem. |
 | `POST /jobs/:id/fail` `{ error, result? }` | Deu erro (mensagem curta e amigável, em português). |

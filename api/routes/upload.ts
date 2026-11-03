@@ -33,9 +33,12 @@ app.post('/', async (c) => {
     return c.json({ error: "envie um campo 'file' multipart" }, 400)
   }
   const contentType = file.type || 'application/octet-stream'
-  const ext = EXT_BY_TYPE[contentType]
+  // tipo vazio/desconhecido (comum no Windows, .mkv): usa a extensão do nome — o ajudante decide vídeo x áudio por ela
+  const fromName = /\.([a-z0-9]{1,5})$/i.exec(file.name)?.[1]?.toLowerCase()
+  const ext = EXT_BY_TYPE[contentType] ?? fromName
   const key = ext ? `${crypto.randomUUID()}.${ext}` : crypto.randomUUID()
-  await c.env.BUCKET.put(key, await file.arrayBuffer(), {
+  // o File direto (sem arrayBuffer): uma cópia a menos de até 95 MB na memória do Worker
+  await c.env.BUCKET.put(key, file, {
     httpMetadata: { contentType },
   })
   return c.json({ key }, 201)

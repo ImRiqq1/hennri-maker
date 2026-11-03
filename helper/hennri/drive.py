@@ -57,6 +57,11 @@ class Privada(Exception):
     """A pasta não abre sem login (ou o link está errado)."""
 
 
+def _e_login(r: requests.Response) -> bool:
+    """Doc sem acesso: o Google responde 200 com a página de login (virava um .docx corrompido)."""
+    return "accounts.google.com" in r.url or "text/html" in r.headers.get("content-type", "")
+
+
 class LimiteDoGoogle(Exception):
     """O Google bloqueou o download por um tempo ("muita gente baixou esse arquivo")."""
 
@@ -221,7 +226,8 @@ class Publico:
         """Resposta do download já na posição `inicio` (se o Google aceitar continuar)."""
         if item.mime in EXPORTAR_PUBLICO:
             r = self.s.get(EXPORTAR_PUBLICO[item.mime].format(id=item.id), stream=True, timeout=60)
-            if r.status_code in (401, 403, 404):
+            if r.status_code in (401, 403, 404) or _e_login(r):
+                r.close()
                 raise Privada()
             r.raise_for_status()
             return r
@@ -340,6 +346,9 @@ class Conta:
                 # Docs maiores que 10 MB não saem pela API: usa o link de exportação com a conta
                 r = self.s.get(EXPORTAR_PUBLICO[item.mime].format(id=item.id), headers=self._cabecalho(rk_de), stream=True,
                                timeout=60)
+                if _e_login(r):
+                    r.close()
+                    raise Privada()
         else:
             h = self._cabecalho(rk_de)
             if inicio:

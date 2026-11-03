@@ -249,7 +249,10 @@ def executar(ctx):
         if not faixas:
             raise ErroAmigavel("Esse link do Spotify não tem faixas.")
     elif "youtube.com" in url or "youtu.be" in url:
-        faixas = [{"title": None, "artist": None, "duration": None, "cover": None, "source_url": url, "youtube_url": url}]
+        if "list=" in url and "v=" not in url and "youtu.be/" not in url:
+            # playlist pura: o yt-dlp baixava tudo por cima do mesmo arquivo e virava uma trilha só
+            raise ErroAmigavel("Playlist do YouTube ainda não → cole o link de cada música (ou a playlist do Spotify).")
+        faixas =[{"title": None, "artist": None, "duration": None, "cover": None, "source_url": url, "youtube_url": url}]
     else:
         raise ErroAmigavel("Cole um link do Spotify ou do YouTube.")
 

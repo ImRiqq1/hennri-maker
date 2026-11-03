@@ -33,6 +33,7 @@ SEM_JANELA = subprocess.CREATE_NO_WINDOW if sys.platform.startswith("win") else 
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
 VIDEO_EXT = {".mp4", ".mov", ".mkv", ".webm", ".m4v", ".avi"}
 IMAGEM_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+AUDIO_EXT = {".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg", ".opus", ".weba"}
 MAX_UPLOAD = 95 * 1024 * 1024
 
 
@@ -46,7 +47,8 @@ def slug(nome: str) -> str:
 
 
 def nome_seguro(nome: str, limite: int = 80) -> str:
-    return re.sub(r'[<>:"/\\|?*\x00-\x1f]', "", nome or "").strip(" .")[:limite] or "Sem nome"
+    # strip de novo depois de cortar: nome terminando em espaço/ponto quebra no Windows
+    return re.sub(r'[<>:"/\\|?*\x00-\x1f]', "", nome or "").strip(" .")[:limite].rstrip(" .") or "Sem nome"
 
 
 def caminho_livre(destino: Path) -> Path:
@@ -116,7 +118,12 @@ def miniatura(origem: str | Path, destino: Path, lado: int = 480, quadrada: bool
             origem = Path(origem)
             if origem.suffix.lower() in VIDEO_EXT:
                 quadro = destino.with_suffix(".frame.jpg")
-                ffmpeg("-ss", "1", "-i", str(origem), "-frames:v", "1", "-vf", f"scale={lado}:-2", str(quadro), timeout=60)
+                try:
+                    ffmpeg("-ss", "1", "-i", str(origem), "-frames:v", "1", "-vf", f"scale={lado}:-2", str(quadro), timeout=60)
+                except RuntimeError:
+                    pass
+                if not quadro.exists():  # vídeo com menos de 1 s (ex.: Giphy): pega o primeiro quadro
+                    ffmpeg("-i", str(origem), "-frames:v", "1", "-vf", f"scale={lado}:-2", str(quadro), timeout=60)
                 img = Image.open(quadro)
                 img.load()
                 quadro.unlink(missing_ok=True)

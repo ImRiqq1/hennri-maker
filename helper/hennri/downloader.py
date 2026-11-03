@@ -246,8 +246,10 @@ def baixar_giphy(ctx, url: str, destino: Path, modo: str, estado: dict):
     estado["titulo"] = titulo
     base = f"{nome_seguro(titulo, 70)} [{gid}]"
 
-    for ext in ("mp4", "gif"):
-        alvo = destino / f"{base}.{ext}"
+    alvos = [destino / f"{base}.{ext}" for ext in ("mp4", "gif")]
+    estado["thumb_url"] = str(alvos[1])  # miniatura do GIF (o MP4 pode ter menos de 1 s)
+    for alvo in alvos:
+        ext = alvo.suffix[1:]
         if alvo.exists():
             continue
         ctx.progresso(0, f"Baixando · {titulo[:70]} ({ext.upper()})", forcar=True)
@@ -267,6 +269,8 @@ def baixar_giphy(ctx, url: str, destino: Path, modo: str, estado: dict):
                     ctx.progresso(feito * 100 / total if total else None, f"Baixando · {titulo[:70]} ({ext.upper()})")
         parcial.replace(alvo)
         estado["arquivos"].append(str(alvo))
+    if estado["arquivos"]:  # baixou o que faltava (ex.: cancelado no meio antes): registra o par inteiro
+        estado["arquivos"] = [str(a) for a in alvos]
 
 
 def _limpar_pedacos(destino: Path, desde: float):

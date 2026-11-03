@@ -54,7 +54,9 @@ export async function listJobs(
     where.push('batch_id = ?')
     binds.push(opts.batchId)
   }
-  const sql = `SELECT * FROM jobs ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY created_at DESC LIMIT ?`
+  // ativos primeiro: com mais de `limit` links na fila, os que estão rodando (os mais antigos) não somem da lista
+  const sql = `SELECT * FROM jobs ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+    ORDER BY (status IN ('fila', 'rodando')) DESC, created_at DESC LIMIT ?`
   const { results } = await db
     .prepare(sql)
     .bind(...binds, opts.limit ?? 60)
@@ -84,23 +86,25 @@ export async function deleteJob(db: D1Database, id: string): Promise<boolean> {
 }
 
 /** O ajudante pega o próximo pedido da fila (de forma atômica): os sem destino ou os mandados pra ele. */
-export async function claimNextJob(db: D1Database, helperId: string): Promise<Job | null> {
+export async function claimNextJob(db: D1Database, helperId: string, types: string[] | null = null): Promise<Job | null> {
   const now = Date.now()
   await db
     .prepare(`UPDATE jobs SET status = 'fila', updated_at = ? WHERE status = 'rodando' AND updated_at < ?`)
     .bind(now, now - STALE_MS)
     .run()
+  if (types && !types.length) return null
+  const soTipos = types ? `AND type IN (${types.map(() => '?').join(',')})` : ''
   return db
     .prepare(
       `UPDATE jobs SET status = 'rodando', progress = NULL, message = NULL, updated_at = ?
        WHERE id = (
          SELECT id FROM jobs
-         WHERE status = 'fila' AND (target_helper_id IS NULL OR target_helper_id = ?)
+         WHERE status = 'fila' AND (target_helper_id IS NULL OR target_helper_id = ?) ${soTipos}
          ORDER BY created_at ASC LIMIT 1
        ) AND status = 'fila'
        RETURNING *`,
     )
-    .bind(now, helperId)
+    .bind(now, helperId, ...(types ?? []))
     .first<Job>()
 }
 
@@ -135,7 +139,8 @@ export async function finishJob(
   const res = await db
     .prepare(
       // a chave secreta do Google (drive_google) não fica guardada depois que o ajudante usou
-      `UPDATE jobs SET status = ?, progress = ?, result = ?, message = ?, updated_at = ?,
+      // sem result (ex.: /fail), mantém o andamento detalhado (Drive: pasta, falhas, "continuar de onde parou")
+      `UPDATE jobs SET status = ?, progress = ?, result = COALESCE(?, result), message = ?, updated_at = ?,
          payload = CASE WHEN type = 'drive_google' THEN '{}' ELSE payload END
        WHERE id = ? AND status = 'rodando'`,
     )
@@ -193,8 +198,17 @@ export async function listHelpers(db: D1Database): Promise<Omit<HelperToken, 'to
 }
 
 export async function deleteHelper(db: D1Database, id: string): Promise<boolean> {
-  const res = await db.prepare('DELETE FROM helper_tokens WHERE id = ?').bind(id).run()
+  const [res] = await db.batch([
+    db.prepare('DELETE FROM helper_tokens WHERE id = ?').bind(id),
+    // o que estava na fila pra esse computador passa pra qualquer um (senão ficava parado pra sempre)
+    db.prepare(`UPDATE jobs SET target_helper_id = NULL WHERE target_helper_id = ? AND status = 'fila'`).bind(id),
+  ])
   return res.meta.changes > 0
+}
+
+/** O computador escolhido ainda existe? (o site pode ter guardado um que foi desconectado) */
+export async function helperExists(db: D1Database, id: string): Promise<boolean> {
+  return !!(await db.prepare('SELECT 1 FROM helper_tokens WHERE id = ?').bind(id).first())
 }
 
 /** Marca que o ajudante deu sinal de vida (no máximo uma escrita a cada 15s). */

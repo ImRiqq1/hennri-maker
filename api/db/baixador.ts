@@ -64,9 +64,13 @@ export type DownloadInput = {
 }
 
 export async function createDownload(db: D1Database, input: DownloadInput): Promise<Download> {
+  // a pasta pode ter sido apagada enquanto baixava: aí o download entra em "Sem pasta" (e não dá erro de chave)
+  const folder = input.folder_id
+    ? await db.prepare('SELECT id FROM ref_folders WHERE id = ?').bind(input.folder_id).first<{ id: string }>()
+    : null
   const d: Download = {
     id: crypto.randomUUID(),
-    folder_id: input.folder_id ?? null,
+    folder_id: folder?.id ?? null,
     job_id: input.job_id ?? null,
     url: input.url,
     platform: input.platform,

@@ -1,12 +1,13 @@
 """Remover voz: separa cada música em voz e instrumental na GPU (placa NVIDIA ou chip Apple), com audio-separator."""
 import logging
+import re
 import shutil
 import threading
 import uuid
 from pathlib import Path
 
 from .config import DADOS, log
-from .util import Cancelado, nome_seguro, para_mp3
+from .util import Cancelado, caminho_livre, nome_seguro, para_mp3
 
 # BS-Roformer: o melhor separador voz/instrumental aberto hoje; cabe folgado em 8 GB.
 MODELO = "model_bs_roformer_ep_317_sdr_12.9755.ckpt"
@@ -118,8 +119,14 @@ def separar_arquivo(ctx, entrada: Path, nome: str) -> tuple[Path, Path]:
             saidas = sep.separate(str(entrada))
         arquivos = [Path(a) if Path(a).is_absolute() else trabalho / a for a in saidas]
     ctx.checar()
-    voz = next((a for a in arquivos if "(vocals)" in a.name.lower()), None)
-    inst = next((a for a in arquivos if "(instrumental)" in a.name.lower() or "(other)" in a.name.lower()), None)
+    # o audio-separator salva <entrada>_(Vocals)_<modelo>.wav: olha só o sufixo que ele põe, não o nome
+    # da música (uma "X (Instrumental)" separada de novo casava com os dois arquivos)
+    def faixa(a: Path) -> str:
+        achado = re.findall(r"_\(([^()]+)\)_", a.stem)
+        return achado[-1].lower() if achado else ""
+
+    voz = next((a for a in arquivos if faixa(a) == "vocals"), None)
+    inst = next((a for a in arquivos if faixa(a) in ("instrumental", "other")), None)
     if not voz or not inst:
         raise ErroAmigavel("A separação terminou sem gerar voz e instrumental.")
     # nomes fáceis de achar no Premiere
@@ -154,8 +161,13 @@ def separar_trilha(ctx, track_id: str) -> dict:
             chaves[campo] = ctx.api.upload(mp3, "audio/mpeg")
             mp3.unlink(missing_ok=True)
         dados = dict(chaves)
-        if not trilha.get("local_path"):
-            dados["local_path"] = str(inst)
+        if tmp_entrada:
+            # música que só estava no site: guarda o original junto da voz e do instrumental. Antes o
+            # local_path virava o instrumental, e "separar de novo"/"melhorar voz" usavam a faixa sem voz.
+            original = caminho_livre(voz.parent / f"{voz.parent.name} (Original){tmp_entrada.suffix}")
+            shutil.move(str(tmp_entrada), original)
+            tmp_entrada = None
+            dados["local_path"] = str(original)
         ctx.api.editar_trilha(track_id, dados)
         return {"track_id": track_id, "vocals": str(voz), "instrumental": str(inst)}
     finally:

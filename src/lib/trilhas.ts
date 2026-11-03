@@ -116,6 +116,9 @@ export function useTarget(pcs: HelperPC[]): [string, (id: string) => void] {
     return () => window.removeEventListener('hm-target', sync)
   }, [])
   const valid = !target || pcs.length === 0 || pcs.some((p) => p.id === target)
+  useEffect(() => {
+    if (!valid) setTarget('') // apaga o guardado também: createJob lê direto do localStorage
+  }, [valid])
   return [valid ? target : '', setTarget]
 }
 

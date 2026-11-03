@@ -1,9 +1,10 @@
 """Melhorar voz: tira ruído, equilibra e deixa a voz no volume de entrega (-16 LUFS)."""
+import shutil
 import uuid
 from pathlib import Path
 
 from .config import log
-from .util import MAX_UPLOAD, VIDEO_EXT, caminho_livre, ffmpeg, nome_seguro
+from .util import AUDIO_EXT, MAX_UPLOAD, VIDEO_EXT, Cancelado, caminho_livre, ffmpeg, nome_seguro
 
 # corta graves de vento/ar-condicionado e chiado agudo, tira ruído de fundo,
 # segura picos e normaliza o volume (-16 LUFS, padrão de redes/YouTube)
@@ -59,10 +60,13 @@ def executar(ctx):
         ctx.progresso(None, "Baixando o arquivo do site…", forcar=True)
         local = ctx.api.baixar_arquivo(p["file_key"], tmp_entrada)
 
-    base = nome_seguro(Path(nome).stem, 100)
+    # só tira a extensão se for de mídia: "Aula 1.2 - Intro" não pode virar "Aula 1"
+    sufixo = Path(nome).suffix.lower()
+    base = nome_seguro(nome[: -len(sufixo)] if sufixo in VIDEO_EXT | AUDIO_EXT else nome, 100)
     e_video = local.suffix.lower() in VIDEO_EXT
     trabalho = ctx.pastas.tmp / uuid.uuid4().hex[:8]
     trabalho.mkdir(parents=True, exist_ok=True)
+    audio_final = video_final = None
     try:
         ctx.checar()
         ctx.progresso(20, "Limpando o ruído…", forcar=True)
@@ -97,9 +101,12 @@ def executar(ctx):
             "local_path": str(video_final or audio_final),
         }
         return resultado, "Voz melhorada" + (" (vídeo e áudio)" if video_final else "")
+    except Cancelado:  # cancelado no meio: não deixa arquivo pela metade em Voz melhorada
+        for f in (audio_final, video_final):
+            if f:
+                f.unlink(missing_ok=True)
+        raise
     finally:
-        for f in trabalho.glob("*"):
-            f.unlink(missing_ok=True)
-        trabalho.rmdir()
+        shutil.rmtree(trabalho, ignore_errors=True)
         if tmp_entrada:
             tmp_entrada.unlink(missing_ok=True)

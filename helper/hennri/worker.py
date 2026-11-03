@@ -14,6 +14,7 @@ INTERVALO_FILA = 4  # segundos entre olhadas na fila quando não tem nada
 INTERVALO_SINAL = 20  # segundos entre sinais de vida (heartbeat)
 DOWNLOADS_JUNTOS = 3
 TIPOS_GPU = {"music", "separate", "enhance", "update_tools"}
+TIPOS_TODOS = TIPOS_GPU | {"download", "open", "drive_scan", "drive", "drive_google"}
 
 
 class Contexto:
@@ -171,8 +172,9 @@ class Worker:
                     if not self.online:
                         self.online = True
                         self._avisar()
-                if self._tem_vaga():
-                    job = self.api.claim()
+                tipos = self._tipos_com_vaga()
+                if tipos:
+                    job = self.api.claim(tipos)
                     if job:
                         self._despachar(job)
                         continue  # pode ter mais na fila
@@ -194,9 +196,12 @@ class Worker:
         self.pool_dl.shutdown(wait=False, cancel_futures=True)
         self.pool_gpu.shutdown(wait=False, cancel_futures=True)
 
-    def _tem_vaga(self) -> bool:
+    def _tipos_com_vaga(self) -> list[str]:
+        """Downloads e pedidos de GPU têm filas separadas: um pedido de GPU esperando a vez não trava os downloads."""
         with self.lock:
-            return self.dl_ativos < DOWNLOADS_JUNTOS and self.gpu_esperando == 0
+            dl = self.dl_ativos < DOWNLOADS_JUNTOS
+            gpu = self.gpu_esperando == 0
+        return sorted((TIPOS_TODOS - TIPOS_GPU if dl else set()) | (TIPOS_GPU if gpu else set()))
 
     def _despachar(self, job: dict):
         tipo = job["type"]
